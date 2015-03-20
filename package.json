@@ -1,4 +1,12 @@
 {
+  "name": "what-input",
+  "version": "0.0.1",
+  "description": "A global utility for tracking the current input method (mouse, keyboard or touch).",
+  "author": "Jeremy Fields <jeremy.fields@viget.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ten1seven/what-input.git"
+  },
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-contrib-connect": "^0.9.0",
@@ -7,5 +15,6 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-umd": "^2.3.3",
     "load-grunt-config": "^0.16.0"
-  }
+  },
+  "license": "MIT"
 }
