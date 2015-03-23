@@ -18,7 +18,7 @@ Download the script and include it directly in your project.
 <script src="assets/scripts/what-input.js"></script>
 ```
 
-Or require with a script loader (What Input is UMD compatible).
+Or require with a script loader (What Input is AMD compatible).
 
 ```javascript
 require('what-input');
