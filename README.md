@@ -64,13 +64,13 @@ myButton.addEventListener('click', function() {
 });
 ```
 
-You can also ask What Input to return an array all the input types that have been used _so far_.
+Ask What Input to return an array of all the input types that have been used _so far_.
 
 ```javascript
 whatInput.types(); // ex. returns ['mouse', 'keyboard']
 ```
 
-You can also tell What Input what's being used. This can be useful if you'd like to set an input method before the user has actually interacted with the page. What Input is not so assumptive.
+Tell What Input what's being used. This can be useful if you'd like to set an input method before the user has actually interacted with the page. What Input is not so assumptive on its own.
 
 ```javascript
 whatInput.set('hampster');
