@@ -2,6 +2,8 @@
 
 __A global utility for tracking the current input method (mouse/pointer, keyboard or touch).__
 
+What Input improves on [track-focus](https://github.com/ten1seven/track-focus) by adding a data attribute on the `<body>` instead of littering the DOM with classes on elements that have been interacted with. It also exposes a simple API that can be used for scripting interactions.
+
 ## How it works
 
 What Input uses event bubbling on the `<body>` to watch for mouse, keyboard and touch events (via `mousedown`/`pointerdown`, `keydown` and `touchstart`). It then sets or updates a `data-whatinput` on the `<body>`.
