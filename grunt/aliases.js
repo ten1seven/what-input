@@ -1,13 +1,16 @@
 module.exports = {
   'default': [
     'connect',
+    'notify:server',
     'watch'
   ],
 
   'scripts': [
-    'jshint',
+    'newer:jshint',
+    'newer:concat:ie8',
     'umd',
-    'uglify'
+    'uglify',
+    'notify:scripts'
   ],
 
   'build': [

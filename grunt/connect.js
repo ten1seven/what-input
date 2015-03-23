@@ -1,7 +1,12 @@
 module.exports = {
   server: {
     options: {
-      base: './',
+      base: {
+        path: './',
+        options: {
+          index: 'demo.html'
+        }
+      },
       hostname: 'localhost',
       livereload: false,
       open: true,

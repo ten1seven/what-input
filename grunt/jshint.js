@@ -1,6 +1,4 @@
 module.exports = {
-  options: {
-    
-  },
+  options: {},
   all: ['./src/what-input.js']
 };

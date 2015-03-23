@@ -1,7 +1,7 @@
 module.exports = {
   all: {
     options: {
-      globalAlias: 'WhatInput',
+      globalAlias: 'whatInput',
       src: './src/what-input.js',
       dest: './what-input.js'
     }
