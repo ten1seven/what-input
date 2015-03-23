@@ -12,7 +12,13 @@ _What Input does not make assumptions about the input environment before the use
 
 ## Usage
 
-Download the script and include it directly in your project.
+Install via Bower.
+
+```shell
+bower install what-input
+```
+
+Include the script directly in your project.
 
 ```html
 <script src="assets/scripts/what-input.js"></script>
