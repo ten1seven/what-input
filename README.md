@@ -51,6 +51,8 @@ Style page elements based on the current input.
 Ask What Input what the current input method is. This works best if asked after the events What Input is bound to (`mousedown`/`pointerdown`, `keydown` and `touchstart`). Because `click` always executes last in the event tree, What Input will be able to answer with the event that _just_ happened.
 
 ```javascript
+whatInput.ask(); // returns `mouse`, `pointer`, `keyboard` or `touch`
+
 myButton.addEventListener('click', function() {
 
   if (whatInput.ask() === 'mouse') {
@@ -60,6 +62,20 @@ myButton.addEventListener('click', function() {
   }
 
 });
+```
+
+You can also ask What Input to return an array all the input types that have been used _so far_.
+
+```javascript
+whatInput.types(); // ex. returns ['mouse', 'keyboard']
+```
+
+You can also tell What Input what's being used. This can be useful if you'd like to set an input method before the user has actually interacted with the page. What Input is not so assumptive.
+
+```javascript
+whatInput.set('hampster');
+
+whatInput.ask(); // 'hampster'
 ```
 
 ## Compatibility
