@@ -10,6 +10,14 @@ var buffer = false;
 
 // the last used input type
 var currentInput = null;
+
+// array of form elements that take keyboard input
+var formInputs = [
+  'input',
+  'select',
+  'textarea'
+];
+
 // mapping of events to input types
 var inputMap = {
   'keydown': 'keyboard',
@@ -33,7 +41,7 @@ var timer;
 function bufferInput(event) {
   clearTimeout(timer);
 
-  setInput(inputMap[event.type]);
+  setInput(event);
 
   buffer = true;
   timer = setTimeout(function() {
@@ -42,15 +50,36 @@ function bufferInput(event) {
 }
 
 function regularInput(event) {
-  if (!buffer) setInput( inputMap[event.type] );
+  if (!buffer) setInput(event);
 }
 
-function setInput(value) {
-  if (currentInput !== value) {
-    currentInput = value;
-    body.setAttribute('data-whatinput', currentInput);
+function setInput(event) {
+  var key = event.which || event.keyCode;
+  var target = event.target || event.srcElement;
+  var value = inputMap[event.type];
 
-    if (inputTypes.indexOf(currentInput) === -1) inputTypes.push(currentInput);
+  if (currentInput !== value) {
+
+    if (
+      // only if currentInput has a value
+      currentInput &&
+
+      // only if the input is `keyboard`
+      value === 'keyboard' &&
+
+      // not if the key is `TAB`
+      key !== 9 &&
+
+      // only if the target is one of the elements in `formInputs`
+      formInputs.indexOf(target.nodeName.toLowerCase()) >= 0
+    ) {
+      // ignore keyboard typing on form elements
+    } else {
+      currentInput = value;
+      body.setAttribute('data-whatinput', currentInput);
+
+      if (inputTypes.indexOf(currentInput) === -1) inputTypes.push(currentInput);
+    }
   }
 }
 

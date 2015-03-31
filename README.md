@@ -8,6 +8,8 @@ What Input improves on [track-focus](https://github.com/ten1seven/track-focus) b
 
 What Input uses event bubbling on the `<body>` to watch for mouse, keyboard and touch events (via `mousedown`/`pointerdown`, `keydown` and `touchstart`). It then sets or updates a `data-whatinput` on the `<body>`.
 
+Since the form fields `input` and `textarea` rely on the keyboard as their only means of input, What Input _does not_ switch the input type to keyboard when typing to preserve the last detected input type.
+
 What Input also exposes a tiny API that allows the developer to ask for or set the current input.
 
 _What Input does not make assumptions about the input environment before the user makes their first interaction._
