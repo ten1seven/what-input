@@ -5,9 +5,12 @@
 // cache document.body
 var body = document.body;
 
-//
+// boolean: true if touch buffer timer is running
 var buffer = false;
+
+// the last used input type
 var currentInput = null;
+// mapping of events to input types
 var inputMap = {
   'keydown': 'keyboard',
   'mousedown': 'mouse',
@@ -15,7 +18,11 @@ var inputMap = {
   'pointerdown': 'pointer',
   'MSPointerDown': 'pointer'
 };
+
+// array of all used input types
 var inputTypes = [];
+
+// touch buffer timer
 var timer;
 
 
@@ -53,7 +60,7 @@ function setInput(value) {
  */
 
 (function() {
-  
+
   // The Golden Pattern for Handling Touch Input
   // via http://www.stucox.com/blog/the-golden-pattern-for-handling-touch-input/
   var pointerPrefix = 'onmspointerdown' in window ? 'ms' : '';
