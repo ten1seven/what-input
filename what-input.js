@@ -69,17 +69,17 @@ function setInput(value) {
  */
 
 (function() {
-
-  // touch
-  if ('ontouchstart' in document.documentElement) body.addEventListener('touchstart', bufferInput);
-
-  // pointer/mouse
-  if (window.PointerEvent) {
-    body.addEventListener('pointerdown', regularInput);
-  } else if (window.MSPointerEvent) {
-    body.addEventListener('MSPointerDown', regularInput);
+  
+  // The Golden Pattern for Handling Touch Input
+  // via http://www.stucox.com/blog/the-golden-pattern-for-handling-touch-input/
+  var pointerPrefix = 'onmspointerdown' in window ? 'ms' : '';
+  if ('on' + pointerPrefix + 'pointerdown' in window) {
+    var pointerdown = pointerPrefix + 'pointerdown';
+    body.addEventListener(pointerdown, regularInput);
   } else {
     body.addEventListener('mousedown', regularInput);
+
+    if ('ontouchstart' in window) body.addEventListener('touchstart', bufferInput);
   }
 
   // keyboard
