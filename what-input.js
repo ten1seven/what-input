@@ -34,6 +34,9 @@ var formInputs = [
   'textarea'
 ];
 
+// user-set flag to allow typing in form fields to be recorded
+var formTyping = body.hasAttribute('data-whatinput-formtyping');
+
 // mapping of events to input types
 var inputMap = {
   'keydown': 'keyboard',
@@ -77,6 +80,9 @@ function setInput(event) {
   if (currentInput !== value) {
 
     if (
+      // only if the user flag isn't set
+      !formTyping &&
+
       // only if currentInput has a value
       currentInput &&
 
