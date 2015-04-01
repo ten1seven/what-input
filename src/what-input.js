@@ -5,9 +5,23 @@
 // cache document.body
 var body = document.body;
 
-//
+// boolean: true if touch buffer timer is running
 var buffer = false;
+
+// the last used input type
 var currentInput = null;
+
+// array of form elements that take keyboard input
+var formInputs = [
+  'input',
+  'select',
+  'textarea'
+];
+
+// user-set flag to allow typing in form fields to be recorded
+var formTyping = body.hasAttribute('data-whatinput-formtyping');
+
+// mapping of events to input types
 var inputMap = {
   'keydown': 'keyboard',
   'mousedown': 'mouse',
@@ -15,7 +29,11 @@ var inputMap = {
   'pointerdown': 'pointer',
   'MSPointerDown': 'pointer'
 };
+
+// array of all used input types
 var inputTypes = [];
+
+// touch buffer timer
 var timer;
 
 
@@ -26,7 +44,7 @@ var timer;
 function bufferInput(event) {
   clearTimeout(timer);
 
-  setInput(inputMap[event.type]);
+  setInput(event);
 
   buffer = true;
   timer = setTimeout(function() {
@@ -35,15 +53,39 @@ function bufferInput(event) {
 }
 
 function regularInput(event) {
-  if (!buffer) setInput( inputMap[event.type] );
+  if (!buffer) setInput(event);
 }
 
-function setInput(value) {
-  if (currentInput !== value) {
-    currentInput = value;
-    body.setAttribute('data-whatinput', currentInput);
+function setInput(event) {
+  var key = event.which || event.keyCode;
+  var target = event.target || event.srcElement;
+  var value = inputMap[event.type];
 
-    if (inputTypes.indexOf(currentInput) === -1) inputTypes.push(currentInput);
+  if (currentInput !== value) {
+
+    if (
+      // only if the user flag isn't set
+      !formTyping &&
+
+      // only if currentInput has a value
+      currentInput &&
+
+      // only if the input is `keyboard`
+      value === 'keyboard' &&
+
+      // not if the key is `TAB`
+      key !== 9 &&
+
+      // only if the target is one of the elements in `formInputs`
+      formInputs.indexOf(target.nodeName.toLowerCase()) >= 0
+    ) {
+      // ignore keyboard typing on form elements
+    } else {
+      currentInput = value;
+      body.setAttribute('data-whatinput', currentInput);
+
+      if (inputTypes.indexOf(currentInput) === -1) inputTypes.push(currentInput);
+    }
   }
 }
 
@@ -53,7 +95,7 @@ function setInput(value) {
  */
 
 (function() {
-  
+
   // The Golden Pattern for Handling Touch Input
   // via http://www.stucox.com/blog/the-golden-pattern-for-handling-touch-input/
   var pointerPrefix = 'onmspointerdown' in window ? 'ms' : '';
