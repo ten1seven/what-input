@@ -45,11 +45,19 @@ What Input will start doing its thing while you do yours.
 Style page elements based on the current input.
 
 ```css
-[data-whatinput="keyboard"] button:focus {
-  outline: 2px solid #4183C4;
+/**
+ * set a default :focus style
+ */
+a:focus {
+  outline: 3px dotted #06c;
 }
 
-[data-whatinput="mouse"] button:focus {
+/*
+ * remove :focus style via What Input using progressive enhancement
+ * so :focus isn't left broken if JavaScript fails
+ */
+[data-whatinput="mouse"] a:focus,
+[data-whatinput="touch"] a:focus {
   outline: none;
 }
 ```
