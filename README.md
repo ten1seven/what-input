@@ -40,9 +40,7 @@ require('what-input');
 
 What Input will start doing its thing while you do yours.
 
-### Styling
-
-Style page elements based on the current input.
+### Example Styling
 
 ```css
 /**
