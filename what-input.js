@@ -18,6 +18,9 @@
  * variables
  */
 
+// array of actively pressed keys
+var activeKeys = [];
+
 // cache document.body
 var body = document.body;
 
@@ -49,6 +52,19 @@ var inputMap = {
 // array of all used input types
 var inputTypes = [];
 
+// mapping of key codes to common name
+var keyMap = {
+  9: 'tab',
+  13: 'enter',
+  16: 'shift',
+  27: 'esc',
+  32: 'space',
+  37: 'left',
+  38: 'up',
+  39: 'right',
+  40: 'down'
+};
+
 // touch buffer timer
 var timer;
 
@@ -57,7 +73,7 @@ var timer;
  * functions
  */
 
-function bufferInput(event) {
+ function bufferInput(event) {
   clearTimeout(timer);
 
   setInput(event);
@@ -73,9 +89,11 @@ function regularInput(event) {
 }
 
 function setInput(event) {
-  var key = event.which || event.keyCode;
-  var target = event.target || event.srcElement;
+  var eventKey = key(event);
+  var eventTarget = target(event);
   var value = inputMap[event.type];
+
+  console.log(keyMap[eventKey]);
 
   if (currentInput !== value) {
 
@@ -90,10 +108,10 @@ function setInput(event) {
       value === 'keyboard' &&
 
       // not if the key is `TAB`
-      key !== 9 &&
+      keyMap[eventKey] !== 'tab' &&
 
       // only if the target is one of the elements in `formInputs`
-      formInputs.indexOf(target.nodeName.toLowerCase()) >= 0
+      formInputs.indexOf(eventTarget.nodeName.toLowerCase()) >= 0
     ) {
       // ignore keyboard typing on form elements
     } else {
@@ -103,6 +121,14 @@ function setInput(event) {
       if (inputTypes.indexOf(currentInput) === -1) inputTypes.push(currentInput);
     }
   }
+}
+
+function key(event) {
+  return (event.keyCode) ? event.keyCode : event.which;
+}
+
+function target(event) {
+  return event.target || event.srcElement;
 }
 
 
@@ -126,6 +152,7 @@ function setInput(event) {
 
   // keyboard
   body.addEventListener('keydown', regularInput);
+  //body.addEventListener('keyup', regularInput);
 
 })();
 
