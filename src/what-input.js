@@ -57,7 +57,7 @@ var timer;
  * functions
  */
 
- function bufferInput(event) {
+function bufferInput(event) {
   clearTimeout(timer);
 
   setInput(event);
@@ -68,7 +68,7 @@ var timer;
   }, 1000);
 }
 
-function regularInput(event) {
+function immediateInput(event) {
   if (!buffer) setInput(event);
 }
 
@@ -76,8 +76,6 @@ function setInput(event) {
   var eventKey = key(event);
   var eventTarget = target(event);
   var value = inputMap[event.type];
-
-  console.log(keyMap[eventKey]);
 
   if (currentInput !== value) {
 
@@ -105,6 +103,8 @@ function setInput(event) {
       if (inputTypes.indexOf(currentInput) === -1) inputTypes.push(currentInput);
     }
   }
+
+  if (value === 'keyboard') logKeys(eventKey);
 }
 
 function key(event) {
@@ -113,6 +113,18 @@ function key(event) {
 
 function target(event) {
   return event.target || event.srcElement;
+}
+
+// keyboard logging
+function logKeys(eventKey) {
+  if (activeKeys.indexOf(keyMap[eventKey]) === -1) activeKeys.push(keyMap[eventKey]);
+}
+
+function unLogKeys(event) {
+  var eventKey = key(event);
+  var arrayPos = activeKeys.indexOf(keyMap[eventKey]);
+
+  if (arrayPos !== -1) activeKeys.splice(arrayPos, 1);
 }
 
 
@@ -127,16 +139,16 @@ function target(event) {
   var pointerPrefix = 'onmspointerdown' in window ? 'ms' : '';
   if ('on' + pointerPrefix + 'pointerdown' in window) {
     var pointerdown = pointerPrefix + 'pointerdown';
-    body.addEventListener(pointerdown, regularInput);
+    body.addEventListener(pointerdown, immediateInput);
   } else {
-    body.addEventListener('mousedown', regularInput);
+    body.addEventListener('mousedown', immediateInput);
 
     if ('ontouchstart' in window) body.addEventListener('touchstart', bufferInput);
   }
 
   // keyboard
-  body.addEventListener('keydown', regularInput);
-  //body.addEventListener('keyup', regularInput);
+  body.addEventListener('keydown', immediateInput);
+  body.addEventListener('keyup', unLogKeys);
 
 })();
 
