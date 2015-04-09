@@ -156,6 +156,10 @@
     <script>
       var link = document.querySelectorAll('a[href="#"]');
       for (var i = 0, len = link.length; i < len; i++) {
+        link[i].addEventListener('keyup', function(event) {
+          console.log( '[test script] ' + whatInput.keys() );
+        });
+
         link[i].addEventListener('click', function(event) {
           event.preventDefault();
 
