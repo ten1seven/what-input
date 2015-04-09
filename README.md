@@ -18,13 +18,15 @@ What Input also exposes a tiny API that allows the developer to ask for or set t
 
 _What Input does not make assumptions about the input environment before the user makes their first interaction._
 
-## Usage
+## Installing
 
-Install via Bower.
+Download the file directly or install via Bower.
 
 ```shell
 bower install what-input
 ```
+
+## Usage
 
 Include the script directly in your project.
 
@@ -62,6 +64,8 @@ a:focus {
 
 ### Scripting
 
+#### Current Input
+
 Ask What Input what the current input method is. This works best if asked after the events What Input is bound to (`mousedown`/`pointerdown`, `keydown` and `touchstart`). Because `click` always executes last in the event tree, What Input will be able to answer with the event that _just_ happened.
 
 ```javascript
@@ -91,6 +95,27 @@ whatInput.set('hampster');
 
 whatInput.ask(); // 'hampster'
 ```
+
+#### Key Logging
+
+Along with tracking the use of the keyboard, What Input keeps track of the currently pressed keys and stores them in an array. Instead of returning cryptic key codes, What Input uses plain language.
+
+This can be used if, for example, you want to track how an element is being interacted with.
+
+```javascript
+whatInput.keys(); // ex. returns ['shift', 'tab']
+
+myMenuTab.addEventListener('keyup', function() {
+
+  // query for the down arrow
+  if (whatInput.keys().indexOf('down') !== -1) {
+    // open the dropdown menu
+  }
+
+});
+```
+
+What Input only responds to the following "action" keys: 'tab', 'enter', 'shift', 'esc', 'space', 'left', 'up', 'right' and 'down'.
 
 ## Compatibility
 
