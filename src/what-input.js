@@ -150,6 +150,9 @@ return {
   // returns a string of the current input type
   ask: function() { return currentInput; },
 
+  // returns an array of currently pressed keys
+  keys: function() { return activeKeys; },
+
   // returns an array of all the detected input types
   types: function() { return inputTypes; },
 
