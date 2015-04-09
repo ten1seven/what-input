@@ -18,6 +18,9 @@
  * variables
  */
 
+// array of actively pressed keys
+var activeKeys = [];
+
 // cache document.body
 var body = document.body;
 
@@ -49,6 +52,19 @@ var inputMap = {
 // array of all used input types
 var inputTypes = [];
 
+// mapping of key codes to common name
+var keyMap = {
+  9: 'tab',
+  13: 'enter',
+  16: 'shift',
+  27: 'esc',
+  32: 'space',
+  37: 'left',
+  38: 'up',
+  39: 'right',
+  40: 'down'
+};
+
 // touch buffer timer
 var timer;
 
@@ -68,13 +84,13 @@ function bufferInput(event) {
   }, 1000);
 }
 
-function regularInput(event) {
+function immediateInput(event) {
   if (!buffer) setInput(event);
 }
 
 function setInput(event) {
-  var key = event.which || event.keyCode;
-  var target = event.target || event.srcElement;
+  var eventKey = key(event);
+  var eventTarget = target(event);
   var value = inputMap[event.type];
 
   if (currentInput !== value) {
@@ -90,10 +106,10 @@ function setInput(event) {
       value === 'keyboard' &&
 
       // not if the key is `TAB`
-      key !== 9 &&
+      keyMap[eventKey] !== 'tab' &&
 
       // only if the target is one of the elements in `formInputs`
-      formInputs.indexOf(target.nodeName.toLowerCase()) >= 0
+      formInputs.indexOf(eventTarget.nodeName.toLowerCase()) >= 0
     ) {
       // ignore keyboard typing on form elements
     } else {
@@ -103,6 +119,28 @@ function setInput(event) {
       if (inputTypes.indexOf(currentInput) === -1) inputTypes.push(currentInput);
     }
   }
+
+  if (value === 'keyboard') logKeys(eventKey);
+}
+
+function key(event) {
+  return (event.keyCode) ? event.keyCode : event.which;
+}
+
+function target(event) {
+  return event.target || event.srcElement;
+}
+
+// keyboard logging
+function logKeys(eventKey) {
+  if (activeKeys.indexOf(keyMap[eventKey]) === -1 && keyMap[eventKey]) activeKeys.push(keyMap[eventKey]);
+}
+
+function unLogKeys(event) {
+  var eventKey = key(event);
+  var arrayPos = activeKeys.indexOf(keyMap[eventKey]);
+
+  if (arrayPos !== -1) activeKeys.splice(arrayPos, 1);
 }
 
 
@@ -117,15 +155,16 @@ function setInput(event) {
   var pointerPrefix = 'onmspointerdown' in window ? 'ms' : '';
   if ('on' + pointerPrefix + 'pointerdown' in window) {
     var pointerdown = pointerPrefix + 'pointerdown';
-    body.addEventListener(pointerdown, regularInput);
+    body.addEventListener(pointerdown, immediateInput);
   } else {
-    body.addEventListener('mousedown', regularInput);
+    body.addEventListener('mousedown', immediateInput);
 
     if ('ontouchstart' in window) body.addEventListener('touchstart', bufferInput);
   }
 
   // keyboard
-  body.addEventListener('keydown', regularInput);
+  body.addEventListener('keydown', immediateInput);
+  body.addEventListener('keyup', unLogKeys);
 
 })();
 
@@ -138,6 +177,9 @@ return {
 
   // returns a string of the current input type
   ask: function() { return currentInput; },
+
+  // returns an array of currently pressed keys
+  keys: function() { return activeKeys; },
 
   // returns an array of all the detected input types
   types: function() { return inputTypes; },
