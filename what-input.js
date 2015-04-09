@@ -133,7 +133,7 @@ function target(event) {
 
 // keyboard logging
 function logKeys(eventKey) {
-  if (activeKeys.indexOf(keyMap[eventKey]) === -1) activeKeys.push(keyMap[eventKey]);
+  if (activeKeys.indexOf(keyMap[eventKey]) === -1 && keyMap[eventKey]) activeKeys.push(keyMap[eventKey]);
 }
 
 function unLogKeys(event) {
