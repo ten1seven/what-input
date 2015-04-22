@@ -134,17 +134,19 @@ function unLogKeys(event) {
 
 (function() {
 
-  // The Golden Pattern for Handling Touch Input
-  // via http://www.stucox.com/blog/the-golden-pattern-for-handling-touch-input/
-  var pointerPrefix = 'onmspointerdown' in window ? 'ms' : '';
-  if ('on' + pointerPrefix + 'pointerdown' in window) {
-    var pointerdown = pointerPrefix + 'pointerdown';
-    body.addEventListener(pointerdown, immediateInput);
-  } else {
-    body.addEventListener('mousedown', immediateInput);
+  var mouseEvent = 'mousedown';
 
-    if ('ontouchstart' in window) body.addEventListener('touchstart', bufferInput);
+  // touch
+  if ('ontouchstart' in document.documentElement) body.addEventListener('touchstart', bufferInput);
+
+  // pointer/mouse
+  if (window.PointerEvent) {
+    mouseEvent = 'pointerdown';
+  } else if (window.MSPointerEvent) {
+    mouseEvent = 'MSPointerDown';
   }
+
+  body.addEventListener(mouseEvent, immediateInput);
 
   // keyboard
   body.addEventListener('keydown', immediateInput);

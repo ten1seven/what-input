@@ -57,6 +57,7 @@ a:focus {
  * so :focus isn't left broken if JavaScript fails
  */
 [data-whatinput="mouse"] a:focus,
+[data-whatinput="pointer"] a:focus,
 [data-whatinput="touch"] a:focus {
   outline: none;
 }
