@@ -152,9 +152,6 @@ function unLogKeys(event) {
 
   var mouseEvent = 'mousedown';
 
-  // touch
-  if ('ontouchstart' in document.documentElement) body.addEventListener('touchstart', bufferInput);
-
   // pointer/mouse
   if (window.PointerEvent) {
     mouseEvent = 'pointerdown';
@@ -163,6 +160,9 @@ function unLogKeys(event) {
   }
 
   body.addEventListener(mouseEvent, immediateInput);
+
+  // touch
+  if ('ontouchstart' in document.documentElement) body.addEventListener('touchstart', bufferInput);
 
   // keyboard
   body.addEventListener('keydown', immediateInput);
