@@ -16,8 +16,8 @@
         margin-top: 50px;
       }
 
-      input[type="text"],
-      input[type="password"] {
+      input[type='text'],
+      input[type='password'] {
         font-size: 16px;
       }
 
@@ -30,24 +30,19 @@
         transition: all 200ms;
       }
 
-      [data-whatinput="mouse"] .-mouse {
+      [data-whatinput='mouse'] .-mouse {
         background-color: #d9edf7;
         color: #31708f;
       }
 
-      [data-whatinput="keyboard"] .-keyboard {
+      [data-whatinput='keyboard'] .-keyboard {
         background-color: #dff0d8;
         color: #3c763d;
       }
 
-      [data-whatinput="touch"] .-touch {
+      [data-whatinput='touch'] .-touch {
         background-color: #fcf8e3;
         color: #8a6d3b;
-      }
-
-      [data-whatinput="pointer"] .-pointer {
-        background-color: #f2dede;
-        color: #a94442;
       }
 
       /* links */
@@ -56,13 +51,13 @@
         z-index: 1;
       }
 
-      [data-whatinput="keyboard"]  a:focus {
+      [data-whatinput='keyboard']  a:focus {
         box-shadow: 0 0 8px 2px rgba(60, 118, 61, 0.6);
         outline: 2px solid #3c763d;
       }
 
       /* form controls */
-      [data-whatinput="mouse"] .form-control:focus {
+      [data-whatinput='mouse'] .form-control:focus {
         border-color: #31708f;
         outline: 0;
         box-shadow:
@@ -70,7 +65,7 @@
           0 0 8px rgba(49, 112, 143, 0.6);
       }
 
-      [data-whatinput="keyboard"] .form-control:focus {
+      [data-whatinput='keyboard'] .form-control:focus {
         border-color: #3c763d;
         outline: 0;
         box-shadow:
@@ -78,20 +73,12 @@
           0 0 8px rgba(60, 118, 61, 0.6);
       }
 
-      [data-whatinput="touch"] .form-control:focus {
+      [data-whatinput='touch'] .form-control:focus {
         border-color: #8a6d3b;
         outline: 0;
         box-shadow:
           inset 0 1px 1px rgba(0, 0, 0, .075),
           0 0 8px rgba(138, 109, 59, 0.6);
-      }
-
-      [data-whatinput="pointer"] .form-control:focus {
-        border-color: #a94442;
-        outline: 0;
-        box-shadow:
-          inset 0 1px 1px rgba(0, 0, 0, .075),
-          0 0 8px rgba(169, 68, 66, 0.6);
       }
     </style>
 
@@ -107,7 +94,7 @@
         <h1>What Input?</h1>
       </div>
 
-      <p class="lead">A global utility for tracking the current input method (<span class="input-display -mouse">mouse</span>, <span class="input-display -keyboard">keyboard</span>, <span class="input-display -touch">touch</span> or <span class="input-display -pointer">pointer</span>).</p>
+      <p class="lead">A global utility for tracking the current input method (<span class="input-display -mouse">mouse</span>, <span class="input-display -keyboard">keyboard</span> or <span class="input-display -touch">touch</span>).</p>
 
       <p>Tab, click or tap the links and form controls to see how What Input allows them to be styled differently.</p>
 

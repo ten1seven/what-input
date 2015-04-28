@@ -1,12 +1,12 @@
 # What Input?
 
-__A global utility for tracking the current input method (mouse/pointer, keyboard or touch).__
+__A global utility for tracking the current input method (mouse, keyboard or touch).__
 
 What Input improves on [track-focus](https://github.com/ten1seven/track-focus) by adding a data attribute on the `<body>` instead of littering the DOM with classes on elements that have been interacted with. It also exposes a simple API that can be used for scripting interactions.
 
 ## How it works
 
-What Input uses event bubbling on the `<body>` to watch for mouse, keyboard and touch events (via `mousedown`/`pointerdown`, `keydown` and `touchstart`). It then sets or updates a `data-whatinput` on the `<body>`.
+What Input uses event bubbling on the `<body>` to watch for mouse, keyboard and touch events (via `mousedown`, `keydown` and `touchstart`). It then sets or updates a `data-whatinput` on the `<body>`.
 
 Since the form fields `input` and `textarea` rely on the keyboard as their only means of input, What Input _does not_ switch the input type to keyboard when typing to preserve the last detected input type. To override this behavior and allow the keyboard to be recorded, add:
 
@@ -57,7 +57,6 @@ a:focus {
  * so :focus isn't left broken if JavaScript fails
  */
 [data-whatinput="mouse"] a:focus,
-[data-whatinput="pointer"] a:focus,
 [data-whatinput="touch"] a:focus {
   outline: none;
 }
@@ -67,10 +66,10 @@ a:focus {
 
 #### Current Input
 
-Ask What Input what the current input method is. This works best if asked after the events What Input is bound to (`mousedown`/`pointerdown`, `keydown` and `touchstart`). Because `click` always executes last in the event tree, What Input will be able to answer with the event that _just_ happened.
+Ask What Input what the current input method is. This works best if asked after the events What Input is bound to (`mousedown`, `keydown` and `touchstart`). Because `click` always executes last in the event tree, What Input will be able to answer with the event that _just_ happened.
 
 ```javascript
-whatInput.ask(); // returns `mouse`, `pointer`, `keyboard` or `touch`
+whatInput.ask(); // returns `mouse`, `keyboard` or `touch`
 
 myButton.addEventListener('click', function() {
 
