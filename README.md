@@ -142,8 +142,8 @@ http://ten1seven.github.io/what-input
 
 Special thanks to [Viget](http://viget.com/) for their encouragement and commitment to open source projects.
 
-RouterRouter is written and maintained by [@ten1seven](https://github.com/ten1seven).
+What Input is written and maintained by [@ten1seven](https://github.com/ten1seven).
 
 ## License
 
-What Input? is freely available under the [MIT License](http://opensource.org/licenses/MIT).
+What Input is freely available under the [MIT License](http://opensource.org/licenses/MIT).
