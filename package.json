@@ -2,11 +2,23 @@
   "name": "what-input",
   "version": "1.0.0",
   "description": "A global utility for tracking the current input method (mouse, keyboard or touch).",
-  "author": "Jeremy Fields <jeremy.fields@viget.com>",
+  "main": "what-input.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/ten1seven/what-input.git"
   },
+  "keywords": [
+    "accessibility",
+    "a11y",
+    "input",
+    "javascript"
+  ],
+  "author": "Jeremy Fields <jeremy.fields@viget.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ten1seven/what-input/issues"
+  },
+  "homepage": "https://github.com/ten1seven/what-input",
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-contrib-clean": "^0.6.0",
@@ -20,6 +32,5 @@
     "grunt-umd": "^2.3.3",
     "load-grunt-config": "^0.16.0",
     "time-grunt": "^1.1.0"
-  },
-  "license": "MIT"
+  }
 }
