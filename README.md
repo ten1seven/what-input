@@ -137,3 +137,13 @@ Add your own, or grab the bundle included here.
 Check out the demo to see What Input in action.
 
 http://ten1seven.github.io/what-input
+
+## Acknowledgments
+
+Special thanks to [Viget](http://viget.com/) for their encouragement and commitment to open source projects.
+
+RouterRouter is written and maintained by [@ten1seven](https://github.com/ten1seven).
+
+## License
+
+What Input? is freely available under the [MIT License](http://opensource.org/licenses/MIT).
