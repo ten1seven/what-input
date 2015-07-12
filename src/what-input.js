@@ -28,6 +28,7 @@ var formTyping = body.hasAttribute('data-whatinput-formtyping');
 var inputMap = {
   'keydown': 'keyboard',
   'mousedown': 'mouse',
+  'mouseenter': 'mouse',
   'touchstart': 'touch',
   'pointerdown': 'pointer',
   'MSPointerDown': 'pointer'
@@ -155,6 +156,7 @@ function unLogKeys(event) {
   }
 
   body.addEventListener(mouseEvent, immediateInput);
+  body.addEventListener('mouseenter', immediateInput);
 
   // touch
   if ('ontouchstart' in document.documentElement) body.addEventListener('touchstart', bufferInput);
