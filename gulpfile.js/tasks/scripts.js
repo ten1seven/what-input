@@ -1,20 +1,10 @@
-var concat = require('gulp-concat');
-var del = require('del');
 var gulp = require('gulp');
+var plumber = require('gulp-plumber');
 var jshint = require('gulp-jshint');
 var notify = require('gulp-notify');
-var plumber = require('gulp-plumber');
-var rename = require("gulp-rename");
-var server = require('gulp-server-livereload');
 var uglify = require('gulp-uglify');
-
-
-gulp.task('clean', function () {
-  return del([
-    './.DS_Store',
-    './src/**/.DS_Store'
-  ]);
-});
+var rename = require('gulp-rename');
+var concat = require('gulp-concat');
 
 
 gulp.task('scripts-main', function() {
@@ -47,15 +37,3 @@ gulp.task('scripts-ie8', function() {
 
 
 gulp.task('scripts', ['scripts-main', 'scripts-uglify', 'scripts-ie8']);
-
-
-gulp.task('serve', ['clean', 'scripts'], function() {
-  gulp.src('./')
-    .pipe(server({
-      defaultFile: 'demo.html',
-      livereload: true,
-      open: true
-  }));
-
-  gulp.watch('./src/*.js', ['scripts']);
-});
