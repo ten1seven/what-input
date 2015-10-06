@@ -7,18 +7,10 @@ var rename = require('gulp-rename');
 var concat = require('gulp-concat');
 
 
-gulp.task('scripts-main', function() {
-  return gulp.src(['./src/what-input.js'])
-    .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
-    .pipe(jshint())
-    .pipe(gulp.dest('./'))
-    .pipe(notify('Scripts task complete'));
-});
-
-
 gulp.task('scripts-uglify', function() {
   return gulp.src(['./what-input.js'])
     .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
+    .pipe(jshint())
     .pipe(uglify())
     .pipe(rename('what-input.min.js'))
     .pipe(gulp.dest('./'))
@@ -36,4 +28,4 @@ gulp.task('scripts-ie8', function() {
 });
 
 
-gulp.task('scripts', ['scripts-main', 'scripts-uglify', 'scripts-ie8']);
+gulp.task('scripts', ['scripts-uglify', 'scripts-ie8']);

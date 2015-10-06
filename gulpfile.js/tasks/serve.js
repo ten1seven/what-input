@@ -10,5 +10,5 @@ gulp.task('serve', ['clean', 'scripts'], function() {
       open: true
   }));
 
-  gulp.watch('./src/*.js', ['scripts']);
+  gulp.watch(['./what-input.js', './polyfills/*.js'], ['scripts']);
 });

@@ -1,23 +1,23 @@
-(function (root, factory) {
+;(function (root, factory) {
+
   if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module unless amdModuleId is set
-    define([], function () {
-      return (factory());
-    });
+    define(factory);
   } else if (typeof exports === 'object') {
-    // Node. Does not work with strict CommonJS, but
-    // only CommonJS-like environments that support module.exports,
-    // like Node.
     module.exports = factory();
   } else {
     root.whatInput = factory();
   }
+
 }(this, function () {
+
+  'use strict';
 
 
   /*
-   * variables
-   */
+    ---------------
+    variables
+    ---------------
+  */
 
   // array of actively pressed keys
   var activeKeys = [];
@@ -79,8 +79,10 @@
 
 
   /*
-   * functions
-   */
+    ---------------
+    functions
+    ---------------
+  */
 
   function bufferInput(event) {
     clearTimeout(timer);
@@ -158,14 +160,16 @@
 
 
   /*
-   * init
-   */
+    ---------------
+    init
+    ---------------
+  */
 
-  (function() {
-
-    var mouseEvent = 'mousedown';
+  (function bindEvents() {
 
     // pointer/mouse
+    var mouseEvent = 'mousedown';
+
     if (window.PointerEvent) {
       mouseEvent = 'pointerdown';
     } else if (window.MSPointerEvent) {
@@ -186,21 +190,23 @@
 
 
   /*
-   * api
-   */
+    ---------------
+    api
+    ---------------
+  */
 
   return {
 
-    // returns a string of the current input type
+    // returns string: the current input type
     ask: function() { return currentInput; },
 
-    // returns an array of currently pressed keys
+    // returns array: currently pressed keys
     keys: function() { return activeKeys; },
 
-    // returns an array of all the detected input types
+    // returns array: all the detected input types
     types: function() { return inputTypes; },
 
-    // manually set the input type
+    // accepts string: manually set the input type
     set: setInput
   };
 
