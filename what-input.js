@@ -183,7 +183,7 @@
 
     // keyboard
     body.addEventListener('keydown', immediateInput);
-    body.addEventListener('keyup', unLogKeys);
+    document.addEventListener('keyup', unLogKeys);
 
   })();
 
