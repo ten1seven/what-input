@@ -140,7 +140,7 @@ http://ten1seven.github.io/what-input
 
 ## Acknowledgments
 
-Special thanks to [Viget](http://viget.com/) for their encouragement and commitment to open source projects.
+Special thanks to [Viget](http://viget.com/) for their encouragement and commitment to open source projects. Visit [code.viget.com](http://code.viget.com/) to see more projects from [Viget](http://viget.com).
 
 What Input is written and maintained by [@ten1seven](https://github.com/ten1seven).
 
