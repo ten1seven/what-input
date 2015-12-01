@@ -157,14 +157,7 @@
     if (arrayPos !== -1) activeKeys.splice(arrayPos, 1);
   }
 
-
-  /*
-    ---------------
-    init
-    ---------------
-  */
-
-  (function bindEvents() {
+  function bindEvents() {
 
     // pointer/mouse
     var mouseEvent = 'mousedown';
@@ -179,13 +172,28 @@
     body.addEventListener('mouseenter', immediateInput);
 
     // touch
-    if ('ontouchstart' in document.documentElement) body.addEventListener('touchstart', bufferInput);
+    if ('ontouchstart' in document.documentElement) {
+      body.addEventListener('touchstart', bufferInput);
+    }
 
     // keyboard
     body.addEventListener('keydown', immediateInput);
     document.addEventListener('keyup', unLogKeys);
+  }
 
-  })();
+
+  /*
+    ---------------
+    init
+
+    don't start script unless browser cuts the mustard,
+    also passes if polyfills are used
+    ---------------
+  */
+
+  if ('addEventListener' in window && Array.prototype.indexOf) {
+    bindEvents();
+  }
 
 
   /*

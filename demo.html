@@ -141,17 +141,19 @@
 
     <script src="what-input.js"></script>
     <script>
-      var link = document.querySelectorAll('a[href="#"]');
-      for (var i = 0, len = link.length; i < len; i++) {
-        link[i].addEventListener('keyup', function(event) {
-          if (whatInput.keys().length) console.log( '[test script] ' + whatInput.keys() );
-        });
+      if ('addEventListener' in window && Array.prototype.indexOf) {
+        var link = document.querySelectorAll('a[href="#"]');
+        for (var i = 0, len = link.length; i < len; i++) {
+          link[i].addEventListener('keyup', function(event) {
+            if (whatInput.keys().length) console.log( '[test script] ' + whatInput.keys() );
+          });
 
-        link[i].addEventListener('click', function(event) {
-          event.preventDefault();
+          link[i].addEventListener('click', function(event) {
+            event.preventDefault();
 
-          console.log( '[test script] ' + whatInput.ask() );
-        });
+            console.log( '[test script] ' + whatInput.ask() );
+          });
+        }
       }
     </script>
 
