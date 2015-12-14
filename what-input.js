@@ -172,7 +172,7 @@
     body.addEventListener('mouseenter', immediateInput);
 
     // touch
-    if ('ontouchstart' in document.documentElement) {
+    if ('ontouchstart' in window) {
       body.addEventListener('touchstart', bufferInput);
     }
 
