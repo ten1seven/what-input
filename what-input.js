@@ -44,7 +44,6 @@
   var inputMap = {
     'keydown': 'keyboard',
     'mousedown': 'mouse',
-    'mouseenter': 'mouse',
     'mousemove': 'mouse',
     'wheel': 'mouse',
     'touchstart': 'touch',
@@ -199,7 +198,6 @@
     }
 
     body.addEventListener(mouseEvent, immediateInput);
-    body.addEventListener('mouseenter', immediateInput);
     body.addEventListener('mousemove', debounce(immediateInput, debouncePause, true));
     body.addEventListener('wheel', debounce(immediateInput, debouncePause, true));
 
