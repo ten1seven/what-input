@@ -45,6 +45,8 @@
     'keydown': 'keyboard',
     'mousedown': 'mouse',
     'mouseenter': 'mouse',
+    'mousemove': 'mouse',
+    'wheel': 'mouse',
     'touchstart': 'touch',
     'pointerdown': 'pointer',
     'MSPointerDown': 'pointer'
@@ -75,6 +77,9 @@
 
   // touch buffer timer
   var timer;
+
+  // min ms between event-triggers for the trigger to be recognized as a new event (for wheel and mousemove)
+  var debouncePause = 250;
 
 
   /*
@@ -157,6 +162,31 @@
     if (arrayPos !== -1) activeKeys.splice(arrayPos, 1);
   }
 
+  function debounce (fn, pause, atBeginning) {
+    pause || (pause = 250);
+    var last,
+      pauseTimer;
+    return function () {
+      var context = this
+        , now = +new Date
+        , args = arguments;
+      if (last && now < last + pause) {
+        last = now;
+        clearTimeout(pauseTimer);
+        pauseTimer = setTimeout(function () {
+          if (!atBeginning) {
+            fn.apply(context, args);
+          }
+        }, pause);
+      } else {
+        last = now;
+        if (atBeginning) {
+          fn.apply(context, args);
+        }
+      }
+    };
+  }
+
   function bindEvents() {
 
     // pointer/mouse
@@ -170,6 +200,8 @@
 
     body.addEventListener(mouseEvent, immediateInput);
     body.addEventListener('mouseenter', immediateInput);
+    body.addEventListener('mousemove', debounce(immediateInput, debouncePause, true));
+    body.addEventListener('wheel', debounce(immediateInput, debouncePause, true));
 
     // touch
     if ('ontouchstart' in window) {
