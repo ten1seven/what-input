@@ -45,11 +45,14 @@
     'keydown': 'keyboard',
     'mousedown': 'mouse',
     'mousemove': 'mouse',
-    'wheel': 'mouse',
     'touchstart': 'touch',
     'pointerdown': 'pointer',
     'MSPointerDown': 'pointer'
   };
+  // cross-browser wheel support from https://developer.mozilla.org/en-US/docs/Web/Events/wheel#Listening_to_this_event_across_browser
+  inputMap['onwheel' in document.createElement('div') ? 'wheel' : // Modern browsers support 'wheel'
+    document.onmousewheel !== undefined ? 'mousewheel' : // Webkit and IE support at least 'mousewheel'
+      'DOMMouseScroll'] = 'mouse'; // let's assume that remaining browsers are older Firefox]
 
   // array of all used input types
   var inputTypes = [];
