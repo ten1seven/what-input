@@ -47,7 +47,9 @@
     'mouseenter': 'mouse',
     'touchstart': 'touch',
     'pointerdown': 'pointer',
-    'MSPointerDown': 'pointer'
+    'pointerenter': 'pointer',
+    'MSPointerDown': 'pointer',
+    'MSPointerEnter': 'pointer'
   };
 
   // array of all used input types
@@ -142,7 +144,11 @@
   }
 
   function pointerType(event) {
-    return (typeof event.pointerType === 'number') ? pointerMap[event.pointerType] : event.pointerType;
+    if (typeof event.pointerType === 'number') {
+      return pointerMap[event.pointerType];
+    } else {
+      return (event.pointerType === 'pen') ? 'touch' : event.pointerType; // treat pen like touch
+    }
   }
 
   // keyboard logging
@@ -158,24 +164,22 @@
   }
 
   function bindEvents() {
-
-    // pointer/mouse
-    var mouseEvent = 'mousedown';
-
+    // pointer events (mouse, pen, touch)
     if (window.PointerEvent) {
-      mouseEvent = 'pointerdown';
+      body.addEventListener('pointerdown', immediateInput);
+      body.addEventListener('pointerenter', immediateInput);
     } else if (window.MSPointerEvent) {
-      mouseEvent = 'MSPointerDown';
+      body.addEventListener('MSPointerDown', immediateInput);
+      body.addEventListener('MSPointerEnter', immediateInput);
+    } else {
+      // mouse events
+      body.addEventListener('mousedown', immediateInput);
+      body.addEventListener('mouseenter', immediateInput);
+      // touch events
+      if ('ontouchstart' in window) {
+        body.addEventListener('touchstart', bufferInput);
+      }
     }
-
-    body.addEventListener(mouseEvent, immediateInput);
-    body.addEventListener('mouseenter', immediateInput);
-
-    // touch
-    if ('ontouchstart' in window) {
-      body.addEventListener('touchstart', bufferInput);
-    }
-
     // keyboard
     body.addEventListener('keydown', immediateInput);
     document.addEventListener('keyup', unLogKeys);
