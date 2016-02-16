@@ -14,6 +14,8 @@ Since the form fields `input` and `textarea` rely on the keyboard as their only 
 <body data-whatinput-formtyping>
 ```
 
+Where present, Pointer Events are supported, but note that `pen` inputs are remapped to `touch`.
+
 What Input also exposes a tiny API that allows the developer to ask for or set the current input.
 
 _What Input does not make assumptions about the input environment before the user makes their first interaction._
