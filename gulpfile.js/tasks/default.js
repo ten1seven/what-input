@@ -1,7 +1,6 @@
 var gulp = require('gulp');
 var server = require('gulp-server-livereload');
 
-
 gulp.task('default', ['clean', 'scripts'], function() {
   gulp.src('./')
     .pipe(server({
