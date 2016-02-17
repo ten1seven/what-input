@@ -22,10 +22,18 @@ _What Input does not make assumptions about the input environment before the use
 
 ## Installing
 
-Download the file directly or install via Bower.
+Download the file directly...
+
+or install via Bower...
 
 ```shell
 bower install what-input
+```
+
+or install via NPM...
+
+```shell
+npm install what-input
 ```
 
 ## Usage
@@ -93,9 +101,9 @@ whatInput.types(); // ex. returns ['mouse', 'keyboard']
 Tell What Input what's being used. This can be useful if you'd like to set an input method before the user has actually interacted with the page. What Input is not so assumptive on its own.
 
 ```javascript
-whatInput.set('hampster');
+whatInput.set('hamster');
 
-whatInput.ask(); // 'hampster'
+whatInput.ask(); // 'hamster'
 ```
 
 #### Key Logging
