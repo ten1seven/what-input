@@ -24,6 +24,9 @@
   // cache document.body
   var body = document.body;
 
+  // boolean: true if touch buffer timer is running
+  var buffer = false;
+
   // the last used input type
   var currentInput = null;
 
@@ -76,12 +79,31 @@
     4: 'mouse'
   };
 
+  // touch buffer timer
+  var timer;
+
 
   /*
     ---------------
     functions
     ---------------
   */
+
+  // allows events that are also triggered to be filtered out for `touchstart`
+  function eventBuffer() {
+    clearTimeout(timer);
+
+    setInput(event);
+
+    buffer = true;
+    timer = setTimeout(function() {
+      buffer = false;
+    }, 300);
+  }
+
+  function bufferedEvent(event) {
+    if (!buffer) setInput(event);
+  }
 
   function setInput(event) {
     var eventKey = key(event);
@@ -151,20 +173,20 @@
 
     // pointer events (mouse, pen, touch)
     if (window.PointerEvent) {
-      body.addEventListener('pointerdown', setInput);
-      body.addEventListener('pointermove', setInput);
+      body.addEventListener('pointerdown', bufferedEvent);
+      body.addEventListener('pointermove', bufferedEvent);
     } else if (window.MSPointerEvent) {
-      body.addEventListener('MSPointerDown', setInput);
-      body.addEventListener('MSPointerMove', setInput);
+      body.addEventListener('MSPointerDown', bufferedEvent);
+      body.addEventListener('MSPointerMove', bufferedEvent);
     } else {
 
       // mouse events
-      body.addEventListener('mousedown', setInput);
-      body.addEventListener('mousemove', setInput);
+      body.addEventListener('mousedown', bufferedEvent);
+      body.addEventListener('mousemove', bufferedEvent);
 
       // touch events
       if ('ontouchstart' in window) {
-        body.addEventListener('touchstart', setInput);
+        body.addEventListener('touchstart', eventBuffer);
       }
     }
 
