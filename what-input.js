@@ -9,8 +9,8 @@
     root.whatInput = factory();
   }
 } (this, function() {
-  'use strict';
 
+  'use strict';
 
   /*
     ---------------
@@ -24,9 +24,6 @@
   // cache document.body
   var body = document.body;
 
-  // boolean: true if touch buffer timer is running
-  var buffer = false;
-
   // the last used input type
   var currentInput = null;
 
@@ -37,20 +34,24 @@
     'textarea'
   ];
 
-  // user-set flag to allow typing in form fields to be recorded
-  var formTyping = body.hasAttribute('data-whatinput-formtyping');
+  // detect version of mouse wheel event to use
+  // via https://developer.mozilla.org/en-US/docs/Web/Events/wheel
+  var mouseWheel = detectWheel();
 
   // mapping of events to input types
   var inputMap = {
     'keydown': 'keyboard',
     'mousedown': 'mouse',
-    'mouseenter': 'mouse',
-    'touchstart': 'touch',
-    'pointerdown': 'pointer',
-    'pointerenter': 'pointer',
+    'mousemove': 'mouse',
     'MSPointerDown': 'pointer',
-    'MSPointerEnter': 'pointer'
+    'MSPointerMove': 'pointer',
+    'pointerdown': 'pointer',
+    'pointermove': 'pointer',
+    'touchstart': 'touch'
   };
+
+  // add correct mouse wheel event mapping to `inputMap`
+  inputMap[detectWheel()] = 'mouse';
 
   // array of all used input types
   var inputTypes = [];
@@ -75,9 +76,6 @@
     4: 'mouse'
   };
 
-  // touch buffer timer
-  var timer;
-
 
   /*
     ---------------
@@ -85,31 +83,17 @@
     ---------------
   */
 
-  function bufferInput(event) {
-    clearTimeout(timer);
-
-    setInput(event);
-
-    buffer = true;
-    timer = setTimeout(function() {
-      buffer = false;
-    }, 1000);
-  }
-
-  function immediateInput(event) {
-    if (!buffer) setInput(event);
-  }
-
   function setInput(event) {
     var eventKey = key(event);
     var eventTarget = target(event);
     var value = inputMap[event.type];
     if (value === 'pointer') value = pointerType(event);
 
+    // don't do anything if the value matches the input type already set
     if (currentInput !== value) {
       if (
-        // only if the user flag isn't set
-        !formTyping &&
+        // only if the user flag to allow typing in form fields isn't set
+        !body.hasAttribute('data-whatinput-formtyping') &&
 
         // only if currentInput has a value
         currentInput &&
@@ -164,25 +148,50 @@
   }
 
   function bindEvents() {
+
     // pointer events (mouse, pen, touch)
     if (window.PointerEvent) {
-      body.addEventListener('pointerdown', immediateInput);
-      body.addEventListener('pointerenter', immediateInput);
+      body.addEventListener('pointerdown', setInput);
+      body.addEventListener('pointermove', setInput);
     } else if (window.MSPointerEvent) {
-      body.addEventListener('MSPointerDown', immediateInput);
-      body.addEventListener('MSPointerEnter', immediateInput);
+      body.addEventListener('MSPointerDown', setInput);
+      body.addEventListener('MSPointerMove', setInput);
     } else {
+
       // mouse events
-      body.addEventListener('mousedown', immediateInput);
-      body.addEventListener('mouseenter', immediateInput);
+      body.addEventListener('mousedown', setInput);
+      body.addEventListener('mousemove', setInput);
+
       // touch events
       if ('ontouchstart' in window) {
-        body.addEventListener('touchstart', bufferInput);
+        body.addEventListener('touchstart', setInput);
       }
     }
+
+    // mouse wheel
+    body.addEventListener(mouseWheel, setInput);
+
     // keyboard
-    body.addEventListener('keydown', immediateInput);
+    body.addEventListener('keydown', setInput);
     document.addEventListener('keyup', unLogKeys);
+  }
+
+
+  /*
+    ---------------
+    utilities
+    ---------------
+  */
+
+  // detect version of mouse wheel event to use
+  // via https://developer.mozilla.org/en-US/docs/Web/Events/wheel
+  function detectWheel() {
+    return mouseWheel = 'onwheel' in document.createElement('div') ?
+      'wheel' : // Modern browsers support "wheel"
+
+      document.onmousewheel !== undefined ?
+        'mousewheel' : // Webkit and IE support at least "mousewheel"
+        'DOMMouseScroll'; // let's assume that remaining browsers are older Firefox
   }
 
 
