@@ -98,7 +98,7 @@
     buffer = true;
     timer = setTimeout(function() {
       buffer = false;
-    }, 300);
+    }, 650);
   }
 
   function bufferedEvent(event) {
