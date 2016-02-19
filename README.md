@@ -14,16 +14,26 @@ Since the form fields `input` and `textarea` rely on the keyboard as their only 
 <body data-whatinput-formtyping>
 ```
 
+Where present, Pointer Events are supported, but note that `pen` inputs are remapped to `touch`.
+
 What Input also exposes a tiny API that allows the developer to ask for or set the current input.
 
 _What Input does not make assumptions about the input environment before the user makes their first interaction._
 
 ## Installing
 
-Download the file directly or install via Bower.
+Download the file directly...
+
+or install via Bower...
 
 ```shell
 bower install what-input
+```
+
+or install via NPM...
+
+```shell
+npm install what-input
 ```
 
 ## Usage
@@ -91,9 +101,9 @@ whatInput.types(); // ex. returns ['mouse', 'keyboard']
 Tell What Input what's being used. This can be useful if you'd like to set an input method before the user has actually interacted with the page. What Input is not so assumptive on its own.
 
 ```javascript
-whatInput.set('hampster');
+whatInput.set('hamster');
 
-whatInput.ask(); // 'hampster'
+whatInput.ask(); // 'hamster'
 ```
 
 #### Key Logging

@@ -9,8 +9,8 @@
     root.whatInput = factory();
   }
 } (this, function() {
-  'use strict';
 
+  'use strict';
 
   /*
     ---------------
@@ -37,22 +37,24 @@
     'textarea'
   ];
 
-  // user-set flag to allow typing in form fields to be recorded
-  var formTyping = body.hasAttribute('data-whatinput-formtyping');
+  // detect version of mouse wheel event to use
+  // via https://developer.mozilla.org/en-US/docs/Web/Events/wheel
+  var mouseWheel = detectWheel();
 
   // mapping of events to input types
   var inputMap = {
     'keydown': 'keyboard',
     'mousedown': 'mouse',
     'mousemove': 'mouse',
-    'touchstart': 'touch',
+    'MSPointerDown': 'pointer',
+    'MSPointerMove': 'pointer',
     'pointerdown': 'pointer',
-    'MSPointerDown': 'pointer'
+    'pointermove': 'pointer',
+    'touchstart': 'touch'
   };
-  // cross-browser wheel support from https://developer.mozilla.org/en-US/docs/Web/Events/wheel#Listening_to_this_event_across_browser
-  inputMap['onwheel' in document.createElement('div') ? 'wheel' : // Modern browsers support 'wheel'
-    document.onmousewheel !== undefined ? 'mousewheel' : // Webkit and IE support at least 'mousewheel'
-      'DOMMouseScroll'] = 'mouse'; // let's assume that remaining browsers are older Firefox]
+
+  // add correct mouse wheel event mapping to `inputMap`
+  inputMap[detectWheel()] = 'mouse';
 
   // array of all used input types
   var inputTypes = [];
@@ -80,9 +82,6 @@
   // touch buffer timer
   var timer;
 
-  // min ms between event-triggers for the trigger to be recognized as a new event (for wheel and mousemove)
-  var debouncePause = 250;
-
 
   /*
     ---------------
@@ -90,7 +89,8 @@
     ---------------
   */
 
-  function bufferInput(event) {
+  // allows events that are also triggered to be filtered out for `touchstart`
+  function eventBuffer() {
     clearTimeout(timer);
 
     setInput(event);
@@ -98,10 +98,10 @@
     buffer = true;
     timer = setTimeout(function() {
       buffer = false;
-    }, 1000);
+    }, 650);
   }
 
-  function immediateInput(event) {
+  function bufferedEvent(event) {
     if (!buffer) setInput(event);
   }
 
@@ -111,10 +111,11 @@
     var value = inputMap[event.type];
     if (value === 'pointer') value = pointerType(event);
 
+    // don't do anything if the value matches the input type already set
     if (currentInput !== value) {
       if (
-        // only if the user flag isn't set
-        !formTyping &&
+        // only if the user flag to allow typing in form fields isn't set
+        !body.hasAttribute('data-whatinput-formtyping') &&
 
         // only if currentInput has a value
         currentInput &&
@@ -149,7 +150,11 @@
   }
 
   function pointerType(event) {
-    return (typeof event.pointerType === 'number') ? pointerMap[event.pointerType] : event.pointerType;
+    if (typeof event.pointerType === 'number') {
+      return pointerMap[event.pointerType];
+    } else {
+      return (event.pointerType === 'pen') ? 'touch' : event.pointerType; // treat pen like touch
+    }
   }
 
   // keyboard logging
@@ -164,54 +169,51 @@
     if (arrayPos !== -1) activeKeys.splice(arrayPos, 1);
   }
 
-  function debounce (fn, pause, atBeginning) {
-    pause || (pause = 250);
-    var last,
-      pauseTimer;
-    return function () {
-      var context = this
-        , now = +new Date
-        , args = arguments;
-      if (last && now < last + pause) {
-        last = now;
-        clearTimeout(pauseTimer);
-        pauseTimer = setTimeout(function () {
-          if (!atBeginning) {
-            fn.apply(context, args);
-          }
-        }, pause);
-      } else {
-        last = now;
-        if (atBeginning) {
-          fn.apply(context, args);
-        }
-      }
-    };
-  }
-
   function bindEvents() {
 
-    // pointer/mouse
-    var mouseEvent = 'mousedown';
-
+    // pointer events (mouse, pen, touch)
     if (window.PointerEvent) {
-      mouseEvent = 'pointerdown';
+      body.addEventListener('pointerdown', bufferedEvent);
+      body.addEventListener('pointermove', bufferedEvent);
     } else if (window.MSPointerEvent) {
-      mouseEvent = 'MSPointerDown';
+      body.addEventListener('MSPointerDown', bufferedEvent);
+      body.addEventListener('MSPointerMove', bufferedEvent);
+    } else {
+
+      // mouse events
+      body.addEventListener('mousedown', bufferedEvent);
+      body.addEventListener('mousemove', bufferedEvent);
+
+      // touch events
+      if ('ontouchstart' in window) {
+        body.addEventListener('touchstart', eventBuffer);
+      }
     }
 
-    body.addEventListener(mouseEvent, immediateInput);
-    body.addEventListener('mousemove', debounce(immediateInput, debouncePause, true));
-    body.addEventListener('wheel', debounce(immediateInput, debouncePause, true));
-
-    // touch
-    if ('ontouchstart' in window) {
-      body.addEventListener('touchstart', bufferInput);
-    }
+    // mouse wheel
+    body.addEventListener(mouseWheel, setInput);
 
     // keyboard
-    body.addEventListener('keydown', immediateInput);
+    body.addEventListener('keydown', setInput);
     document.addEventListener('keyup', unLogKeys);
+  }
+
+
+  /*
+    ---------------
+    utilities
+    ---------------
+  */
+
+  // detect version of mouse wheel event to use
+  // via https://developer.mozilla.org/en-US/docs/Web/Events/wheel
+  function detectWheel() {
+    return mouseWheel = 'onwheel' in document.createElement('div') ?
+      'wheel' : // Modern browsers support "wheel"
+
+      document.onmousewheel !== undefined ?
+        'mousewheel' : // Webkit and IE support at least "mousewheel"
+        'DOMMouseScroll'; // let's assume that remaining browsers are older Firefox
   }
 
 
