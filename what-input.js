@@ -131,14 +131,18 @@
       ) {
         // ignore keyboard typing on form elements
       } else {
-        currentInput = value;
-        body.setAttribute('data-whatinput', currentInput);
-
-        if (inputTypes.indexOf(currentInput) === -1) inputTypes.push(currentInput);
+        switchInput(value);
       }
     }
 
     if (value === 'keyboard') logKeys(eventKey);
+  }
+
+  function switchInput(string) {
+    currentInput = string;
+    body.setAttribute('data-whatinput', currentInput);
+
+    if (inputTypes.indexOf(currentInput) === -1) inputTypes.push(currentInput);
   }
 
   function key(event) {
@@ -261,7 +265,7 @@
     types: function() { return inputTypes; },
 
     // accepts string: manually set the input type
-    set: setInput
+    set: switchInput
   };
 
 }));
