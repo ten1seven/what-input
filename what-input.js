@@ -231,7 +231,11 @@
     'addEventListener' in window &&
     Array.prototype.indexOf
   ) {
-    document.addEventListener('DOMContentLoaded', bindEvents);
+    if (document.body) {
+      bindEvents();
+    } else {
+      document.addEventListener('DOMContentLoaded', bindEvents);
+    }
   }
 
 
