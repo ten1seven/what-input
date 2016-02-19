@@ -22,7 +22,7 @@
   var activeKeys = [];
 
   // cache document.body
-  var body = document.body;
+  var body;
 
   // boolean: true if touch buffer timer is running
   var buffer = false;
@@ -170,6 +170,7 @@
   }
 
   function bindEvents() {
+    body = document.body;
 
     // pointer events (mouse, pen, touch)
     if (window.PointerEvent) {
@@ -226,8 +227,19 @@
     ---------------
   */
 
-  if ('addEventListener' in window && Array.prototype.indexOf) {
-    bindEvents();
+  if (
+    'addEventListener' in window &&
+    Array.prototype.indexOf
+  ) {
+
+    // if the dom is already ready already (script was placed at bottom of <body>)
+    if (document.body) {
+      bindEvents();
+
+    // otherwise wait for the dom to load (script was placed in the <head>)
+    } else {
+      document.addEventListener('DOMContentLoaded', bindEvents);
+    }
   }
 
 
