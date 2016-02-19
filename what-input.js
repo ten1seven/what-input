@@ -22,7 +22,7 @@
   var activeKeys = [];
 
   // cache document.body
-  var body = document.body;
+  var body;
 
   // boolean: true if touch buffer timer is running
   var buffer = false;
@@ -226,8 +226,20 @@
     ---------------
   */
 
-  if ('addEventListener' in window && Array.prototype.indexOf) {
-    bindEvents();
+  function init() {
+    body = document.body;
+    if ('addEventListener' in window && Array.prototype.indexOf) {
+      bindEvents();
+    }
+  }
+
+  if (document.body) {
+    init();
+  } else {
+    window.addEventListener('DOMContentLoaded', function load() {
+      window.removeEventListener('DOMContentLoaded', load);
+      init();
+    });
   }
 
 
