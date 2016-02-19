@@ -231,8 +231,12 @@
     'addEventListener' in window &&
     Array.prototype.indexOf
   ) {
+
+    // if the dom is already ready already (script was placed at bottom of <body>)
     if (document.body) {
       bindEvents();
+
+    // otherwise wait for the dom to load (script was placed in the <head>)
     } else {
       document.addEventListener('DOMContentLoaded', bindEvents);
     }
