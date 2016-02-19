@@ -25,7 +25,7 @@ gulp.task('scripts-uglify', function() {
 });
 
 gulp.task('scripts-ie8', function() {
-  return gulp.src(['./src/polyfills/ie8/*.js'])
+  return gulp.src(['./polyfills/ie8/*.js'])
     .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
     .pipe(concat('lte-IE8.js'))
     .pipe(uglify())
