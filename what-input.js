@@ -30,11 +30,15 @@
   // the last used input type
   var currentInput = null;
 
-  // array of form elements that take keyboard input
-  var formInputs = [
-    'input',
-    'select',
-    'textarea'
+  // `input` types that don't accept text
+  var nonTypingInputs = [
+    'button',
+    'checkbox',
+    'file',
+    'image',
+    'radio',
+    'reset',
+    'submit'
   ];
 
   // detect version of mouse wheel event to use
@@ -44,6 +48,7 @@
   // mapping of events to input types
   var inputMap = {
     'keydown': 'keyboard',
+    'keyup': 'keyboard',
     'mousedown': 'mouse',
     'mousemove': 'mouse',
     'MSPointerDown': 'pointer',
@@ -91,12 +96,11 @@
 
   // allows events that are also triggered to be filtered out for `touchstart`
   function eventBuffer() {
-    clearTimeout(timer);
-
+    clearTimer();
     setInput(event);
 
     buffer = true;
-    timer = setTimeout(function() {
+    timer = window.setTimeout(function() {
       buffer = false;
     }, 650);
   }
@@ -105,14 +109,26 @@
     if (!buffer) setInput(event);
   }
 
+  function unBufferedEvent(event) {
+    clearTimer();
+    setInput(event);
+  }
+
+  function clearTimer() {
+    window.clearTimeout(timer);
+  }
+
   function setInput(event) {
     var eventKey = key(event);
-    var eventTarget = target(event);
     var value = inputMap[event.type];
     if (value === 'pointer') value = pointerType(event);
 
     // don't do anything if the value matches the input type already set
     if (currentInput !== value) {
+      var eventTarget = target(event);
+      var eventTargetNode = eventTarget.nodeName.toLowerCase();
+      var eventTargetType = (eventTargetNode === 'input') ? eventTarget.getAttribute('type') : null;
+
       if (
         // only if the user flag to allow typing in form fields isn't set
         !body.hasAttribute('data-whatinput-formtyping') &&
@@ -126,8 +142,12 @@
         // not if the key is `TAB`
         keyMap[eventKey] !== 'tab' &&
 
-        // only if the target is one of the elements in `formInputs`
-        formInputs.indexOf(eventTarget.nodeName.toLowerCase()) >= 0
+        // only if the target is a form input that accepts text
+        (
+           eventTargetNode === 'textarea' ||
+           eventTargetNode === 'select' ||
+           (eventTargetNode === 'input' && nonTypingInputs.indexOf(eventTargetType) < 0)
+        )
       ) {
         // ignore keyboard typing on form elements
       } else {
@@ -196,10 +216,11 @@
     }
 
     // mouse wheel
-    body.addEventListener(mouseWheel, setInput);
+    body.addEventListener(mouseWheel, bufferedEvent);
 
     // keyboard
-    body.addEventListener('keydown', setInput);
+    body.addEventListener('keydown', unBufferedEvent);
+    body.addEventListener('keyup', unBufferedEvent);
     document.addEventListener('keyup', unLogKeys);
   }
 
