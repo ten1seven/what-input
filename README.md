@@ -2,9 +2,9 @@
 
 ## What Input is now v2.0.0
 
-Because of the ever-shifing complexity of supporting module loaders, __What Input__ v2.0.0 no longer supports AMD module loading (e.g., `var WhatInput = require('what-input')`). You can still require What Input without assigning a variable (e.g., `require('what-input')`).
+Because of the ever-shifing complexity of supporting module loaders, __What Input__ v2.0.0 no longer supports UMD module loading (e.g., `var WhatInput = require('what-input')`). You can still require What Input without assigning a variable (e.g., `require('what-input')`).
 
-If you need AMD module loading, check out the last [v1.x.x](https://github.com/ten1seven/what-input/releases/tag/v1.2.5) release or [open a ticket](https://github.com/ten1seven/what-input/issues) so I can assess demand.
+If you need UMD module loading, check out the last [v1.x.x](https://github.com/ten1seven/what-input/releases/tag/v1.2.5) release or [open a ticket](https://github.com/ten1seven/what-input/issues) so I can assess demand.
 
 ## About What Input
 
