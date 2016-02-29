@@ -1,5 +1,13 @@
 # What Input?
 
+## What Input is now v2.0.0
+
+Because of the ever-shifing complexity of supporting module loaders, __What Input__ v2.0.0 no longer supports AMD module loading (e.g., `var WhatInput = require('what-input')`). You can still require What Input without assigning a variable (e.g., `require('what-input')`).
+
+If you need AMD module loading, check out the last [v1.x.x](https://github.com/ten1seven/what-input/releases/tag/v1.2.5) release or [open a ticket](https://github.com/ten1seven/what-input/issues) so I can assess demand.
+
+## About What Input
+
 __A global utility for tracking the current input method (mouse, keyboard or touch).__
 
 What Input improves on [track-focus](https://github.com/ten1seven/track-focus) by adding a data attribute on the `<body>` instead of littering the DOM with classes on elements that have been interacted with. It also exposes a simple API that can be used for scripting interactions.
@@ -44,7 +52,7 @@ Include the script directly in your project.
 <script src="assets/scripts/what-input.js"></script>
 ```
 
-Or require with a script loader (What Input is AMD compatible).
+Or require with a script loader.
 
 ```javascript
 require('what-input');

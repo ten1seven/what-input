@@ -1,14 +1,4 @@
-;(function(root, factory) {
-  if (typeof define === 'function' && define.amd) {
-    define([], function() {
-      return (factory());
-    });
-  } else if (typeof exports === 'object') {
-    module.exports = factory();
-  } else {
-    root.whatInput = factory();
-  }
-} (this, function() {
+window.whatInput = (function() {
 
   'use strict';
 
@@ -300,4 +290,4 @@
     set: switchInput
   };
 
-}));
+}());
