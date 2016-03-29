@@ -66,7 +66,7 @@ What Input will start doing its thing while you do yours.
 /**
  * set a default :focus style
  */
-a:focus {
+:focus {
   outline: 3px dotted #06c;
 }
 
@@ -74,8 +74,8 @@ a:focus {
  * remove :focus style via What Input using progressive enhancement
  * so :focus isn't left broken if JavaScript fails
  */
-[data-whatinput="mouse"] a:focus,
-[data-whatinput="touch"] a:focus {
+[data-whatinput="mouse"] :focus,
+[data-whatinput="touch"] :focus {
   outline: none;
 }
 ```
