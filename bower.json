@@ -21,8 +21,8 @@
     "test",
     "tests"
   ],
-    "repository": {
-      "type": "git",
-      "url": "git://github.com/ten1seven/what-input.git"
-    }
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ten1seven/what-input.git"
+  }
 }
