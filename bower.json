@@ -7,9 +7,6 @@
   ],
   "description": "A global utility for tracking the current input method (mouse, keyboard or touch).",
   "main": "what-input.js",
-  "moduleType": [
-    "amd"
-  ],
   "keywords": [
     "accessibility",
     "a11y",
