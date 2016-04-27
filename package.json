@@ -23,6 +23,7 @@
     "browser-sync": "2.11.1",
     "del": "2.2.0",
     "gulp": "3.9.1",
+    "gulp-casperjs": "0.0.5",
     "gulp-concat": "2.6.0",
     "gulp-header": "1.7.1",
     "gulp-notify": "2.2.0",
