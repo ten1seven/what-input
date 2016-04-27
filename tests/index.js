@@ -11,7 +11,7 @@ casper.test.begin('Tests', function(test) {
     test.assertEquals(
       this.getElementAttribute('body', 'data-whatinput'),
       'mouse',
-      'FUNCTIONAL: Moving the mouse sets data-whatinput to `mouse`'
+      'FUNCTIONAL: Clicking with the mouse sets data-whatinput to `mouse`'
     );
 
   }).then(function() {
