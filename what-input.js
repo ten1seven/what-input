@@ -20,15 +20,12 @@ window.whatInput = (function() {
   // the last used input type
   var currentInput = null;
 
-  // `input` types that don't accept text
-  var nonTypingInputs = [
+  // form input types
+  var formInputs = [
     'button',
-    'checkbox',
-    'file',
-    'image',
-    'radio',
-    'reset',
-    'submit'
+    'input',
+    'select',
+    'textarea'
   ];
 
   // detect version of mouse wheel event to use
@@ -125,34 +122,27 @@ window.whatInput = (function() {
 
     // don't do anything if the value matches the input type already set
     if (currentInput !== value) {
-      var eventTarget = target(event);
-      var eventTargetNode = eventTarget.nodeName.toLowerCase();
-      var eventTargetType = (eventTargetNode === 'input') ? eventTarget.getAttribute('type') : null;
+      var activeElement = document.activeElement.nodeName.toLowerCase();
 
       if (
-        (// only if the user flag to allow typing in form fields isn't set
-        !body.hasAttribute('data-whatinput-formtyping') &&
-
-        // only if currentInput has a value
-        currentInput &&
-
-        // only if the input is `keyboard`
-        value === 'keyboard' &&
-
-        // not if the key is `TAB`
-        keyMap[eventKey] !== 'tab' &&
-
-        // only if the target is a form input that accepts text
         (
-           eventTargetNode === 'textarea' ||
-           eventTargetNode === 'select' ||
-           (eventTargetNode === 'input' && nonTypingInputs.indexOf(eventTargetType) < 0)
-        )) || (
+          // only if the user flag to allow input switching
+          // while interacting with form fields isn't set
+          !body.hasAttribute('data-whatinput-formswitching') &&
+
+          // support for legacy keyword
+          !body.hasAttribute('data-whatinput-formtyping') &&
+
+          // only if currentInput has a value
+          currentInput &&
+
+          formInputs.indexOf(activeElement) > -1
+        ) || (
           // ignore modifier keys
           ignoreMap.indexOf(eventKey) > -1
         )
       ) {
-        // ignore keyboard typing
+        // ignore keyboard typing and do nothing
       } else {
         switchInput(value);
       }
