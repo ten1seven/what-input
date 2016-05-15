@@ -2,7 +2,7 @@
   "name": "what-input",
   "version": "2.1.0",
   "description": "A global utility for tracking the current input method (mouse, keyboard or touch).",
-  "main": "what-input.js",
+  "main": "dist/what-input.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/ten1seven/what-input.git"
@@ -29,7 +29,9 @@
     "gulp-notify": "2.2.0",
     "gulp-plumber": "1.1.0",
     "gulp-rename": "1.2.2",
-    "gulp-uglify": "1.5.2",
-    "run-sequence": "1.1.5"
+    "lodash.clonedeep": "^4.3.2",
+    "run-sequence": "1.1.5",
+    "webpack": "^1.13.1",
+    "webpack-stream": "^3.2.0"
   }
 }

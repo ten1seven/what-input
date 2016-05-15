@@ -1,4 +1,4 @@
-window.whatInput = (function() {
+module.exports = (function() {
 
   'use strict';
 
