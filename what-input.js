@@ -92,7 +92,7 @@ window.whatInput = (function() {
   */
 
   // allows events that are also triggered to be filtered out for `touchstart`
-  function eventBuffer() {
+  function eventBuffer(event) {
     clearTimer();
     setInput(event);
 
@@ -212,8 +212,8 @@ window.whatInput = (function() {
     body.addEventListener(mouseWheel, bufferedEvent);
 
     // keyboard events
-    body.addEventListener('keydown', unBufferedEvent);
-    body.addEventListener('keyup', unBufferedEvent);
+    body.addEventListener('keydown', eventBuffer);
+    body.addEventListener('keyup', eventBuffer);
     document.addEventListener('keyup', unLogKeys);
   }
 
