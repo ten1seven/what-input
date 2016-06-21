@@ -106,11 +106,6 @@ module.exports = (function() {
     if (!buffer) setInput(event);
   }
 
-  function unBufferedEvent(event) {
-    clearTimer();
-    setInput(event);
-  }
-
   function clearTimer() {
     window.clearTimeout(timer);
   }

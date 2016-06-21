@@ -1,6 +1,6 @@
 /**
  * what-input - A global utility for tracking the current input method (mouse, keyboard or touch).
- * @version v2.1.0
+ * @version v3.0.0
  * @link https://github.com/ten1seven/what-input
  * @license MIT
  */
@@ -154,7 +154,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  */
 
 	  // allows events that are also triggered to be filtered out for `touchstart`
-	  function eventBuffer() {
+	  function eventBuffer(event) {
 	    clearTimer();
 	    setInput(event);
 
@@ -166,11 +166,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  function bufferedEvent(event) {
 	    if (!buffer) setInput(event);
-	  }
-
-	  function unBufferedEvent(event) {
-	    clearTimer();
-	    setInput(event);
 	  }
 
 	  function clearTimer() {
@@ -274,8 +269,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    body.addEventListener(mouseWheel, bufferedEvent);
 
 	    // keyboard events
-	    body.addEventListener('keydown', unBufferedEvent);
-	    body.addEventListener('keyup', unBufferedEvent);
+	    body.addEventListener('keydown', eventBuffer);
+	    body.addEventListener('keyup', eventBuffer);
 	    document.addEventListener('keyup', unLogKeys);
 	  }
 
