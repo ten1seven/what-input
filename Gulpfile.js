@@ -16,8 +16,10 @@ var pkg           = require('./package.json');
 var plumber       = require('gulp-plumber');
 var rename        = require('gulp-rename');
 var runSequence   = require('run-sequence');
-var uglify        = require('gulp-uglify');
-
+var webpackStream = require('webpack-stream');
+var webpack       = require('webpack');
+var cloneDeep     = require('lodash.clonedeep');
+var webpackConfig = require('./webpack.config');
 
 /*
   --------------------
@@ -36,36 +38,41 @@ gulp.task('clean', function () {
   --------------------
 */
 
-gulp.task('scripts:uglify', function() {
-  return gulp.src(['./what-input.js'])
+gulp.task('scripts:dev', function() {
+  return gulp.src(['./src/what-input.js'])
+    .pipe(webpackStream(webpackConfig))
+    .pipe(rename('what-input.js'))
+    .pipe(header(banner, { pkg : pkg } ))
+    .pipe(gulp.dest('./dist/'))
+    .pipe(notify('Development build complete'));
+});
+
+gulp.task('scripts:build', function() {
+  var webpackBuildConfig = cloneDeep(webpackConfig);
+  webpackBuildConfig.plugins = [new webpack.optimize.DedupePlugin(), new webpack.optimize.UglifyJsPlugin({minimize: true})];
+
+  return gulp.src(['./src/what-input.js'])
+    .pipe(webpackStream(webpackBuildConfig))
     .pipe(plumber({
       errorHandler: notify.onError("Error: <%= error.message %>")
     }))
-    .pipe(uglify())
     .pipe(rename('what-input.min.js'))
     .pipe(header(banner, { pkg : pkg } ))
-    .pipe(gulp.dest('./'))
-    .pipe(notify('Scripts uglify task complete'));
+    .pipe(gulp.dest('./dist/'))
+    .pipe(notify('Minified build complete'));
 });
 
 gulp.task('scripts:ie8', function() {
-  return gulp.src(['./polyfills/ie8/*.js'])
+  return gulp.src(['./src/polyfills/ie8/*.js'])
     .pipe(plumber({
       errorHandler: notify.onError("Error: <%= error.message %>")
     }))
     .pipe(concat('lte-IE8.js'))
-    .pipe(uglify())
-    .pipe(gulp.dest('./'))
+    .pipe(gulp.dest('./dist/'))
     .pipe(notify('IE8 scripts task complete'));
 });
 
-gulp.task('scripts', function() {
-  runSequence(
-    'scripts:uglify',
-    'scripts:ie8'
-  );
-});
-
+gulp.task('scripts', ['scripts:dev', 'scripts:build', 'scripts:ie8']);
 
 /*
   --------------------
@@ -99,7 +106,7 @@ gulp.task('default', function() {
       });
 
       gulp.watch([
-        './what-input.js',
+        './src/what-input.js',
         './polyfills/*.js'
       ], ['scripts']).on('change', browserSync.reload);
 
