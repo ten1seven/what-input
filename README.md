@@ -68,21 +68,29 @@ What Input will start doing its thing while you do yours.
 
 ```css
 /**
- * set a default :focus style
+ * set a custom default :focus style
  */
 :focus {
-  outline: 3px dotted #06c;
+  outline: none;
+  border: dotted 2px black;
 }
 
-/*
- * remove :focus style via What Input using progressive enhancement
- * so :focus isn't left broken if JavaScript fails
- */
-[data-whatinput="mouse"] :focus,
-[data-whatinput="touch"] :focus {
-  outline: none;
+/* mouse */
+[data-whatinput='mouse'] :focus {
+  border-color: red;
+}
+
+/* keyboard */
+[data-whatinput='keyboard'] :focus {
+  border-color: green;
+}
+
+/* touch */
+[data-whatinput='touch'] :focus {
+  border-color: blue;
 }
 ```
+**note:** If you remove outlines with `outline: none;`, be sure to provide clear visual `:focus` styles so the user can see which element they are on at any time for greater accessibility.
 
 ### Scripting
 
