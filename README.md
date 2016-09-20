@@ -127,7 +127,6 @@ If it's necessary to know if `mousemove` is being used, use the `'loose'` option
 */
 
 whatInput.ask(); // returns `initial` because the page has not been directly interacted with
-
 whatInput.ask('loose'); // returns `mouse` because mouse movement was detected
 
 /*
@@ -135,7 +134,6 @@ whatInput.ask('loose'); // returns `mouse` because mouse movement was detected
 */
 
 whatInput.ask(); // returns `keyboard` because the keyboard was the last direct page interaction
-
 whatInput.ask('loose'); // returns `mouse` because mouse movement was the most recent action detected
 ```
 
