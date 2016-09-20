@@ -4,9 +4,14 @@ __A global utility for tracking the current input method (mouse, keyboard or tou
 
 ## What Input is now v4
 
-What Input adds data attributes and classes to the `<html>` tag based on the type of input device being used. It also exposes a simple API that can be used for scripting interactions.
+What Input adds data attributes and classes to the `<html>` tag based on the type of input being used. It also exposes a simple API that can be used for scripting interactions.
 
 ### Changes from v3
+
+* `mousemove` and `pointermove` events no longer affect the `data-whatinput` attribute, but instead set their own `data-whatintent` attribute. This change is intended to separate actual interaction from potential.
+* Key logging and the corresponding `whatInput.keys()` API option have been removed.
+* Event binding and attributes are now added to the `<html>` tag to eliminate the need to test for `DOMContentLoaded`.
+* The `whatInput.set()` API option has been removed.
 
 ## How it works
 
@@ -72,23 +77,22 @@ What Input will start doing its thing while you do yours.
 
 /* initial styling after what input has executed but before any interaction */
 [data-whatinput="initial"] :focus {
-  outline: none;
-  border: dotted 2px black;
+  outline: 2px dotted black;
 }
 
 /* mouse */
 [data-whatinput="mouse"] :focus {
-  border-color: red;
+  outline-color: red;
 }
 
 /* keyboard */
 [data-whatinput="keyboard"] :focus {
-  border-color: green;
+  outline-color: green;
 }
 
 /* touch */
 [data-whatinput="touch"] :focus {
-  border-color: blue;
+  outline-color: blue;
 }
 ```
 **note:** If you remove outlines with `outline: none;`, be sure to provide clear visual `:focus` styles so the user can see which element they are on at any time for greater accessibility. Visit [W3C's WCAG 2.0 2.4.7 Guideline](https://www.w3.org/TR/UNDERSTANDING-WCAG20/navigation-mechanisms-focus-visible.html) to learn more.
@@ -97,7 +101,7 @@ What Input will start doing its thing while you do yours.
 
 #### Current Input
 
-Ask What Input what the current input method is. This works best if asked after the events What Input is bound to (`mousedown`, `keyup` and `touchstart`). Because `click` always executes last in the event tree, What Input will be able to answer with the event that _just_ happened.
+Ask What Input what the current input method is. This works best if asked after the events What Input is bound to (`mousedown`, `keyup` and `touchstart`).
 
 ```javascript
 whatInput.ask(); // returns `mouse`, `keyboard` or `touch`

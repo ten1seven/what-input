@@ -141,5 +141,17 @@
 
     <script src="dist/what-input.js"></script>
 
+    <script>
+      var links = document.querySelectorAll('a');
+
+      for (var i = 0, len = links.length; i < len; i++) {
+        links[i].addEventListener('click', function(event) {
+          console.log( '[script test] ' + whatInput.ask() );
+
+          event.preventDefault();
+        });
+      }
+    </script>
+
   </body>
 </html>
