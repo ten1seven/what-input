@@ -111,6 +111,7 @@ module.exports = (function() {
     docElem.addEventListener(detectWheel(), updateIntent);
 
     // keyboard events
+    docElem.addEventListener('keydown', updateInput);
     docElem.addEventListener('keyup', updateInput);
   };
 

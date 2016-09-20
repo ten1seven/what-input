@@ -173,6 +173,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    docElem.addEventListener(detectWheel(), updateIntent);
 
 	    // keyboard events
+	    docElem.addEventListener('keydown', updateInput);
 	    docElem.addEventListener('keyup', updateInput);
 	  };
 
