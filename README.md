@@ -1,32 +1,26 @@
 # What Input?
 
-## What Input is now v3
-
-UMD is back thanks to [mAAdhaTTah](https://github.com/mAAdhaTTah)!
-
-## About What Input
-
 __A global utility for tracking the current input method (mouse, keyboard or touch).__
 
-What Input improves on [track-focus](https://github.com/ten1seven/track-focus) by adding a data attribute on the `<body>` instead of littering the DOM with classes on elements that have been interacted with. It also exposes a simple API that can be used for scripting interactions.
+## What Input is now v4
+
+What Input adds data attributes and classes to the `<html>` tag based on the type of input device being used. It also exposes a simple API that can be used for scripting interactions.
+
+### Changes from v3
 
 ## How it works
 
-What Input uses event bubbling on the `<body>` to watch for mouse, keyboard and touch events (via `mousedown`, `keydown` and `touchstart`). It then sets or updates a `data-whatinput` on the `<body>`.
+What Input uses event bubbling on the `<html>` tag to watch for mouse, keyboard and touch events (via `mousedown`, `keyup` and `touchstart`). It then sets or updates a `data-whatinput` attribute.
 
 Where present, Pointer Events are supported, but note that `pen` inputs are remapped to `touch`.
 
 What Input also exposes a tiny API that allows the developer to ask for or set the current input.
 
-_What Input does not make assumptions about the input environment before the user makes their first interaction._
+_What Input does not make assumptions about the input environment before the user makes their first interaction._ However, the `mousemove` and `pointermove` events are used to set a `data-whatintent="mouse"` attribute to indicate that a mouse is present and _might_ be used.
 
 ### Interacting with Forms
 
-Since interacting with a form requires use of the keyboard, What Input _does not switch the input type while form inputs are being interacted with_, preserving the last detected input type. To override this behavior and allow the keyboard to be recorded, add:
-
-```html
-<body data-whatinput-formswitching>
-```
+Since interacting with a form requires use of the keyboard, What Input _does not switch the input type while form `<input>`s and `<textarea>`s are being interacted with_, preserving the last detected input type.
 
 ## Installing
 
@@ -70,23 +64,30 @@ What Input will start doing its thing while you do yours.
 /**
  * set a custom default :focus style
  */
+
+/* default styling before what input executes */
 :focus {
+
+}
+
+/* initial styling after what input has executed but before any interaction */
+[data-whatinput="initial"] :focus {
   outline: none;
   border: dotted 2px black;
 }
 
 /* mouse */
-[data-whatinput='mouse'] :focus {
+[data-whatinput="mouse"] :focus {
   border-color: red;
 }
 
 /* keyboard */
-[data-whatinput='keyboard'] :focus {
+[data-whatinput="keyboard"] :focus {
   border-color: green;
 }
 
 /* touch */
-[data-whatinput='touch'] :focus {
+[data-whatinput="touch"] :focus {
   border-color: blue;
 }
 ```
@@ -96,7 +97,7 @@ What Input will start doing its thing while you do yours.
 
 #### Current Input
 
-Ask What Input what the current input method is. This works best if asked after the events What Input is bound to (`mousedown`, `keydown` and `touchstart`). Because `click` always executes last in the event tree, What Input will be able to answer with the event that _just_ happened.
+Ask What Input what the current input method is. This works best if asked after the events What Input is bound to (`mousedown`, `keyup` and `touchstart`). Because `click` always executes last in the event tree, What Input will be able to answer with the event that _just_ happened.
 
 ```javascript
 whatInput.ask(); // returns `mouse`, `keyboard` or `touch`
@@ -117,35 +118,6 @@ Ask What Input to return an array of all the input types that have been used _so
 ```javascript
 whatInput.types(); // ex. returns ['mouse', 'keyboard']
 ```
-
-Tell What Input what's being used. This can be useful if you'd like to set an input method before the user has actually interacted with the page. What Input is not so assumptive on its own.
-
-```javascript
-whatInput.set('hamster');
-
-whatInput.ask(); // 'hamster'
-```
-
-#### Key Logging
-
-Along with tracking the use of the keyboard, What Input keeps track of the currently pressed keys and stores them in an array. Instead of returning cryptic key codes, What Input uses plain language.
-
-This can be used if, for example, you want to track how an element is being interacted with.
-
-```javascript
-whatInput.keys(); // ex. returns ['shift', 'tab']
-
-myMenuTab.addEventListener('keyup', function() {
-
-  // query for the down arrow
-  if (whatInput.keys().indexOf('down') !== -1) {
-    // open the dropdown menu
-  }
-
-});
-```
-
-What Input only responds to the following "action" keys: 'tab', 'enter', 'shift', 'esc', 'space', 'left', 'up', 'right' and 'down'.
 
 ## Compatibility
 
@@ -171,6 +143,8 @@ http://ten1seven.github.io/what-input
 ## Acknowledgments
 
 Special thanks to [Viget](http://viget.com/) for their encouragement and commitment to open source projects. Visit [code.viget.com](http://code.viget.com/) to see more projects from [Viget](http://viget.com).
+
+Thanks to [mAAdhaTTah](https://github.com/mAAdhaTTah) for the initial conversion to Webpack.
 
 What Input is written and maintained by [@ten1seven](https://github.com/ten1seven).
 
