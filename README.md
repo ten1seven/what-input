@@ -8,7 +8,8 @@ What Input adds data attributes and classes to the `<html>` tag based on the typ
 
 ### Changes from v3
 
-* `mousemove` and `pointermove` events no longer affect the `data-whatinput` attribute, but instead set their own `data-whatintent` attribute. This change is intended to separate actual interaction from potential.
+* `mousemove` and `pointermove` events no longer affect the `data-whatinput` attribute.
+* A new `data-whatintent` attribute now works like v3. This change is intended to separate direct interaction from potential.
 * Key logging and the corresponding `whatInput.keys()` API option have been removed.
 * Event binding and attributes are now added to the `<html>` tag to eliminate the need to test for `DOMContentLoaded`.
 * The `whatInput.set()` API option has been removed.
@@ -21,7 +22,7 @@ Where present, Pointer Events are supported, but note that `pen` inputs are rema
 
 What Input also exposes a tiny API that allows the developer to ask for or set the current input.
 
-_What Input does not make assumptions about the input environment before the user makes their first interaction._ However, the `mousemove` and `pointermove` events are used to set a `data-whatintent="mouse"` attribute to indicate that a mouse is present and _might_ be used.
+_What Input does not make assumptions about the input environment before the page is directly interacted with._ However, the `mousemove` and `pointermove` events are used to set a `data-whatintent="mouse"` attribute to indicate that a mouse is present and _might_ be used.
 
 ### Interacting with Forms
 
@@ -95,7 +96,7 @@ What Input will start doing its thing while you do yours.
   outline-color: blue;
 }
 ```
-**note:** If you remove outlines with `outline: none;`, be sure to provide clear visual `:focus` styles so the user can see which element they are on at any time for greater accessibility. Visit [W3C's WCAG 2.0 2.4.7 Guideline](https://www.w3.org/TR/UNDERSTANDING-WCAG20/navigation-mechanisms-focus-visible.html) to learn more.
+**Note:** If you remove outlines with `outline: none;`, be sure to provide clear visual `:focus` styles so the user can see which element they are on at any time for greater accessibility. Visit [W3C's WCAG 2.0 2.4.7 Guideline](https://www.w3.org/TR/UNDERSTANDING-WCAG20/navigation-mechanisms-focus-visible.html) to learn more.
 
 ### Scripting
 
@@ -115,6 +116,21 @@ myButton.addEventListener('click', function() {
   }
 
 });
+```
+
+If it's necessary to know if `mousemove` is being used, use the `'loose'` option. For example:
+
+```javascript
+
+/* nothing has happened but the mouse has moved */
+whatInput.ask(); // returns `initial` because the page has not been directly interacted with
+
+whatInput.ask('loose'); // returns `mouse` because mouse movement was detected
+
+/* the keyboard has been used, then the mouse was moved */
+whatInput.ask(); // returns `keyboard` because the keyboard was the last direct page interaction
+
+whatInput.ask('loose'); // returns `mouse` because mouse movement was the most recent action detected
 ```
 
 Ask What Input to return an array of all the input types that have been used _so far_.

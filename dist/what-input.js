@@ -197,7 +197,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	          // don't switch if the current element is a form input
 	          (value === 'keyboard' && formInputs.indexOf(activeElement) === -1)
 	        ) {
-	          currentInput = value;
+
+	          // set the current and catch-all variable
+	          currentInput = currentIntent = value;
 
 	          setInput();
 	        }
@@ -208,10 +210,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // updates the doc and `inputTypes` array with new input
 	  var setInput = function() {
 	    docElem.setAttribute('data-whatinput', currentInput);
+	    docElem.setAttribute('data-whatintent', currentInput);
 
-	    if (inputTypes.indexOf(currentInput) === -1) {
-	      docElem.classList.add('whatinput-types-' + currentInput);
-	      inputTypes.push(currentInput);
+	    if (inputTypes.indexOf(currentInput) === -1) inputTypes.push(currentInput);
+	  };
+
+	  // updates input intent for `mousemove` and `pointermove`
+	  var updateIntent = function(event) {
+	    var value = inputMap[event.type];
+	    if (value === 'pointer') value = pointerType(event);
+
+	    if (currentIntent !== value) {
+	      currentIntent = value;
+
+	      docElem.setAttribute('data-whatintent', currentIntent);
 	    }
 	  };
 
@@ -233,17 +245,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // if the timer runs out, set isBuffering back to `false`
 	      isBuffering = false;
 	    }, 200);
-	  };
-
-	  var updateIntent = function(event) {
-	    var value = inputMap[event.type];
-	    if (value === 'pointer') value = pointerType(event);
-
-	    if (currentIntent !== value) {
-	      currentIntent = value;
-
-	      docElem.setAttribute('data-whatintent', currentIntent);
-	    }
 	  };
 
 
@@ -299,7 +300,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return {
 
 	    // returns string: the current input type
-	    ask: function() { return currentInput; },
+	    // opt: 'loose'|'strict'
+	    // 'strict' (default): returns the same value as the `data-whatinput` attribute
+	    // 'loose': includes `data-whatintent` value if it's more current than `data-whatinput`
+	    ask: function(opt) { return (opt === 'loose') ? currentIntent : currentInput; },
 
 	    // returns array: all the detected input types
 	    types: function() { return inputTypes; }
