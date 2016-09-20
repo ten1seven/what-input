@@ -125,7 +125,9 @@ module.exports = (function() {
       if (value === 'pointer') value = pointerType(event);
 
       if (currentInput !== value) {
-        var activeElement = document.activeElement.nodeName.toLowerCase();
+        var activeInput = (
+          formInputs.indexOf(document.activeElement.nodeName.toLowerCase()) === -1
+        ) ? true : false;
 
         if (
           value === 'touch' ||
@@ -134,7 +136,7 @@ module.exports = (function() {
           (value === 'mouse' && ignoreMap.indexOf(eventKey) === -1) ||
 
           // don't switch if the current element is a form input
-          (value === 'keyboard' && formInputs.indexOf(activeElement) === -1)
+          (value === 'keyboard' && activeInput)
         ) {
 
           // set the current and catch-all variable
