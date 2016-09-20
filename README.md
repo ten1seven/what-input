@@ -4,7 +4,7 @@ __A global utility for tracking the current input method (mouse, keyboard or tou
 
 ## What Input is now v4
 
-What Input adds data attributes and classes to the `<html>` tag based on the type of input being used. It also exposes a simple API that can be used for scripting interactions.
+What Input adds data attributes to the `<html>` tag based on the type of input being used. It also exposes a simple API that can be used for scripting interactions.
 
 ### Changes from v3
 
@@ -16,13 +16,13 @@ What Input adds data attributes and classes to the `<html>` tag based on the typ
 
 ## How it works
 
-What Input uses event bubbling on the `<html>` tag to watch for mouse, keyboard and touch events (via `mousedown`, `keyup` and `touchstart`). It then sets or updates a `data-whatinput` attribute.
+What Input uses event bubbling on the `<html>` tag to watch for mouse, keyboard and touch events (via `mousedown`, `keydown` and `touchstart`). It then sets or updates a `data-whatinput` attribute.
 
 Where present, Pointer Events are supported, but note that `pen` inputs are remapped to `touch`.
 
 What Input also exposes a tiny API that allows the developer to ask for or set the current input.
 
-_What Input does not make assumptions about the input environment before the page is directly interacted with._ However, the `mousemove` and `pointermove` events are used to set a `data-whatintent="mouse"` attribute to indicate that a mouse is present and _might_ be used.
+_What Input does not make assumptions about the input environment before the page is directly interacted with._ However, the `mousemove` and `pointermove` events are used to set a `data-whatintent="mouse"` attribute to indicate that a mouse is being used _indirectly_.
 
 ### Interacting with Forms
 
@@ -102,7 +102,7 @@ What Input will start doing its thing while you do yours.
 
 #### Current Input
 
-Ask What Input what the current input method is. This works best if asked after the events What Input is bound to (`mousedown`, `keyup` and `touchstart`).
+Ask What Input what the current input method is. This works best if asked after the events What Input is bound to (`mousedown`, `keydown` and `touchstart`).
 
 ```javascript
 whatInput.ask(); // returns `mouse`, `keyboard` or `touch`
@@ -122,12 +122,18 @@ If it's necessary to know if `mousemove` is being used, use the `'loose'` option
 
 ```javascript
 
-/* nothing has happened but the mouse has moved */
+/*
+  nothing has happened but the mouse has moved
+*/
+
 whatInput.ask(); // returns `initial` because the page has not been directly interacted with
 
 whatInput.ask('loose'); // returns `mouse` because mouse movement was detected
 
-/* the keyboard has been used, then the mouse was moved */
+/*
+  the keyboard has been used, then the mouse was moved
+*/
+
 whatInput.ask(); // returns `keyboard` because the keyboard was the last direct page interaction
 
 whatInput.ask('loose'); // returns `mouse` because mouse movement was the most recent action detected
