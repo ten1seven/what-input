@@ -126,6 +126,7 @@ module.exports = (function() {
 
       if (currentInput !== value) {
         var activeInput = (
+          document.activeElement &&
           formInputs.indexOf(document.activeElement.nodeName.toLowerCase()) === -1
         ) ? true : false;
 
