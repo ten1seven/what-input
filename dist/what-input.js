@@ -216,7 +216,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    docElem.setAttribute('data-whatinput', currentInput);
 	    docElem.setAttribute('data-whatintent', currentInput);
 
-	    if (inputTypes.indexOf(currentInput) === -1) inputTypes.push(currentInput);
+	    if (inputTypes.indexOf(currentInput) === -1) {
+	      inputTypes.push(currentInput);
+	      docElem.classList.add('whatinput-types-' + currentInput);
+	    }
 	  };
 
 	  // updates input intent for `mousemove` and `pointermove`
