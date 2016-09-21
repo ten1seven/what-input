@@ -18,6 +18,9 @@
   "bugs": {
     "url": "https://github.com/ten1seven/what-input/issues"
   },
+  "scripts": {
+    "start": "gulp"
+  },
   "homepage": "https://github.com/ten1seven/what-input",
   "devDependencies": {
     "browser-sync": "2.11.1",
