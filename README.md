@@ -13,6 +13,7 @@ What Input adds data attributes to the `<html>` tag based on the type of input b
 * Key logging and the corresponding `whatInput.keys()` API option have been removed.
 * Event binding and attributes are now added to the `<html>` tag to eliminate the need to test for `DOMContentLoaded`.
 * The `whatInput.set()` API option has been removed.
+* A new set of `whatinput-types-[type]` classes are now added as inputs are detected. New classes are added but existing ones remain, creating the same output as what the `whatInput.types()` returns.
 
 ## How it works
 
