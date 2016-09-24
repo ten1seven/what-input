@@ -6,7 +6,6 @@ var banner        = ['/**',
   ' */',
   ''].join('\n');
 var browserSync   = require('browser-sync').create();
-var casperJs      = require('gulp-casperjs');
 var concat        = require('gulp-concat');
 var del           = require('del');
 var gulp          = require('gulp');
@@ -16,10 +15,9 @@ var pkg           = require('./package.json');
 var plumber       = require('gulp-plumber');
 var rename        = require('gulp-rename');
 var runSequence   = require('run-sequence');
-var webpackStream = require('webpack-stream');
-var webpack       = require('webpack');
-var cloneDeep     = require('lodash.clonedeep');
-var webpackConfig = require('./webpack.config');
+var uglify        = require('gulp-uglify');
+var webpack       = require('webpack-stream');
+
 
 /*
   --------------------
@@ -38,28 +36,34 @@ gulp.task('clean', function () {
   --------------------
 */
 
-gulp.task('scripts:dev', function() {
+gulp.task('scripts:main', function() {
   return gulp.src(['./src/what-input.js'])
-    .pipe(webpackStream(webpackConfig))
+    .pipe(webpack({
+      output: {
+        chunkFilename: '[name].js',
+        library: 'whatInput',
+        libraryTarget: 'umd',
+        umdNamedDefine: true
+      }
+    }))
     .pipe(rename('what-input.js'))
     .pipe(header(banner, { pkg : pkg } ))
     .pipe(gulp.dest('./dist/'))
-    .pipe(notify('Development build complete'));
+    .pipe(uglify())
+    .pipe(rename({
+      suffix: '.min'
+    }))
+    .pipe(notify('Build complete'));
 });
 
-gulp.task('scripts:build', function() {
-  var webpackBuildConfig = cloneDeep(webpackConfig);
-  webpackBuildConfig.plugins = [new webpack.optimize.DedupePlugin(), new webpack.optimize.UglifyJsPlugin({minimize: true})];
-
-  return gulp.src(['./src/what-input.js'])
-    .pipe(webpackStream(webpackBuildConfig))
-    .pipe(plumber({
-      errorHandler: notify.onError("Error: <%= error.message %>")
+gulp.task('scripts:minify', function() {
+  return gulp.src(['./dist/what-input.js'])
+    .pipe(rename({
+      suffix: '.min'
     }))
-    .pipe(rename('what-input.min.js'))
-    .pipe(header(banner, { pkg : pkg } ))
+    .pipe(uglify())
     .pipe(gulp.dest('./dist/'))
-    .pipe(notify('Minified build complete'));
+    .pipe(notify('Minify complete'));
 });
 
 gulp.task('scripts:ie8', function() {
@@ -68,22 +72,12 @@ gulp.task('scripts:ie8', function() {
       errorHandler: notify.onError("Error: <%= error.message %>")
     }))
     .pipe(concat('lte-IE8.js'))
+    .pipe(uglify())
     .pipe(gulp.dest('./dist/'))
     .pipe(notify('IE8 scripts task complete'));
 });
 
-gulp.task('scripts', ['scripts:dev', 'scripts:build', 'scripts:ie8']);
-
-/*
-  --------------------
-  Test runner
-  --------------------
-*/
-
-gulp.task('test', function () {
-  gulp.src('./tests/*.js')
-    .pipe(casperJs());
-});
+gulp.task('scripts', ['scripts:main', 'scripts:ie8', 'scripts:minify']);
 
 
 /*

@@ -8,7 +8,7 @@
     <title>What Input?</title>
 
     <link
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
       rel="stylesheet">
 
     <style>
@@ -16,8 +16,8 @@
         margin-top: 50px;
       }
 
-      input[type='text'],
-      input[type='password'] {
+      input[type="text"],
+      input[type="password"] {
         font-size: 16px;
       }
 
@@ -30,17 +30,17 @@
         transition: all 200ms;
       }
 
-      [data-whatinput='mouse'] .-mouse {
+      [data-whatinput="mouse"] .-mouse {
         background-color: #d9edf7;
         color: #31708f;
       }
 
-      [data-whatinput='keyboard'] .-keyboard {
+      [data-whatinput="keyboard"] .-keyboard {
         background-color: #dff0d8;
         color: #3c763d;
       }
 
-      [data-whatinput='touch'] .-touch {
+      [data-whatinput="touch"] .-touch {
         background-color: #fcf8e3;
         color: #8a6d3b;
       }
@@ -51,13 +51,13 @@
         z-index: 1;
       }
 
-      [data-whatinput='keyboard']  a:focus {
+      [data-whatinput="keyboard"]  a:focus {
         box-shadow: 0 0 8px 2px rgba(60, 118, 61, 0.6);
         outline: 2px solid #3c763d;
       }
 
       /* form controls */
-      [data-whatinput='mouse'] .form-control:focus {
+      [data-whatinput="mouse"] .form-control:focus {
         border-color: #31708f;
         outline: 0;
         box-shadow:
@@ -65,7 +65,7 @@
           0 0 8px rgba(49, 112, 143, 0.6);
       }
 
-      [data-whatinput='keyboard'] .form-control:focus {
+      [data-whatinput="keyboard"] .form-control:focus {
         border-color: #3c763d;
         outline: 0;
         box-shadow:
@@ -73,7 +73,7 @@
           0 0 8px rgba(60, 118, 61, 0.6);
       }
 
-      [data-whatinput='touch'] .form-control:focus {
+      [data-whatinput="touch"] .form-control:focus {
         border-color: #8a6d3b;
         outline: 0;
         box-shadow:
@@ -134,26 +134,28 @@
       </div>
 
       <footer>
-        <p>Made with &hearts; at <a href="http://viget.com/">Viget</a>.</p>
+        <p class="pull-right">
+          Check out the project <a href="https://github.com/ten1seven/what-input">on Github</a>.
+        </p>
+
+        <p>
+          Made with <span class="text-danger">&hearts;</span> at <a href="http://viget.com/">Viget</a>.
+        </p>
       </footer>
 
     </div>
 
     <script src="dist/what-input.js"></script>
+
     <script>
-      if ('addEventListener' in window && Array.prototype.indexOf) {
-        var link = document.querySelectorAll('a[href="#"]');
-        for (var i = 0, len = link.length; i < len; i++) {
-          link[i].addEventListener('keyup', function(event) {
-            if (whatInput.keys().length) console.log( '[test script] ' + whatInput.keys() );
-          });
+      var links = document.querySelectorAll('a');
 
-          link[i].addEventListener('click', function(event) {
-            event.preventDefault();
+      for (var i = 0, len = links.length; i < len; i++) {
+        links[i].addEventListener('click', function(event) {
+          console.log( '[script test] ' + whatInput.ask() );
 
-            console.log( '[test script] ' + whatInput.ask() );
-          });
-        }
+          event.preventDefault();
+        });
       }
     </script>
 
