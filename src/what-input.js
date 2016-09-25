@@ -17,7 +17,9 @@ module.exports = (function() {
 
   // form input types
   var formInputs = [
+    'button',
     'input',
+    'select',
     'textarea'
   ];
 
@@ -91,24 +93,24 @@ module.exports = (function() {
     // pointer events (mouse, pen, touch)
     if (window.PointerEvent) {
       docElem.addEventListener('pointerdown', updateInput);
-      docElem.addEventListener('pointermove', updateIntent);
+      docElem.addEventListener('pointermove', setIntent);
     } else if (window.MSPointerEvent) {
       docElem.addEventListener('MSPointerDown', updateInput);
-      docElem.addEventListener('MSPointerMove', updateIntent);
+      docElem.addEventListener('MSPointerMove', setIntent);
     } else {
 
       // mouse events
       docElem.addEventListener('mousedown', updateInput);
-      docElem.addEventListener('mousemove', updateIntent);
+      docElem.addEventListener('mousemove', setIntent);
 
       // touch events
       if ('ontouchstart' in window) {
-        docElem.addEventListener('touchstart', eventBuffer);
+        docElem.addEventListener('touchstart', touchBuffer);
       }
     }
 
     // mouse wheel
-    docElem.addEventListener(detectWheel(), updateIntent);
+    docElem.addEventListener(detectWheel(), setIntent);
 
     // keyboard events
     docElem.addEventListener('keydown', updateInput);
@@ -124,7 +126,11 @@ module.exports = (function() {
       var value = inputMap[event.type];
       if (value === 'pointer') value = pointerType(event);
 
-      if (currentInput !== value) {
+      if (
+        currentInput !== value ||
+        currentIntent !== value
+      ) {
+
         var activeInput = (
           document.activeElement &&
           formInputs.indexOf(document.activeElement.nodeName.toLowerCase()) === -1
@@ -161,19 +167,23 @@ module.exports = (function() {
   };
 
   // updates input intent for `mousemove` and `pointermove`
-  var updateIntent = function(event) {
-    var value = inputMap[event.type];
-    if (value === 'pointer') value = pointerType(event);
+  var setIntent = function(event) {
 
-    if (currentIntent !== value) {
-      currentIntent = value;
+    // only execute if the touch buffer timer isn't running
+    if (!isBuffering) {
+      var value = inputMap[event.type];
+      if (value === 'pointer') value = pointerType(event);
 
-      docElem.setAttribute('data-whatintent', currentIntent);
+      if (currentIntent !== value) {
+        currentIntent = value;
+
+        docElem.setAttribute('data-whatintent', currentIntent);
+      }
     }
   };
 
   // buffers touch events because they frequently also fire mouse events
-  var eventBuffer = function(event) {
+  var touchBuffer = function(event) {
 
     // clear the timer if it happens to be running
     window.clearTimeout(touchTimer);
