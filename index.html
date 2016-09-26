@@ -30,7 +30,8 @@
         transition: all 200ms;
       }
 
-      [data-whatinput="mouse"] .-mouse {
+      [data-whatinput="mouse"] .input-display.-mouse,
+      [data-whatintent="mouse"] .input-intent.-mouse {
         background-color: #d9edf7;
         color: #31708f;
       }
@@ -94,7 +95,7 @@
         <h1>What Input?</h1>
       </div>
 
-      <p class="lead">A global utility for tracking the current input method (<span class="input-display -mouse">mouse</span>, <span class="input-display -keyboard">keyboard</span> or <span class="input-display -touch">touch</span>).</p>
+      <p class="lead">A global utility for tracking the current input method (<span class="input-display -mouse">mouse</span>, <span class="input-display -keyboard">keyboard</span> or <span class="input-display -touch">touch</span>), as well as the current <em>intent</em> (<span class="input-intent -mouse">mouse</span>).</p>
 
       <p>Tab, click or tap the links and form controls to see how What Input allows them to be styled differently.</p>
 
