@@ -2,9 +2,11 @@
   "name": "what-input",
   "version": "4.0.1",
   "homepage": "https://github.com/ten1seven/what-input",
-  "authors": [
-    "Jeremy Fields <jeremy.fields@viget.com>"
-  ],
+  "repository": {
+    "url": "https://github.com/ten1seven/what-input.git",
+    "type": "git"
+  },
+  "author": "Jeremy Fields <jeremy.fields@viget.com>",
   "description": "A global utility for tracking the current input method (mouse, keyboard or touch).",
   "main": "dist/what-input.js",
   "keywords": [
@@ -21,8 +23,4 @@
     "test",
     "tests"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/ten1seven/what-input.git"
-  }
 }

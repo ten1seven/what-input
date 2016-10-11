@@ -4,8 +4,8 @@
   "description": "A global utility for tracking the current input method (mouse, keyboard or touch).",
   "main": "dist/what-input.js",
   "repository": {
-    "type": "git",
-    "url": "https://github.com/ten1seven/what-input.git"
+    "url": "https://github.com/ten1seven/what-input.git",
+    "type": "git"
   },
   "keywords": [
     "accessibility",
