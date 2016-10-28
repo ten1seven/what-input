@@ -17,7 +17,6 @@ module.exports = (function() {
 
   // form input types
   var formInputs = [
-    'button',
     'input',
     'select',
     'textarea'
