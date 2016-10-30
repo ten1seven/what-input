@@ -53,17 +53,9 @@ gulp.task('scripts:main', function() {
     .pipe(rename({
       suffix: '.min'
     }))
-    .pipe(notify('Build complete'));
-});
-
-gulp.task('scripts:minify', function() {
-  return gulp.src(['./dist/what-input.js'])
-    .pipe(rename({
-      suffix: '.min'
-    }))
-    .pipe(uglify())
+    .pipe(header(banner, { pkg : pkg } ))
     .pipe(gulp.dest('./dist/'))
-    .pipe(notify('Minify complete'));
+    .pipe(notify('Build complete'));
 });
 
 gulp.task('scripts:ie8', function() {
@@ -77,7 +69,7 @@ gulp.task('scripts:ie8', function() {
     .pipe(notify('IE8 scripts task complete'));
 });
 
-gulp.task('scripts', ['scripts:main', 'scripts:ie8', 'scripts:minify']);
+gulp.task('scripts', ['scripts:main', 'scripts:ie8']);
 
 
 /*
