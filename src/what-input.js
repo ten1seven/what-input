@@ -161,7 +161,7 @@ module.exports = (function() {
 
     if (inputTypes.indexOf(currentInput) === -1) {
       inputTypes.push(currentInput);
-      docElem.classList.add('whatinput-types-' + currentInput);
+      docElem.className += ' whatinput-types-' + currentInput;
     }
   };
 
