@@ -130,9 +130,11 @@ module.exports = (function() {
         currentIntent !== value
       ) {
 
+        var activeElem = document.activeElement;
         var activeInput = (
-          document.activeElement &&
-          formInputs.indexOf(document.activeElement.nodeName.toLowerCase()) === -1
+          activeElem &&
+          activeElem.nodeName &&
+          formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1
         ) ? true : false;
 
         if (
