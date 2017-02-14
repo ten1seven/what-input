@@ -66,7 +66,7 @@ var whatInput = require('what-input');
 
 requirejs.config({
   paths: {
-    whatInput: 'what-input'
+    whatInput: 'path/to/what-input'
   }
 });
 
