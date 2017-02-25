@@ -109,8 +109,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // array of all used input types
 	  var inputTypes = [];
 
-	  // boolean: true if touch buffer timer is running
+	  // boolean: true if touch buffer is active
 	  var isBuffering = false;
+
+	  // boolean: true if the page is being scrolled
+	  var isSrolling = false;
+
+	  // store current mouse position
+	  var mousePos = {
+	    'x': null,
+	    'y': null
+	  };
 
 	  // map of IE 10 pointer events
 	  var pointerMap = {
@@ -230,8 +239,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // updates input intent for `mousemove` and `pointermove`
 	  var setIntent = function(event) {
 
+	    // test to see if `mousemove` happened relative to the screen
+	    // to detect scrolling versus mousemove
+	    if (
+	      mousePos['x'] !== event.screenX ||
+	      mousePos['y'] !== event.screenY
+	    ) {
+	      isSrolling = false;
+
+	      mousePos['x'] = event.screenX;
+	      mousePos['y'] = event.screenY;
+	    } else {
+	      isSrolling = true;
+	    }
+
 	    // only execute if the touch buffer timer isn't running
-	    if (!isBuffering) {
+	    // or scrolling isn't happening
+	    if (!isBuffering && !isSrolling) {
 	      var value = inputMap[event.type];
 	      if (value === 'pointer') value = pointerType(event);
 
