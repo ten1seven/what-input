@@ -119,9 +119,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    4: 'mouse'
 	  };
 
-	  // touch buffer timer
-	  var touchTimer = null;
-
 
 	  /*
 	    ---------------
@@ -167,6 +164,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // touch events
 	      if ('ontouchstart' in window) {
 	        docElem.addEventListener('touchstart', touchBuffer);
+	        docElem.addEventListener('touchend', touchBuffer);
 	      }
 	    }
 
@@ -247,24 +245,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  // buffers touch events because they frequently also fire mouse events
 	  var touchBuffer = function(event) {
-
-	    // clear the timer if it happens to be running
-	    window.clearTimeout(touchTimer);
+	    isBuffering = (event.type === 'touchstart') ? false : true;
 
 	    // set the current input
-	    updateInput(event);
-
-	    // set the isBuffering to `true`
-	    isBuffering = true;
-
-	    // run the timer
-	    touchTimer = window.setTimeout(function() {
-
-	      // if the timer runs out, set isBuffering back to `false`
-	      isBuffering = false;
-	    }, 200);
+	    if (event.type === 'touchstart') updateInput(event);
 	  };
-
 
 	  /*
 	    ---------------
@@ -273,11 +258,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  */
 
 	  var pointerType = function(event) {
-	   if (typeof event.pointerType === 'number') {
+	    if (typeof event.pointerType === 'number') {
 	      return pointerMap[event.pointerType];
-	   } else {
-	      return (event.pointerType === 'pen') ? 'touch' : event.pointerType; // treat pen like touch
-	   }
+	    } else {
+
+	      // treat pen like touch
+	      return (event.pointerType === 'pen') ? 'touch' : event.pointerType;
+	    }
 	  };
 
 	  // detect version of mouse wheel event to use
