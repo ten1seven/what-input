@@ -60,13 +60,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports) {
 
-	module.exports = (function() {
+	'use strict';
 
+	module.exports = function () {
 	  /*
-	    ---------------
-	    Variables
-	    ---------------
-	  */
+	   * variables
+	   */
 
 	  // cache document.documentElement
 	  var docElem = document.documentElement;
@@ -78,20 +77,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var currentIntent = null;
 
 	  // form input types
-	  var formInputs = [
-	    'input',
-	    'select',
-	    'textarea'
-	  ];
+	  var formInputs = ['input', 'select', 'textarea'];
 
 	  // list of modifier keys commonly used with the mouse and
 	  // can be safely ignored to prevent false keyboard detection
-	  var ignoreMap = [
-	    16, // shift
-	    17, // control
-	    18, // alt
-	    91, // Windows key / left Apple cmd
-	    93  // Windows menu / right Apple cmd
+	  var ignoreMap = [16, // shift
+	  17, // control
+	  18, // alt
+	  91, // Windows key / left Apple cmd
+	  93 // Windows menu / right Apple cmd
 	  ];
 
 	  // mapping of events to input types
@@ -128,15 +122,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    4: 'mouse'
 	  };
 
-
 	  /*
-	    ---------------
-	    Set up
-	    ---------------
-	  */
+	   * set up
+	   */
 
-	  var setUp = function() {
-
+	  var setUp = function setUp() {
 	    // add correct mouse wheel event mapping to `inputMap`
 	    inputMap[detectWheel()] = 'mouse';
 
@@ -144,15 +134,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    setInput();
 	  };
 
-
 	  /*
-	    ---------------
-	    Events
-	    ---------------
-	  */
+	   * events
+	   */
 
-	  var addListeners = function() {
-
+	  var addListeners = function addListeners() {
 	    // `pointermove`, `MSPointerMove`, `mousemove` and mouse wheel event binding
 	    // can only demonstrate potential, but not actual, interaction
 	    // and are treated separately
@@ -165,7 +151,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      docElem.addEventListener('MSPointerDown', updateInput);
 	      docElem.addEventListener('MSPointerMove', setIntent);
 	    } else {
-
 	      // mouse events
 	      docElem.addEventListener('mousedown', updateInput);
 	      docElem.addEventListener('mousemove', setIntent);
@@ -186,36 +171,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  // checks conditions before updating new input
-	  var updateInput = function(event) {
-
+	  var updateInput = function updateInput(event) {
 	    // only execute if the touch buffer timer isn't running
 	    if (!isBuffering) {
 	      var eventKey = event.which;
 	      var value = inputMap[event.type];
 	      if (value === 'pointer') value = pointerType(event);
 
-	      if (
-	        currentInput !== value ||
-	        currentIntent !== value
-	      ) {
-
+	      if (currentInput !== value || currentIntent !== value) {
 	        var activeElem = document.activeElement;
-	        var activeInput = (
-	          activeElem &&
-	          activeElem.nodeName &&
-	          formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1
-	        ) ? true : false;
+	        var activeInput = false;
 
-	        if (
-	          value === 'touch' ||
+	        if (activeElem && activeElem.nodeName && formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1) {
+	          activeInput = true;
+	        }
 
-	          // ignore mouse modifier keys
-	          (value === 'mouse' && ignoreMap.indexOf(eventKey) === -1) ||
+	        if (value === 'touch' ||
 
-	          // don't switch if the current element is a form input
-	          (value === 'keyboard' && activeInput)
-	        ) {
+	        // ignore mouse modifier keys
+	        value === 'mouse' && ignoreMap.indexOf(eventKey) === -1 ||
 
+	        // don't switch if the current element is a form input
+	        value === 'keyboard' && activeInput) {
 	          // set the current and catch-all variable
 	          currentInput = currentIntent = value;
 
@@ -226,7 +203,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  // updates the doc and `inputTypes` array with new input
-	  var setInput = function() {
+	  var setInput = function setInput() {
 	    docElem.setAttribute('data-whatinput', currentInput);
 	    docElem.setAttribute('data-whatintent', currentInput);
 
@@ -237,14 +214,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  // updates input intent for `mousemove` and `pointermove`
-	  var setIntent = function(event) {
-
+	  var setIntent = function setIntent(event) {
 	    // test to see if `mousemove` happened relative to the screen
 	    // to detect scrolling versus mousemove
-	    if (
-	      mousePos['x'] !== event.screenX ||
-	      mousePos['y'] !== event.screenY
-	    ) {
+	    if (mousePos['x'] !== event.screenX || mousePos['y'] !== event.screenY) {
 	      isSrolling = false;
 
 	      mousePos['x'] = event.screenX;
@@ -268,79 +241,76 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  // buffers touch events because they frequently also fire mouse events
-	  var touchBuffer = function(event) {
-	    isBuffering = (event.type === 'touchstart') ? false : true;
+	  var touchBuffer = function touchBuffer(event) {
+	    if (event.type === 'touchstart') {
+	      isBuffering = false;
 
-	    // set the current input
-	    if (event.type === 'touchstart') updateInput(event);
+	      // set the current input
+	      updateInput(event);
+	    } else {
+	      isBuffering = true;
+	    }
 	  };
 
 	  /*
-	    ---------------
-	    Utilities
-	    ---------------
-	  */
+	   * utilities
+	   */
 
-	  var pointerType = function(event) {
+	  var pointerType = function pointerType(event) {
 	    if (typeof event.pointerType === 'number') {
 	      return pointerMap[event.pointerType];
 	    } else {
-
 	      // treat pen like touch
-	      return (event.pointerType === 'pen') ? 'touch' : event.pointerType;
+	      return event.pointerType === 'pen' ? 'touch' : event.pointerType;
 	    }
 	  };
 
 	  // detect version of mouse wheel event to use
 	  // via https://developer.mozilla.org/en-US/docs/Web/Events/wheel
-	  var detectWheel = function() {
-	    return 'onwheel' in document.createElement('div') ?
-	      'wheel' : // Modern browsers support "wheel"
+	  var detectWheel = function detectWheel() {
+	    var wheelType = void 0;
 
-	      document.onmousewheel !== undefined ?
-	        'mousewheel' : // Webkit and IE support at least "mousewheel"
-	        'DOMMouseScroll'; // let's assume that remaining browsers are older Firefox
+	    // Modern browsers support "wheel"
+	    if ('onwheel' in document.createElement('div')) {
+	      wheelType = 'wheel';
+	    } else {
+	      // Webkit and IE support at least "mousewheel"
+	      // or assume that remaining browsers are older Firefox
+	      wheelType = document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll';
+	    }
+
+	    return wheelType;
 	  };
 
-
 	  /*
-	    ---------------
-	    Init
+	   * init
+	   */
 
-	    don't start script unless browser cuts the mustard
-	    (also passes if polyfills are used)
-	    ---------------
-	  */
-
-	  if (
-	    'addEventListener' in window &&
-	    Array.prototype.indexOf
-	  ) {
+	  // don't start script unless browser cuts the mustard
+	  // (also passes if polyfills are used)
+	  if ('addEventListener' in window && Array.prototype.indexOf) {
 	    setUp();
 	  }
 
-
 	  /*
-	    ---------------
-	    API
-	    ---------------
-	  */
+	   * api
+	   */
 
 	  return {
-
 	    // returns string: the current input type
 	    // opt: 'loose'|'strict'
 	    // 'strict' (default): returns the same value as the `data-whatinput` attribute
 	    // 'loose': includes `data-whatintent` value if it's more current than `data-whatinput`
-	    ask: function(opt) { return (opt === 'loose') ? currentIntent : currentInput; },
+	    ask: function ask(opt) {
+	      return opt === 'loose' ? currentIntent : currentInput;
+	    },
 
 	    // returns array: all the detected input types
-	    types: function() { return inputTypes; }
-
+	    types: function types() {
+	      return inputTypes;
+	    }
 	  };
-
-	}());
-
+	}();
 
 /***/ }
 /******/ ])
