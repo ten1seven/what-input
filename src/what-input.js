@@ -48,7 +48,7 @@ module.exports = (() => {
   let isBuffering = false
 
   // boolean: true if the page is being scrolled
-  let isSrolling = false
+  let isScrolling = false
 
   // store current mouse position
   let mousePos = {
@@ -171,17 +171,17 @@ module.exports = (() => {
       mousePos['x'] !== event.screenX ||
       mousePos['y'] !== event.screenY
     ) {
-      isSrolling = false
+      isScrolling = false
 
       mousePos['x'] = event.screenX
       mousePos['y'] = event.screenY
     } else {
-      isSrolling = true
+      isScrolling = true
     }
 
     // only execute if the touch buffer timer isn't running
     // or scrolling isn't happening
-    if (!isBuffering && !isSrolling) {
+    if (!isBuffering && !isScrolling) {
       let value = inputMap[event.type]
       if (value === 'pointer') value = pointerType(event)
 

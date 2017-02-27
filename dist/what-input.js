@@ -107,7 +107,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var isBuffering = false;
 
 	  // boolean: true if the page is being scrolled
-	  var isSrolling = false;
+	  var isScrolling = false;
 
 	  // store current mouse position
 	  var mousePos = {
@@ -218,17 +218,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // test to see if `mousemove` happened relative to the screen
 	    // to detect scrolling versus mousemove
 	    if (mousePos['x'] !== event.screenX || mousePos['y'] !== event.screenY) {
-	      isSrolling = false;
+	      isScrolling = false;
 
 	      mousePos['x'] = event.screenX;
 	      mousePos['y'] = event.screenY;
 	    } else {
-	      isSrolling = true;
+	      isScrolling = true;
 	    }
 
 	    // only execute if the touch buffer timer isn't running
 	    // or scrolling isn't happening
-	    if (!isBuffering && !isSrolling) {
+	    if (!isBuffering && !isScrolling) {
 	      var value = inputMap[event.type];
 	      if (value === 'pointer') value = pointerType(event);
 
