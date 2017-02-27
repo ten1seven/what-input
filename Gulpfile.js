@@ -19,23 +19,17 @@ const standard    = require('gulp-standard')
 const uglify      = require('gulp-uglify')
 const webpack     = require('webpack-stream')
 
-
 /*
-  --------------------
-  Clean task
-  --------------------
-*/
+ * clean task
+ */
 
 gulp.task('clean', () => {
   return del(['**/.DS_Store'])
 })
 
-
 /*
-  --------------------
-  Scripts tasks
-  --------------------
-*/
+ * scripts tasks
+ */
 
 gulp.task('scripts:standard', () => {
   return gulp.src(['./src/what-input.js'])
@@ -91,12 +85,18 @@ gulp.task('scripts:ie8', () => {
 
 gulp.task('scripts', ['scripts:standard', 'scripts:main', 'scripts:ie8'])
 
+/*
+ * build task
+ */
+
+gulp.task('build', () => {
+  return gulp.src(['./dist/*.js'])
+    .pipe(gulp.dest('./docs/scripts/'))
+})
 
 /*
-  --------------------
-  Default task
-  --------------------
-*/
+ * default task
+ */
 
 gulp.task('default', () => {
   runSequence(
