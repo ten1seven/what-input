@@ -31,17 +31,13 @@ gulp.task('clean', () => {
  * scripts tasks
  */
 
-gulp.task('scripts:standard', () => {
+gulp.task('scripts:main', () => {
   return gulp.src(['./src/what-input.js'])
     .pipe(standard())
     .pipe(standard.reporter('default', {
       breakOnError: true,
       quiet: false
     }))
-})
-
-gulp.task('scripts:main', () => {
-  return gulp.src(['./src/what-input.js'])
     .pipe(webpack({
       module: {
         loaders: [{
@@ -63,6 +59,7 @@ gulp.task('scripts:main', () => {
     .pipe(rename('what-input.js'))
     .pipe(header(banner, { pkg : pkg } ))
     .pipe(gulp.dest('./dist/'))
+    .pipe(gulp.dest('./docs/scripts/'))
     .pipe(uglify())
     .pipe(rename({
       suffix: '.min'
@@ -80,19 +77,11 @@ gulp.task('scripts:ie8', () => {
     .pipe(concat('lte-IE8.js'))
     .pipe(uglify())
     .pipe(gulp.dest('./dist/'))
+    .pipe(gulp.dest('./docs/scripts/'))
     .pipe(notify('IE8 scripts task complete'))
 })
 
-gulp.task('scripts', ['scripts:standard', 'scripts:main', 'scripts:ie8'])
-
-/*
- * build task
- */
-
-gulp.task('build', () => {
-  return gulp.src(['./dist/*.js'])
-    .pipe(gulp.dest('./docs/scripts/'))
-})
+gulp.task('scripts', ['scripts:main', 'scripts:ie8'])
 
 /*
  * default task
@@ -107,7 +96,7 @@ gulp.task('default', () => {
     () => {
       browserSync.init({
         server: {
-          baseDir: './'
+          baseDir: './docs/'
         }
       })
 
