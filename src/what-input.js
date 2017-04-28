@@ -6,14 +6,14 @@ module.exports = (() => {
   // cache document.documentElement
   const docElem = document.documentElement
 
+  // currently focused dom element
+  let currentElement = null
+
   // last used input type
   let currentInput = 'initial'
 
   // last used input intent
-  let currentIntent = null
-
-  // form input types
-  const formInputs = ['input', 'select', 'textarea']
+  let currentIntent = currentInput
 
   // list of modifier keys commonly used with the mouse and
   // can be safely ignored to prevent false keyboard detection
@@ -103,8 +103,12 @@ module.exports = (() => {
     docElem.addEventListener(detectWheel(), setIntent)
 
     // keyboard events
-    docElem.addEventListener('keydown', updateInput)
+    // docElem.addEventListener('keydown', updateInput)
     docElem.addEventListener('keyup', updateInput)
+
+    // focus events
+    document.body.addEventListener('focusin', setElement)
+    document.body.addEventListener('focusout', clearElement)
   }
 
   // checks conditions before updating new input
@@ -113,26 +117,17 @@ module.exports = (() => {
     if (!isBuffering) {
       let eventKey = event.which
       let value = inputMap[event.type]
-      if (value === 'pointer') value = pointerType(event)
+
+      if (value === 'pointer') {
+        value = pointerType(event)
+      }
 
       if (currentInput !== value || currentIntent !== value) {
-        let activeElem = document.activeElement
-        let activeInput = false
-
-        if (
-          activeElem &&
-          activeElem.nodeName &&
-          formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1
-        ) {
-          activeInput = true
-        }
-
         if (
           value === 'touch' ||
           // ignore mouse modifier keys
           (value === 'mouse' && ignoreMap.indexOf(eventKey) === -1) ||
-          // don't switch if the current element is a form input
-          (value === 'keyboard' && activeInput)
+          value === 'keyboard'
         ) {
           // set the current and catch-all variable
           currentInput = currentIntent = value
@@ -148,16 +143,17 @@ module.exports = (() => {
     docElem.setAttribute('data-whatinput', currentInput)
     docElem.setAttribute('data-whatintent', currentInput)
 
+    // if this input isn't already in the `currentInput` array, add it
     if (inputTypes.indexOf(currentInput) === -1) {
       inputTypes.push(currentInput)
-      docElem.className += ' whatinput-types-' + currentInput
     }
+
+    docElem.setAttribute('data-whattypes', inputTypes.join())
   }
 
   // updates input intent for `mousemove` and `pointermove`
   const setIntent = event => {
-    // test to see if `mousemove` happened relative to the screen
-    // to detect scrolling versus mousemove
+    // test to see if `mousemove` happened relative to the screen to detect scrolling versus mousemove
     if (mousePos['x'] !== event.screenX || mousePos['y'] !== event.screenY) {
       isScrolling = false
 
@@ -179,6 +175,33 @@ module.exports = (() => {
         docElem.setAttribute('data-whatintent', currentIntent)
       }
     }
+  }
+
+  const setElement = event => {
+    currentElement = event.target.nodeName.toLowerCase()
+
+    let currentElementStr = currentElement === 'input'
+      ? currentElement +
+          '[type=' +
+          (event.target.getAttribute('type') || 'text') +
+          ']'
+      : currentElement
+
+    docElem.setAttribute('data-whatelement', currentElementStr)
+
+    if (event.target.classList.length) {
+      docElem.setAttribute(
+        'data-whatclasses',
+        event.target.classList.toString().replace(' ', ',')
+      )
+    }
+  }
+
+  const clearElement = () => {
+    currentElement = null
+
+    docElem.removeAttribute('data-whatelement')
+    docElem.removeAttribute('data-whatclasses')
   }
 
   // buffers touch events because they frequently also fire mouse events
@@ -246,6 +269,11 @@ module.exports = (() => {
     // 'loose': includes `data-whatintent` value if it's more current than `data-whatinput`
     ask: opt => {
       return opt === 'loose' ? currentIntent : currentInput
+    },
+
+    // returns string: the currently focused element or null
+    element: () => {
+      return currentElement
     },
 
     // returns array: all the detected input types
