@@ -2,15 +2,24 @@
 
 __A global utility for tracking the current input method (mouse, keyboard or touch).__
 
-## What Input is now v4
+## What Input is now v5
+
+Now with more information and less opinion!
 
 What Input adds data attributes to the `<html>` tag based on the type of input being used. It also exposes a simple API that can be used for scripting interactions.
+
+### Changes from v4
+
+* __Added:__ A new `data-whatelement` attribute exposes any currently focused DOM element (i.e. `data-whatelement="input[type=text]"`).
+* __Added:__ A new `data-whatclasses` attribute exposes any currently focused element's classes as a comma-separated list (i.e. `data-whatclasses="class1,class2"`).
+* __Changed:__ Typing in form fields is no longer filtered out. The `data-whatinput` attribute immediately reflects the current input. The `data-whatintent` attribute now takes on that role by remembering mouse input prior to typing in or clicking on a form field.
+* __Removed:__ `whatInput.types()` API option has been removed.
 
 ### Changes from v3
 
 * `mousemove` and `pointermove` events no longer affect the `data-whatinput` attribute.
 * A new `data-whatintent` attribute now works like v3. This change is intended to separate direct interaction from potential.
-* Key logging and the corresponding `whatInput.keys()` API option have been removed.
+* Key logging and the corresponding `whatInput.keys()` API option has been removed because it felt creepy and wasn't very useful.
 * Event binding and attributes are now added to the `<html>` tag to eliminate the need to test for `DOMContentLoaded`.
 * The `whatInput.set()` API option has been removed.
 * A new set of `whatinput-types-[type]` classes are now added as inputs are detected. New classes are added but existing ones remain, creating the same output as what the `whatInput.types()` returns.
@@ -21,28 +30,34 @@ What Input uses event bubbling on the `<html>` tag to watch for mouse, keyboard 
 
 Where present, Pointer Events are supported, but note that `pen` inputs are remapped to `touch`.
 
-What Input also exposes a tiny API that allows the developer to ask for or set the current input.
+What Input also exposes a tiny API that allows the developer to ask for the current input.
 
 _What Input does not make assumptions about the input environment before the page is directly interacted with._ However, the `mousemove` and `pointermove` events are used to set a `data-whatintent="mouse"` attribute to indicate that a mouse is being used _indirectly_.
 
 ### Interacting with Forms
 
-Since interacting with a form requires use of the keyboard, What Input _does not switch the input type while form `<input>`s and `<textarea>`s are being interacted with_, preserving the last detected input type.
+Since interacting with a form requires use of the keyboard, What Input uses the `data-whatintent` attribute to display a "buffered" version of input events while form `<input>`s and `<textarea>`s are being interacted with, preserving the last detected input type.
 
 ## Installing
 
 Download the file directly...
 
-or install via Bower...
+or install via Yarn...
 
 ```shell
-bower install what-input
+yarn add what-input
 ```
 
-or install via NPM...
+or NPM...
 
 ```shell
 npm install what-input
+```
+
+or Bower...
+
+```shell
+bower install what-input
 ```
 
 ## Usage
@@ -56,6 +71,14 @@ Include the script directly in your project.
 Or require with a script loader.
 
 ```javascript
+import 'what-input'
+
+// or
+
+import whatInput from 'what-input'
+
+// or
+
 require('what-input');
 
 // or
@@ -88,22 +111,22 @@ What Input will start doing its thing while you do yours.
 }
 
 /* initial styling after what input has executed but before any interaction */
-[data-whatinput="initial"] :focus {
+*:focus {
   outline: 2px dotted black;
 }
 
 /* mouse */
-[data-whatinput="mouse"] :focus {
+[data-whatinput="mouse"] *:focus {
   outline-color: red;
 }
 
 /* keyboard */
-[data-whatinput="keyboard"] :focus {
+[data-whatinput="keyboard"] *:focus {
   outline-color: green;
 }
 
 /* touch */
-[data-whatinput="touch"] :focus {
+[data-whatinput="touch"] *:focus {
   outline-color: blue;
 }
 ```
@@ -129,7 +152,7 @@ myButton.addEventListener('click', function() {
 });
 ```
 
-If it's necessary to know if `mousemove` is being used, use the `'loose'` option. For example:
+If it's necessary to know if `mousemove` is being used, use the `'intent'` option. For example:
 
 ```javascript
 
@@ -138,14 +161,14 @@ If it's necessary to know if `mousemove` is being used, use the `'loose'` option
 */
 
 whatInput.ask(); // returns `initial` because the page has not been directly interacted with
-whatInput.ask('loose'); // returns `mouse` because mouse movement was detected
+whatInput.ask('intent'); // returns `mouse` because mouse movement was detected
 
 /*
   the keyboard has been used, then the mouse was moved
 */
 
 whatInput.ask(); // returns `keyboard` because the keyboard was the last direct page interaction
-whatInput.ask('loose'); // returns `mouse` because mouse movement was the most recent action detected
+whatInput.ask('intent'); // returns `mouse` because mouse movement was the most recent action detected
 ```
 
 Ask What Input to return an array of all the input types that have been used _so far_.
