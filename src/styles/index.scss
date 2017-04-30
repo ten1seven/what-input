@@ -1,0 +1,54 @@
+@import 'variables';
+@import 'mixins';
+@import 'html';
+@import 'layout';
+
+/*
+ * what-input styles
+ */
+
+/* indicator */
+.input-indicator,
+.input-intent {
+  border-radius: 3px;
+  display: inline-block;
+  padding: 0 3px;
+  transition: all 100ms ease;
+}
+
+[data-whatinput="mouse"] .input-indicator.-mouse,
+[data-whatintent="mouse"] .input-intent.-mouse {
+  background-color: #d9edf7;
+  color: #337ab7;
+}
+
+[data-whatinput="keyboard"] .input-indicator.-keyboard,
+[data-whatintent="keyboard"] .input-intent.-keyboard {
+  background-color: rgba(orange, .2);
+  color: orange;
+}
+
+[data-whatinput="touch"] .input-indicator.-touch {
+  background-color: #fcf8e3;
+  color: #8a6d3b;
+}
+
+[data-whatinput="mouse"] {
+  a:focus,
+  button {
+    outline: none;
+  }
+}
+
+[data-whatintent="mouse"] {
+  input,
+  select,
+  textarea {
+    outline: none;
+  }
+}
+
+/* divs or sections with `tabindex` */
+html:not([data-whatinput="keyboard"]) div:focus {
+  outline: none;
+}

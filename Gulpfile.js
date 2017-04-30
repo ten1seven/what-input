@@ -143,11 +143,19 @@ gulp.task('styles', () => {
 })
 
 /*
+ * images task
+ */
+
+gulp.task('images', () => {
+  return gulp.src(['./src/images/**/*']).pipe(gulp.dest('./docs/images'))
+})
+
+/*
  * default task
  */
 
 gulp.task('default', () => {
-  runSequence('clean', ['scripts', 'styles'], () => {
+  runSequence('clean', ['scripts', 'styles', 'images'], () => {
     browserSync.init({
       server: {
         baseDir: './docs/'
@@ -163,6 +171,6 @@ gulp.task('default', () => {
 
     gulp.watch(['./src/styles/{,*/}{,*/}*.scss'], ['styles'])
 
-    gulp.watch(['./*.html']).on('change', browserSync.reload)
+    gulp.watch(['./**/*.html']).on('change', browserSync.reload)
   })
 })
