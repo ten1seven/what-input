@@ -15,6 +15,9 @@ module.exports = (() => {
   // last used input intent
   let currentIntent = currentInput
 
+  // form input types
+  const formInputs = ['input', 'select', 'textarea']
+
   // list of modifier keys commonly used with the mouse and
   // can be safely ignored to prevent false keyboard detection
   const ignoreMap = [
@@ -36,9 +39,6 @@ module.exports = (() => {
     pointermove: 'pointer',
     touchstart: 'touch'
   }
-
-  // array of all used input types
-  let inputTypes = []
 
   // boolean: true if touch buffer is active
   let isBuffering = false
@@ -129,8 +129,18 @@ module.exports = (() => {
           (value === 'mouse' && ignoreMap.indexOf(eventKey) === -1) ||
           value === 'keyboard'
         ) {
-          // set the current and catch-all variable
-          currentInput = currentIntent = value
+          currentInput = value
+
+          // account for keyboard typing in form fields
+          let activeElem = document.activeElement
+
+          if (
+            activeElem &&
+            activeElem.nodeName &&
+            formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1
+          ) {
+            currentIntent = value
+          }
 
           setInput()
         }
@@ -141,14 +151,7 @@ module.exports = (() => {
   // updates the doc and `inputTypes` array with new input
   const setInput = () => {
     docElem.setAttribute('data-whatinput', currentInput)
-    docElem.setAttribute('data-whatintent', currentInput)
-
-    // if this input isn't already in the `currentInput` array, add it
-    if (inputTypes.indexOf(currentInput) === -1) {
-      inputTypes.push(currentInput)
-    }
-
-    docElem.setAttribute('data-whattypes', inputTypes.join())
+    docElem.setAttribute('data-whatintent', currentIntent)
   }
 
   // updates input intent for `mousemove` and `pointermove`
@@ -264,21 +267,16 @@ module.exports = (() => {
 
   return {
     // returns string: the current input type
-    // opt: 'loose'|'strict'
-    // 'strict' (default): returns the same value as the `data-whatinput` attribute
-    // 'loose': includes `data-whatintent` value if it's more current than `data-whatinput`
+    // opt: 'intent'|'input'
+    // 'input' (default): returns the same value as the `data-whatinput` attribute
+    // 'intent': includes `data-whatintent` value if it's different than `data-whatinput`
     ask: opt => {
-      return opt === 'loose' ? currentIntent : currentInput
+      return opt === 'intent' ? currentIntent : currentInput
     },
 
     // returns string: the currently focused element or null
     element: () => {
       return currentElement
-    },
-
-    // returns array: all the detected input types
-    types: () => {
-      return inputTypes
     }
   }
 })()

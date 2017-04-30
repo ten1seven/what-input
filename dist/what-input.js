@@ -79,6 +79,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // last used input intent
 	  var currentIntent = currentInput;
 
+	  // form input types
+	  var formInputs = ['input', 'select', 'textarea'];
+
 	  // list of modifier keys commonly used with the mouse and
 	  // can be safely ignored to prevent false keyboard detection
 	  var ignoreMap = [16, // shift
@@ -99,9 +102,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    pointermove: 'pointer',
 	    touchstart: 'touch'
 	  };
-
-	  // array of all used input types
-	  var inputTypes = [];
 
 	  // boolean: true if touch buffer is active
 	  var isBuffering = false;
@@ -189,8 +189,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (value === 'touch' ||
 	        // ignore mouse modifier keys
 	        value === 'mouse' && ignoreMap.indexOf(eventKey) === -1 || value === 'keyboard') {
-	          // set the current and catch-all variable
-	          currentInput = currentIntent = value;
+	          currentInput = value;
+
+	          // account for keyboard typing in form fields
+	          var activeElem = document.activeElement;
+
+	          if (activeElem && activeElem.nodeName && formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1) {
+	            currentIntent = value;
+	          }
 
 	          setInput();
 	        }
@@ -201,14 +207,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // updates the doc and `inputTypes` array with new input
 	  var setInput = function setInput() {
 	    docElem.setAttribute('data-whatinput', currentInput);
-	    docElem.setAttribute('data-whatintent', currentInput);
-
-	    // if this input isn't already in the `currentInput` array, add it
-	    if (inputTypes.indexOf(currentInput) === -1) {
-	      inputTypes.push(currentInput);
-	    }
-
-	    docElem.setAttribute('data-whattypes', inputTypes.join());
+	    docElem.setAttribute('data-whatintent', currentIntent);
 	  };
 
 	  // updates input intent for `mousemove` and `pointermove`
@@ -314,21 +313,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  return {
 	    // returns string: the current input type
-	    // opt: 'loose'|'strict'
-	    // 'strict' (default): returns the same value as the `data-whatinput` attribute
-	    // 'loose': includes `data-whatintent` value if it's more current than `data-whatinput`
+	    // opt: 'intent'|'input'
+	    // 'input' (default): returns the same value as the `data-whatinput` attribute
+	    // 'intent': includes `data-whatintent` value if it's different than `data-whatinput`
 	    ask: function ask(opt) {
-	      return opt === 'loose' ? currentIntent : currentInput;
+	      return opt === 'intent' ? currentIntent : currentInput;
 	    },
 
 	    // returns string: the currently focused element or null
 	    element: function element() {
 	      return currentElement;
-	    },
-
-	    // returns array: all the detected input types
-	    types: function types() {
-	      return inputTypes;
 	    }
 	  };
 	}();

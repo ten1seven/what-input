@@ -9,60 +9,7 @@
 
     <link
       rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-      crossorigin="anonymous">
-
-    <style>
-      .test-row {
-        margin-top: 50px;
-      }
-
-      input[type="text"],
-      input[type="password"] {
-        font-size: 16px;
-      }
-
-      /* indicator */
-      .input-indicator {
-        border-radius: 3px;
-        display: inline-block;
-        padding: 0 3px;
-      }
-
-      [data-whatinput="mouse"] .input-indicator.-mouse,
-      [data-whatintent="mouse"] .input-intent.-mouse {
-        background-color: #d9edf7;
-        color: #31708f;
-      }
-
-      [data-whatinput="keyboard"] .-keyboard {
-        background-color: rgba(255, 140, 0, .2);
-        color: rgb(255, 140, 0);
-      }
-
-      [data-whatinput="touch"] .-touch {
-        background-color: #fcf8e3;
-        color: #8a6d3b;
-      }
-
-      /* links */
-      [data-whatinput="mouse"] a:focus {
-        outline: none;
-      }
-
-      /* form controls */
-      [data-whatinput="mouse"] input[type="checkbox"]:focus,
-      [data-whatinput="mouse"] .btn-default:active,
-      [data-whatinput="mouse"] .btn-default:focus {
-        outline: none;
-      }
-
-      /* divs or sections with `tabindex` */
-      html:not([data-whatinput="keyboard"]) div:focus {
-        outline: none;
-      }
-    </style>
+      href="styles/index.css">
 
     <!--[if lte IE 8]>
       <script src="scripts/lte-IE8.js"></script>
@@ -72,56 +19,65 @@
   <body>
 
     <div class="container">
-      <div class="page-header">
-        <h1>What Input?</h1>
-      </div>
+      <h1>What Input?</h1>
 
-      <p class="lead">
-        A global utility for tracking the current input method (<span class="input-indicator -mouse">mouse</span>, <span class="input-indicator -keyboard">keyboard</span> or <span class="input-indicator -touch">touch</span>), as well as the current <em>intent</em> (<span class="input-intent -mouse">mouse</span>).
+      <p class="lede">
+        A global utility for tracking the current input method (<span class="input-indicator -mouse">mouse</span>, <span class="input-indicator -keyboard">keyboard</span> or <span class="input-indicator -touch">touch</span>), as well as the current <em>intent</em> (<span class="input-intent -mouse">mouse</span>, <span class="input-intent -keyboard">keyboard</span>).
       </p>
 
       <p>
         Tab, click or tap the links and form controls to see how What Input allows them to be styled differently.
       </p>
 
-      <div class="well test-row" tabindex="0">
-        <div class="row">
-
-          <div class="col-md-6">
-            <div class="list-group">
-              <a class="list-group-item" href="#">Cras justo odio</a>
-              <a class="list-group-item" href="#">Dapibus ac facilisis in</a>
-              <a class="list-group-item" href="#">Morbi leo risus</a>
-              <a class="list-group-item" href="#">Porta ac consectetur ac</a>
-              <a class="list-group-item" href="#">Vestibulum at eros</a>
-            </div>
+      <div class="well" tabindex="0">
+        <div class="well-row">
+          <div class="well-column">
+            <ul class="list-group">
+              <li class="list-group-item"><a href="#">Cras justo odio</a></li>
+              <li class="list-group-item"><a href="#">Dapibus ac facilisis in</a></li>
+              <li class="list-group-item"><a href="#">Morbi leo risus</a></li>
+              <li class="list-group-item"><a href="#">Porta ac consectetur ac</a></li>
+              <li class="list-group-item"><a href="#">Vestibulum at eros</a></li>
+            </ul>
           </div>
 
-          <div class="col-md-6">
-            <form>
-              <div class="form-group">
-                <label for="exampleInputEmail1">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
-              </div>
-              <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-              </div>
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox"> Check me out
-                </label>
-              </div>
-              <button type="submit" class="btn btn-default">Submit</button>
-            </form>
-          </div>
+          <form class="well-column">
+            <p>
+              <label for="exampleInputEmail1">Email address</label>
+              <input type="email" id="exampleInputEmail1" name="exampleInputEmail1" placeholder="Enter email">
+            </p>
 
+            <p>
+              <label for="exampleInputPassword1">Password</label>
+              <input type="password" id="exampleInputPassword1" name="exampleInputPassword1" placeholder="Password">
+            </p>
+
+            <p>
+              <label for="exampleSelect1">Selection</label>
+              <select id="exampleSelect1" name="exampleSelect1">
+                <option value="" disabled selected>Select an option</option>
+                <option>Option 1</option>
+                <option>Option 2</option>
+                <option>Option 3</option>
+              </select>
+            </p>
+
+            <p class="checkbox">
+              <label>
+                <input type="checkbox"> Check me out
+              </label>
+            </p>
+
+            <p>
+              <button type="submit">Submit</button>
+            </p>
+          </form>
         </div>
       </div>
 
       <footer>
         <p class="pull-left">
-          Made with <span class="text-danger">&hearts;</span> at <a href="http://viget.com/">Viget</a>.
+          Made with <span class="text-love">&hearts;</span> at <a href="http://viget.com/">Viget</a>.
         </p>
 
         <p class="pull-right">
