@@ -324,6 +324,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // returns string: the currently focused element or null
 	    element: function element() {
 	      return currentElement;
+	    },
+
+	    // overwrites ignored keys with provided array
+	    ignoreKeys: function ignoreKeys(arr) {
+	      ignoreMap = arr;
 	    }
 	  };
 	}();
