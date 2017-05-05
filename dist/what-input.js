@@ -185,8 +185,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          activeInput = true;
 	        }
 
-	        console.log(value);
-
 	        if (value === 'touch' ||
 	        // ignore mouse modifier keys
 	        value === 'mouse' ||
