@@ -1,6 +1,6 @@
 /**
  * what-input - A global utility for tracking the current input method (mouse, keyboard or touch).
- * @version v4.1.1
+ * @version v4.1.2
  * @link https://github.com/ten1seven/what-input
  * @license MIT
  */
@@ -58,7 +58,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -90,14 +90,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  // mapping of events to input types
 	  var inputMap = {
-	    'keyup': 'keyboard',
-	    'mousedown': 'mouse',
-	    'mousemove': 'mouse',
-	    'MSPointerDown': 'pointer',
-	    'MSPointerMove': 'pointer',
-	    'pointerdown': 'pointer',
-	    'pointermove': 'pointer',
-	    'touchstart': 'touch'
+	    keydown: 'keyboard',
+	    mousedown: 'mouse',
+	    mousemove: 'mouse',
+	    MSPointerDown: 'pointer',
+	    MSPointerMove: 'pointer',
+	    pointerdown: 'pointer',
+	    pointermove: 'pointer',
+	    touchstart: 'touch'
 	  };
 
 	  // array of all used input types
@@ -111,8 +111,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  // store current mouse position
 	  var mousePos = {
-	    'x': null,
-	    'y': null
+	    x: null,
+	    y: null
 	  };
 
 	  // map of IE 10 pointer events
@@ -167,7 +167,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    // keyboard events
 	    docElem.addEventListener('keydown', updateInput);
-	    docElem.addEventListener('keyup', updateInput);
 	  };
 
 	  // checks conditions before updating new input
@@ -186,13 +185,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	          activeInput = true;
 	        }
 
+	        console.log(value);
+
 	        if (value === 'touch' ||
-
 	        // ignore mouse modifier keys
-	        value === 'mouse' && ignoreMap.indexOf(eventKey) === -1 ||
-
+	        value === 'mouse' ||
 	        // don't switch if the current element is a form input
-	        value === 'keyboard' && activeInput) {
+	        value === 'keyboard' && activeInput && ignoreMap.indexOf(eventKey) === -1) {
 	          // set the current and catch-all variable
 	          currentInput = currentIntent = value;
 
@@ -312,7 +311,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	}();
 
-/***/ }
+/***/ })
 /******/ ])
 });
 ;
