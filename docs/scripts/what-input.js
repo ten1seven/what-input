@@ -93,7 +93,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  // mapping of events to input types
 	  var inputMap = {
-	    keyup: 'keyboard',
+	    keydown: 'keyboard',
 	    mousedown: 'mouse',
 	    mousemove: 'mouse',
 	    MSPointerDown: 'pointer',
@@ -166,8 +166,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    docElem.addEventListener(detectWheel(), setIntent);
 
 	    // keyboard events
-	    // docElem.addEventListener('keydown', updateInput)
-	    docElem.addEventListener('keyup', updateInput);
+	    docElem.addEventListener('keydown', updateInput);
 
 	    // focus events
 	    document.body.addEventListener('focusin', setElement);
@@ -188,7 +187,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (currentInput !== value || currentIntent !== value) {
 	        if (value === 'touch' ||
 	        // ignore mouse modifier keys
-	        value === 'mouse' && ignoreMap.indexOf(eventKey) === -1 || value === 'keyboard') {
+	        value === 'mouse' ||
+	        // don't switch if the current element is a form input
+	        value === 'keyboard' && ignoreMap.indexOf(eventKey) === -1) {
 	          currentInput = value;
 
 	          // account for keyboard typing in form fields

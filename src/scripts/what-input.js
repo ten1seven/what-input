@@ -30,7 +30,7 @@ module.exports = (() => {
 
   // mapping of events to input types
   const inputMap = {
-    keyup: 'keyboard',
+    keydown: 'keyboard',
     mousedown: 'mouse',
     mousemove: 'mouse',
     MSPointerDown: 'pointer',
@@ -103,8 +103,7 @@ module.exports = (() => {
     docElem.addEventListener(detectWheel(), setIntent)
 
     // keyboard events
-    // docElem.addEventListener('keydown', updateInput)
-    docElem.addEventListener('keyup', updateInput)
+    docElem.addEventListener('keydown', updateInput)
 
     // focus events
     document.body.addEventListener('focusin', setElement)
@@ -126,8 +125,9 @@ module.exports = (() => {
         if (
           value === 'touch' ||
           // ignore mouse modifier keys
-          (value === 'mouse' && ignoreMap.indexOf(eventKey) === -1) ||
-          value === 'keyboard'
+          value === 'mouse' ||
+          // don't switch if the current element is a form input
+          (value === 'keyboard' && ignoreMap.indexOf(eventKey) === -1)
         ) {
           currentInput = value
 
