@@ -126,8 +126,6 @@ module.exports = (() => {
           activeInput = true
         }
 
-        console.log(value)
-
         if (
           value === 'touch' ||
           // ignore mouse modifier keys
