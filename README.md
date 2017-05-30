@@ -50,7 +50,7 @@ npm install what-input
 Include the script directly in your project.
 
 ```html
-<script src="assets/scripts/what-input.js"></script>
+<script src="dist/what-input.min.js"></script>
 ```
 
 Or require with a script loader.
