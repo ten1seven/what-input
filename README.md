@@ -14,6 +14,7 @@ What Input adds data attributes to the `<html>` tag based on the type of input b
 * __Added:__ A new `data-whatclasses` attribute exposes any currently focused element's classes as a comma-separated list (i.e. `data-whatclasses="class1,class2"`).
 * __Added:__ A new API option to provide a custom array of keycodes that will be ignored (i.e. `whatInput.ignoreKeys([1, 2, 3])`) Default is `16` _shift_, `17` _control_, `18` _alt_, `91` _Windows key / left Apple cmd_, `93` _Windows menu / right Apple cmd_.
 * __Changed:__ Typing in form fields is no longer filtered out. The `data-whatinput` attribute immediately reflects the current input. The `data-whatintent` attribute now takes on that role by remembering mouse input prior to typing in or clicking on a form field.
+* __Changed:__ If you use the Tab key to move from one input to another one - the `data-whatinput` attribute reflects the current input (switches to "keyboard").
 * __Removed:__ `whatInput.types()` API option.
 * __Fixed:__ Using mouse modifier keys (`shift`, `control`, `alt`, `cmd`) no longer toggles back to keyboard.
 
