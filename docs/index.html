@@ -158,6 +158,17 @@
           event.preventDefault();
         });
       }
+
+      var myInputFunction = function(type) {
+        console.log('input: ' + type)
+      };
+
+      var myIntentFunction = function(type) {
+        console.log('intent: ' + type)
+      };
+
+      whatInput.onChange(myIntentFunction, 'intent');
+      whatInput.onChange(myInputFunction, 'input');
     </script>
 
   </body>

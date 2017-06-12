@@ -15,6 +15,8 @@ module.exports = (() => {
   // form input types
   const formInputs = ['input', 'select', 'textarea']
 
+  let functionList = []
+
   // list of modifier keys commonly used with the mouse and
   // can be safely ignored to prevent false keyboard detection
   let ignoreMap = [
@@ -148,6 +150,7 @@ module.exports = (() => {
           value === 'mouse' ||
           // don't switch if the current element is a form input
           (value === 'keyboard' &&
+            eventKey &&
             activeInput &&
             ignoreMap.indexOf(eventKey) === -1)
         ) {
@@ -169,6 +172,8 @@ module.exports = (() => {
       inputTypes.push(currentInput)
       doc.className += ' whatinput-types-' + currentInput
     }
+
+    fireFunctions('input')
   }
 
   // updates input intent for `mousemove` and `pointermove`
@@ -194,6 +199,8 @@ module.exports = (() => {
         currentIntent = value
 
         doc.setAttribute('data-whatintent', currentIntent)
+
+        fireFunctions('intent')
       }
     }
   }
@@ -207,6 +214,14 @@ module.exports = (() => {
       updateInput(event)
     } else {
       isBuffering = true
+    }
+  }
+
+  const fireFunctions = type => {
+    for (let i = 0, len = functionList.length; i < len; i++) {
+      if (functionList[i].type === type) {
+        functionList[i].function.call(this, currentIntent)
+      }
     }
   }
 
@@ -273,6 +288,16 @@ module.exports = (() => {
     // overwrites ignored keys with provided array
     ignoreKeys: arr => {
       ignoreMap = arr
+    },
+
+    // attach functions to input and intent "events"
+    // funct: function to fire on change
+    // eventType: 'input'|'intent'
+    onChange: (funct, eventType) => {
+      functionList.push({
+        function: funct,
+        type: eventType
+      })
     }
   }
 })()

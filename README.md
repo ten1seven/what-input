@@ -160,6 +160,21 @@ Set a custom array of keycodes that will be ignored when pressed.
 whatInput.ignoreKeys([1, 2, 3])
 ```
 
+Fire a function when the input or intent changes.
+
+```javascript
+// create a function to be fired
+var myFunction = function(type) {
+  console.log(type)
+};
+
+// fire `myFunction` when the intent changes
+whatInput.onChange(myFunction, 'intent')
+
+// fire `myFunction` when the input changes
+whatInput.onChange(myFunction, 'input')
+```
+
 ## Compatibility
 
 What Input works in all modern browsers. For compatibility with IE8, polyfills are required for:

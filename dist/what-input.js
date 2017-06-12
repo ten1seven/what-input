@@ -79,6 +79,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // form input types
 	  var formInputs = ['input', 'select', 'textarea'];
 
+	  var functionList = [];
+
 	  // list of modifier keys commonly used with the mouse and
 	  // can be safely ignored to prevent false keyboard detection
 	  var ignoreMap = [16, // shift
@@ -201,7 +203,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // ignore mouse modifier keys
 	        value === 'mouse' ||
 	        // don't switch if the current element is a form input
-	        value === 'keyboard' && activeInput && ignoreMap.indexOf(eventKey) === -1) {
+	        value === 'keyboard' && eventKey && activeInput && ignoreMap.indexOf(eventKey) === -1) {
 	          // set the current and catch-all variable
 	          currentInput = currentIntent = value;
 
@@ -220,6 +222,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      inputTypes.push(currentInput);
 	      doc.className += ' whatinput-types-' + currentInput;
 	    }
+
+	    fireFunctions('input');
 	  };
 
 	  // updates input intent for `mousemove` and `pointermove`
@@ -245,6 +249,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        currentIntent = value;
 
 	        doc.setAttribute('data-whatintent', currentIntent);
+
+	        fireFunctions('intent');
 	      }
 	    }
 	  };
@@ -258,6 +264,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      updateInput(event);
 	    } else {
 	      isBuffering = true;
+	    }
+	  };
+
+	  var fireFunctions = function fireFunctions(type) {
+	    for (var i = 0, len = functionList.length; i < len; i++) {
+	      if (functionList[i].type === type) {
+	        functionList[i].function.call(undefined, currentIntent);
+	      }
 	    }
 	  };
 
@@ -322,6 +336,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // overwrites ignored keys with provided array
 	    ignoreKeys: function ignoreKeys(arr) {
 	      ignoreMap = arr;
+	    },
+
+	    // attach functions to input and intent "events"
+	    // funct: function to fire on change
+	    // eventType: 'input'|'intent'
+	    onChange: function onChange(funct, eventType) {
+	      functionList.push({
+	        function: funct,
+	        type: eventType
+	      });
 	    }
 	  };
 	}();
