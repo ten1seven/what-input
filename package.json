@@ -1,6 +1,6 @@
 {
   "name": "what-input",
-  "version": "4.1.3",
+  "version": "4.1.5",
   "description": "A global utility for tracking the current input method (mouse, keyboard or touch).",
   "main": "dist/what-input.js",
   "repository": {
