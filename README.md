@@ -174,10 +174,10 @@ var myFunction = function(type) {
 };
 
 // fire `myFunction` when the intent changes
-whatInput.onChange(myFunction, 'intent')
+whatInput.onChange(myFunction, 'intent');
 
 // fire `myFunction` when the input changes
-whatInput.onChange(myFunction, 'input')
+whatInput.onChange(myFunction, 'input');
 ```
 
 ## Compatibility
