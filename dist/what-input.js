@@ -91,6 +91,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  93 // Windows menu / right Apple cmd
 	  ];
 
+	  // list of keys for which we change intent even for form inputs
+	  var changeIntentMap = [9 // Tab
+	  ];
+
 	  // mapping of events to input types
 	  var inputMap = {
 	    keydown: 'keyboard',
@@ -101,10 +105,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    pointerdown: 'pointer',
 	    pointermove: 'pointer',
 	    touchstart: 'touch'
-	  };
 
-	  // boolean: true if touch buffer is active
-	  var isBuffering = false;
+	    // boolean: true if touch buffer is active
+	  };var isBuffering = false;
 
 	  // boolean: true if the page is being scrolled
 	  var isScrolling = false;
@@ -113,20 +116,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var mousePos = {
 	    x: null,
 	    y: null
-	  };
 
-	  // map of IE 10 pointer events
-	  var pointerMap = {
+	    // map of IE 10 pointer events
+	  };var pointerMap = {
 	    2: 'touch',
 	    3: 'touch', // treat pen like touch
 	    4: 'mouse'
-	  };
 
-	  /*
-	   * set up
-	   */
+	    /*
+	     * set up
+	     */
 
-	  var setUp = function setUp() {
+	  };var setUp = function setUp() {
 	    // add correct mouse wheel event mapping to `inputMap`
 	    inputMap[detectWheel()] = 'mouse';
 
@@ -153,23 +154,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    } else {
 	      // mouse events
 	      docElem.addEventListener('mousedown', updateInput);
-	      docElem.addEventListener('mousemove', setIntent);
+	      docElem.addEventListener('mousemove', setIntent
 
 	      // touch events
-	      if ('ontouchstart' in window) {
+	      );if ('ontouchstart' in window) {
 	        docElem.addEventListener('touchstart', touchBuffer);
 	        docElem.addEventListener('touchend', touchBuffer);
 	      }
 	    }
 
 	    // mouse wheel
-	    docElem.addEventListener(detectWheel(), setIntent);
+	    docElem.addEventListener(detectWheel(), setIntent
 
 	    // keyboard events
-	    docElem.addEventListener('keydown', updateInput);
+	    );docElem.addEventListener('keydown', updateInput
 
 	    // focus events
-	    document.body.addEventListener('focusin', setElement);
+	    );document.body.addEventListener('focusin', setElement);
 	    document.body.addEventListener('focusout', clearElement);
 	  };
 
@@ -194,8 +195,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          // account for keyboard typing in form fields
 	          var activeElem = document.activeElement;
+	          var notFormInput = activeElem && activeElem.nodeName && formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1;
 
-	          if (activeElem && activeElem.nodeName && formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1) {
+	          if (notFormInput || changeIntentMap.indexOf(eventKey) !== -1) {
 	            currentIntent = value;
 	          }
 
