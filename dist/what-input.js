@@ -317,6 +317,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // returns array: all the detected input types
 	    types: function types() {
 	      return inputTypes;
+	    },
+
+	    // overwrites ignored keys with provided array
+	    ignoreKeys: function ignoreKeys(arr) {
+	      ignoreMap = arr;
 	    }
 	  };
 	}();

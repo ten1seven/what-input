@@ -17,7 +17,7 @@ module.exports = (() => {
 
   // list of modifier keys commonly used with the mouse and
   // can be safely ignored to prevent false keyboard detection
-  const ignoreMap = [
+  let ignoreMap = [
     16, // shift
     17, // control
     18, // alt
@@ -268,6 +268,11 @@ module.exports = (() => {
     // returns array: all the detected input types
     types: () => {
       return inputTypes
+    },
+
+    // overwrites ignored keys with provided array
+    ignoreKeys: arr => {
+      ignoreMap = arr
     }
   }
 })()

@@ -154,6 +154,12 @@ Ask What Input to return an array of all the input types that have been used _so
 whatInput.types(); // ex. returns ['mouse', 'keyboard']
 ```
 
+Set a custom array of keycodes that will be ignored when pressed.
+
+```javascript
+whatInput.ignoreKeys([1, 2, 3])
+```
+
 ## Compatibility
 
 What Input works in all modern browsers. For compatibility with IE8, polyfills are required for:
