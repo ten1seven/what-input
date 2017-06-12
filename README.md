@@ -2,7 +2,7 @@
 
 __A global utility for tracking the current input method (mouse, keyboard or touch).__
 
-## What Input is now v4.1.5
+## What Input is now v4.1.6
 
 What Input adds data attributes to the `<html>` tag based on the type of input being used. It also exposes a simple API that can be used for scripting interactions.
 
