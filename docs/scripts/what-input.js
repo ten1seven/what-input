@@ -67,14 +67,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * variables
 	   */
 
-	  // cache document.documentElement
-	  var docElem = document.documentElement;
-
 	  // last used input type
 	  var currentInput = 'initial';
 
 	  // last used input intent
 	  var currentIntent = null;
+
+	  // cache document.documentElement
+	  var doc = document.documentElement;
 
 	  // form input types
 	  var formInputs = ['input', 'select', 'textarea'];
@@ -122,6 +122,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    4: 'mouse'
 	  };
 
+	  var supportsPassive = false;
+
+	  try {
+	    var opts = Object.defineProperty({}, 'passive', {
+	      get: function get() {
+	        supportsPassive = true;
+	      }
+	    });
+
+	    window.addEventListener('test', null, opts);
+	  } catch (e) {}
+
 	  /*
 	   * set up
 	   */
@@ -145,28 +157,28 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    // pointer events (mouse, pen, touch)
 	    if (window.PointerEvent) {
-	      docElem.addEventListener('pointerdown', updateInput);
-	      docElem.addEventListener('pointermove', setIntent);
+	      doc.addEventListener('pointerdown', updateInput);
+	      doc.addEventListener('pointermove', setIntent);
 	    } else if (window.MSPointerEvent) {
-	      docElem.addEventListener('MSPointerDown', updateInput);
-	      docElem.addEventListener('MSPointerMove', setIntent);
+	      doc.addEventListener('MSPointerDown', updateInput);
+	      doc.addEventListener('MSPointerMove', setIntent);
 	    } else {
 	      // mouse events
-	      docElem.addEventListener('mousedown', updateInput);
-	      docElem.addEventListener('mousemove', setIntent);
+	      doc.addEventListener('mousedown', updateInput);
+	      doc.addEventListener('mousemove', setIntent);
 
 	      // touch events
 	      if ('ontouchstart' in window) {
-	        docElem.addEventListener('touchstart', touchBuffer);
-	        docElem.addEventListener('touchend', touchBuffer);
+	        doc.addEventListener('touchstart', touchBuffer);
+	        doc.addEventListener('touchend', touchBuffer);
 	      }
 	    }
 
 	    // mouse wheel
-	    docElem.addEventListener(detectWheel(), setIntent);
+	    doc.addEventListener(detectWheel(), setIntent, supportsPassive ? { passive: true } : false);
 
 	    // keyboard events
-	    docElem.addEventListener('keydown', updateInput);
+	    doc.addEventListener('keydown', updateInput);
 	  };
 
 	  // checks conditions before updating new input
@@ -201,12 +213,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  // updates the doc and `inputTypes` array with new input
 	  var setInput = function setInput() {
-	    docElem.setAttribute('data-whatinput', currentInput);
-	    docElem.setAttribute('data-whatintent', currentInput);
+	    doc.setAttribute('data-whatinput', currentInput);
+	    doc.setAttribute('data-whatintent', currentInput);
 
 	    if (inputTypes.indexOf(currentInput) === -1) {
 	      inputTypes.push(currentInput);
-	      docElem.className += ' whatinput-types-' + currentInput;
+	      doc.className += ' whatinput-types-' + currentInput;
 	    }
 	  };
 
@@ -232,7 +244,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (currentIntent !== value) {
 	        currentIntent = value;
 
-	        docElem.setAttribute('data-whatintent', currentIntent);
+	        doc.setAttribute('data-whatintent', currentIntent);
 	      }
 	    }
 	  };
