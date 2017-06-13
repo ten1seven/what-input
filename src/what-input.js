@@ -27,6 +27,11 @@ module.exports = (() => {
     93 // Windows menu / right Apple cmd
   ]
 
+  // list of keys for which we change intent even for form inputs
+  const changeIntentMap = [
+    9 // tab
+  ]
+
   // mapping of events to input types
   const inputMap = {
     keydown: 'keyboard',
@@ -135,12 +140,12 @@ module.exports = (() => {
       if (currentInput !== value || currentIntent !== value) {
         let activeElem = document.activeElement
         let activeInput = false
-
-        if (
+        let notFormInput =
           activeElem &&
           activeElem.nodeName &&
           formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1
-        ) {
+
+        if (notFormInput || changeIntentMap.indexOf(eventKey) !== -1) {
           activeInput = true
         }
 

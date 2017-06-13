@@ -1,6 +1,6 @@
 /**
  * what-input - A global utility for tracking the current input method (mouse, keyboard or touch).
- * @version v4.1.6
+ * @version v4.2.0
  * @link https://github.com/ten1seven/what-input
  * @license MIT
  */
@@ -88,6 +88,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  18, // alt
 	  91, // Windows key / left Apple cmd
 	  93 // Windows menu / right Apple cmd
+	  ];
+
+	  // list of keys for which we change intent even for form inputs
+	  var changeIntentMap = [9 // tab
 	  ];
 
 	  // mapping of events to input types
@@ -194,8 +198,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (currentInput !== value || currentIntent !== value) {
 	        var activeElem = document.activeElement;
 	        var activeInput = false;
+	        var notFormInput = activeElem && activeElem.nodeName && formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1;
 
-	        if (activeElem && activeElem.nodeName && formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1) {
+	        if (notFormInput || changeIntentMap.indexOf(eventKey) !== -1) {
 	          activeInput = true;
 	        }
 
