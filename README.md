@@ -6,6 +6,10 @@ __A global utility for tracking the current input method (mouse, keyboard or tou
 
 What Input adds data attributes to the `<html>` tag based on the type of input being used. It also exposes a simple API that can be used for scripting interactions.
 
+### June 13, 2017
+
+* Updated: Typing _in_ form inputs does not change input type, but tabbing between inputs _does_ initiate a switch from `mouse` to `keyboard`.
+
 ### June 12, 2017
 
 * Added: passive event listener for `wheel` event.
