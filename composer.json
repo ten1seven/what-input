@@ -1,0 +1,21 @@
+{
+    "name": "ten1seven/what-input",
+    "description": "A global utility for tracking the current input method (mouse, keyboard or touch).",
+    "homepage": "https://github.com/ten1seven/what-input",
+    "keywords": [
+      "accessibility",
+      "a11y",
+      "input",
+      "javascript"
+    ],
+    "authors": [
+      {
+        "name": "Jeremy Fields",
+        "email": "jeremy.fields@viget.com"
+      }
+    ],
+    "license": "MIT",
+    "require": {
+        
+    }
+}
