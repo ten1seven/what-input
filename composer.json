@@ -14,8 +14,14 @@
         "email": "jeremy.fields@viget.com"
       }
     ],
+    "repositories": [
+      {
+        "type": "vcs",
+        "url": "https://github.com/ElijahBrandyberry/what-input.git"
+      }
+    ],
     "license": "MIT",
     "require": {
-        
+        "ElijahBrandyberry/what-input": "dev-master"
     }
 }
