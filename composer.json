@@ -22,6 +22,6 @@
     ],
     "license": "MIT",
     "require": {
-        "ElijahBrandyberry/what-input": "dev-master"
+        "ElijahBrandyberry/what-input": "*"
     }
 }
