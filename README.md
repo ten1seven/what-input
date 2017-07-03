@@ -2,9 +2,13 @@
 
 __A global utility for tracking the current input method (mouse, keyboard or touch).__
 
-## What Input is now v4.2.0
+## What Input is now v4.3.0
 
 What Input adds data attributes to the `<html>` tag based on the type of input being used. It also exposes a simple API that can be used for scripting interactions.
+
+### July 3, 2017
+
+* Updated: custom events can now be registered and unregistered.
 
 ### June 13, 2017
 
@@ -178,10 +182,13 @@ var myFunction = function(type) {
 };
 
 // fire `myFunction` when the intent changes
-whatInput.onChange(myFunction, 'intent');
+whatInput.registerOnChange(myFunction, 'intent');
 
 // fire `myFunction` when the input changes
-whatInput.onChange(myFunction, 'input');
+whatInput.registerOnChange(myFunction, 'input');
+
+// remove custom event
+whatInput.unRegisterOnChange(myFunction);
 ```
 
 ## Compatibility

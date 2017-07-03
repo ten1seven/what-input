@@ -1,6 +1,6 @@
 /**
  * what-input - A global utility for tracking the current input method (mouse, keyboard or touch).
- * @version v4.2.0
+ * @version v4.3.0
  * @link https://github.com/ten1seven/what-input
  * @license MIT
  */
@@ -97,6 +97,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // mapping of events to input types
 	  var inputMap = {
 	    keydown: 'keyboard',
+	    keyup: 'keyboard',
 	    mousedown: 'mouse',
 	    mousemove: 'mouse',
 	    MSPointerDown: 'pointer',
@@ -185,6 +186,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    // keyboard events
 	    doc.addEventListener('keydown', updateInput);
+	    doc.addEventListener('keyup', updateInput);
 	  };
 
 	  // checks conditions before updating new input
@@ -275,7 +277,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var fireFunctions = function fireFunctions(type) {
 	    for (var i = 0, len = functionList.length; i < len; i++) {
 	      if (functionList[i].type === type) {
-	        functionList[i].function.call(undefined, currentIntent);
+	        functionList[i].fn.call(undefined, currentIntent);
 	      }
 	    }
 	  };
@@ -308,6 +310,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    return wheelType;
+	  };
+
+	  var objPos = function objPos(match) {
+	    for (var i = 0, len = functionList.length; i < len; i++) {
+	      if (functionList[i].fn === match) {
+	        return i;
+	      }
+	    }
 	  };
 
 	  /*
@@ -346,11 +356,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // attach functions to input and intent "events"
 	    // funct: function to fire on change
 	    // eventType: 'input'|'intent'
-	    onChange: function onChange(funct, eventType) {
+	    registerOnChange: function registerOnChange(fn, eventType) {
 	      functionList.push({
-	        function: funct,
-	        type: eventType
+	        fn: fn,
+	        type: eventType || 'input'
 	      });
+	    },
+
+	    unRegisterOnChange: function unRegisterOnChange(fn) {
+	      var position = objPos(fn);
+
+	      if (position) {
+	        functionList.splice(position, 1);
+	      }
 	    }
 	  };
 	}();

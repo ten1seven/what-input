@@ -35,6 +35,7 @@ module.exports = (() => {
   // mapping of events to input types
   const inputMap = {
     keydown: 'keyboard',
+    keyup: 'keyboard',
     mousedown: 'mouse',
     mousemove: 'mouse',
     MSPointerDown: 'pointer',
@@ -127,6 +128,7 @@ module.exports = (() => {
 
     // keyboard events
     doc.addEventListener('keydown', updateInput)
+    doc.addEventListener('keyup', updateInput)
   }
 
   // checks conditions before updating new input
@@ -225,7 +227,7 @@ module.exports = (() => {
   const fireFunctions = type => {
     for (let i = 0, len = functionList.length; i < len; i++) {
       if (functionList[i].type === type) {
-        functionList[i].function.call(this, currentIntent)
+        functionList[i].fn.call(this, currentIntent)
       }
     }
   }
@@ -254,12 +256,19 @@ module.exports = (() => {
     } else {
       // Webkit and IE support at least "mousewheel"
       // or assume that remaining browsers are older Firefox
-      wheelType = document.onmousewheel !== undefined
-        ? 'mousewheel'
-        : 'DOMMouseScroll'
+      wheelType =
+        document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll'
     }
 
     return wheelType
+  }
+
+  const objPos = match => {
+    for (let i = 0, len = functionList.length; i < len; i++) {
+      if (functionList[i].fn === match) {
+        return i
+      }
+    }
   }
 
   /*
@@ -298,11 +307,19 @@ module.exports = (() => {
     // attach functions to input and intent "events"
     // funct: function to fire on change
     // eventType: 'input'|'intent'
-    onChange: (funct, eventType) => {
+    registerOnChange: (fn, eventType) => {
       functionList.push({
-        function: funct,
-        type: eventType
+        fn: fn,
+        type: eventType || 'input'
       })
+    },
+
+    unRegisterOnChange: fn => {
+      let position = objPos(fn)
+
+      if (position) {
+        functionList.splice(position, 1)
+      }
     }
   }
 })()
