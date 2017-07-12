@@ -1,6 +1,6 @@
 /**
  * what-input - A global utility for tracking the current input method (mouse, keyboard or touch).
- * @version v4.3.0
+ * @version v4.3.1
  * @link https://github.com/ten1seven/what-input
  * @license MIT
  */
@@ -58,7 +58,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
+/***/ function(module, exports) {
 
 	'use strict';
 
@@ -161,6 +161,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // `pointermove`, `MSPointerMove`, `mousemove` and mouse wheel event binding
 	    // can only demonstrate potential, but not actual, interaction
 	    // and are treated separately
+	    var options = supportsPassive ? { passive: true } : false;
 
 	    // pointer events (mouse, pen, touch)
 	    if (window.PointerEvent) {
@@ -176,13 +177,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // touch events
 	      if ('ontouchstart' in window) {
-	        doc.addEventListener('touchstart', touchBuffer);
+	        doc.addEventListener('touchstart', touchBuffer, options);
 	        doc.addEventListener('touchend', touchBuffer);
 	      }
 	    }
 
 	    // mouse wheel
-	    doc.addEventListener(detectWheel(), setIntent, supportsPassive ? { passive: true } : false);
+	    doc.addEventListener(detectWheel(), setIntent, options);
 
 	    // keyboard events
 	    doc.addEventListener('keydown', updateInput);
@@ -373,7 +374,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	}();
 
-/***/ })
+/***/ }
 /******/ ])
 });
 ;
