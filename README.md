@@ -6,6 +6,10 @@ __A global utility for tracking the current input method (mouse, keyboard or tou
 
 What Input adds data attributes to the `<html>` tag based on the type of input being used. It also exposes a simple API that can be used for scripting interactions.
 
+### July 12, 2017
+
+* Updated: added passive to `touchstart` event.
+
 ### July 3, 2017
 
 * Updated: custom events can now be registered and unregistered.
