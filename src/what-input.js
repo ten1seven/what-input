@@ -99,6 +99,7 @@ module.exports = (() => {
     // `pointermove`, `MSPointerMove`, `mousemove` and mouse wheel event binding
     // can only demonstrate potential, but not actual, interaction
     // and are treated separately
+    const options = supportsPassive ? { passive: true } : false
 
     // pointer events (mouse, pen, touch)
     if (window.PointerEvent) {
@@ -114,7 +115,7 @@ module.exports = (() => {
 
       // touch events
       if ('ontouchstart' in window) {
-        doc.addEventListener('touchstart', touchBuffer)
+        doc.addEventListener('touchstart', touchBuffer, options)
         doc.addEventListener('touchend', touchBuffer)
       }
     }
@@ -123,7 +124,7 @@ module.exports = (() => {
     doc.addEventListener(
       detectWheel(),
       setIntent,
-      supportsPassive ? { passive: true } : false
+      options
     )
 
     // keyboard events
