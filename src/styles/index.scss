@@ -16,31 +16,34 @@
   transition: all 100ms ease;
 }
 
-[data-whatinput="mouse"] .input-indicator.-mouse,
-[data-whatintent="mouse"] .input-intent.-mouse {
-  background-color: #d9edf7;
+[data-whatinput='mouse'] .input-indicator.-mouse,
+[data-whatintent='mouse'] .input-intent.-mouse {
+  background-color: rgba(#337ab7, 0.2);
+  box-shadow: 0 0 0 1px rgba(#337ab7, 0.3);
   color: #337ab7;
 }
 
-[data-whatinput="keyboard"] .input-indicator.-keyboard,
-[data-whatintent="keyboard"] .input-intent.-keyboard {
-  background-color: rgba(orange, .2);
+[data-whatinput='keyboard'] .input-indicator.-keyboard,
+[data-whatintent='keyboard'] .input-intent.-keyboard {
+  background-color: rgba(orange, 0.1);
+  box-shadow: 0 0 0 1px rgba(orange, 0.3);
   color: orange;
 }
 
-[data-whatinput="touch"] .input-indicator.-touch {
-  background-color: #fcf8e3;
+[data-whatinput='touch'] .input-indicator.-touch {
+  background-color: rgba(#8a6d3b, 0.1);
+  box-shadow: 0 0 0 1px rgba(#8a6d3b, 0.3);
   color: #8a6d3b;
 }
 
-[data-whatinput="mouse"] {
+[data-whatinput='mouse'] {
   a:focus,
   button {
     outline: none;
   }
 }
 
-[data-whatintent="mouse"] {
+[data-whatintent='mouse'] {
   input,
   select,
   textarea {
@@ -49,6 +52,6 @@
 }
 
 /* divs or sections with `tabindex` */
-html:not([data-whatinput="keyboard"]) div:focus {
+html:not([data-whatinput='keyboard']) div:focus {
   outline: none;
 }

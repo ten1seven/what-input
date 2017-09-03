@@ -99,6 +99,15 @@
         })
       }
 
+      var myInputFunction = function(type) {
+        console.log('input: ' + type)
+      };
+      var myIntentFunction = function(type) {
+        console.log('intent: ' + type)
+      };
+      whatInput.registerOnChange(myInputFunction);
+      whatInput.registerOnChange(myIntentFunction, 'intent');
+
       var form = document.querySelector('form');
       form.addEventListener('submit', function(event) {
         event.preventDefault();

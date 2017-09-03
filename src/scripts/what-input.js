@@ -18,6 +18,9 @@ module.exports = (() => {
   // form input types
   const formInputs = ['input', 'select', 'textarea']
 
+  // empty array for holding callback functions
+  let functionList = []
+
   // list of modifier keys commonly used with the mouse and
   // can be safely ignored to prevent false keyboard detection
   let ignoreMap = [
@@ -28,14 +31,10 @@ module.exports = (() => {
     93 // Windows menu / right Apple cmd
   ]
 
-  // list of keys for which we change intent even for form inputs
-  let changeIntentMap = [
-    9 // Tab
-  ]
-
   // mapping of events to input types
   const inputMap = {
     keydown: 'keyboard',
+    keyup: 'keyboard',
     mousedown: 'mouse',
     mousemove: 'mouse',
     MSPointerDown: 'pointer',
@@ -64,6 +63,19 @@ module.exports = (() => {
     4: 'mouse'
   }
 
+  // check support for passive event listeners
+  let supportsPassive = false
+
+  try {
+    let opts = Object.defineProperty({}, 'passive', {
+      get: () => {
+        supportsPassive = true
+      }
+    })
+
+    window.addEventListener('test', null, opts)
+  } catch (e) {}
+
   /*
    * set up
    */
@@ -73,7 +85,8 @@ module.exports = (() => {
     inputMap[detectWheel()] = 'mouse'
 
     addListeners()
-    setInput()
+    doUpdate('input')
+    doUpdate('intent')
   }
 
   /*
@@ -85,34 +98,37 @@ module.exports = (() => {
     // can only demonstrate potential, but not actual, interaction
     // and are treated separately
 
+    const options = supportsPassive ? { passive: true } : false
+
     // pointer events (mouse, pen, touch)
     if (window.PointerEvent) {
-      docElem.addEventListener('pointerdown', updateInput)
-      docElem.addEventListener('pointermove', setIntent)
+      window.addEventListener('pointerdown', updateInput)
+      window.addEventListener('pointermove', setIntent)
     } else if (window.MSPointerEvent) {
-      docElem.addEventListener('MSPointerDown', updateInput)
-      docElem.addEventListener('MSPointerMove', setIntent)
+      window.addEventListener('MSPointerDown', updateInput)
+      window.addEventListener('MSPointerMove', setIntent)
     } else {
       // mouse events
-      docElem.addEventListener('mousedown', updateInput)
-      docElem.addEventListener('mousemove', setIntent)
+      window.addEventListener('mousedown', updateInput)
+      window.addEventListener('mousemove', setIntent)
 
       // touch events
       if ('ontouchstart' in window) {
-        docElem.addEventListener('touchstart', touchBuffer)
-        docElem.addEventListener('touchend', touchBuffer)
+        window.addEventListener('touchstart', touchBuffer, options)
+        window.addEventListener('touchend', touchBuffer)
       }
     }
 
     // mouse wheel
-    docElem.addEventListener(detectWheel(), setIntent)
+    window.addEventListener(detectWheel(), setIntent, options)
 
     // keyboard events
-    docElem.addEventListener('keydown', updateInput)
+    window.addEventListener('keydown', updateInput)
+    window.addEventListener('keyup', updateInput)
 
     // focus events
-    document.body.addEventListener('focusin', setElement)
-    document.body.addEventListener('focusout', clearElement)
+    window.addEventListener('focusin', setElement)
+    window.addEventListener('focusout', clearElement)
   }
 
   // checks conditions before updating new input
@@ -126,63 +142,60 @@ module.exports = (() => {
         value = pointerType(event)
       }
 
-      if (currentInput !== value || currentIntent !== value) {
-        if (
-          value === 'touch' ||
-          // ignore mouse modifier keys
-          value === 'mouse' ||
-          // don't switch if the current element is a form input
-          (value === 'keyboard' && ignoreMap.indexOf(eventKey) === -1)
-        ) {
-          currentInput = value
+      let shouldUpdate =
+        (value === 'keyboard' &&
+          eventKey &&
+          ignoreMap.indexOf(eventKey) === -1) ||
+        value === 'mouse' ||
+        value === 'touch'
 
-          // account for keyboard typing in form fields
-          let activeElem = document.activeElement
-          let notFormInput = activeElem &&
-              activeElem.nodeName &&
-              formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1
+      if (currentInput !== value && shouldUpdate) {
+        currentInput = value
+        doUpdate('input')
+      }
 
-          if (
-            notFormInput ||
-            changeIntentMap.indexOf(eventKey) !== -1
-          ) {
-            currentIntent = value
-          }
+      if (currentIntent !== value && shouldUpdate) {
+        // preserve intent for keyboard typing in form fields
+        let activeElem = document.activeElement
+        let notFormInput =
+          activeElem &&
+          activeElem.nodeName &&
+          formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1
 
-          setInput()
+        if (notFormInput) {
+          currentIntent = value
+          doUpdate('intent')
         }
       }
     }
   }
 
   // updates the doc and `inputTypes` array with new input
-  const setInput = () => {
-    docElem.setAttribute('data-whatinput', currentInput)
-    docElem.setAttribute('data-whatintent', currentIntent)
+  const doUpdate = which => {
+    docElem.setAttribute(
+      'data-what' + which,
+      which === 'input' ? currentInput : currentIntent
+    )
+
+    fireFunctions(which)
   }
 
   // updates input intent for `mousemove` and `pointermove`
   const setIntent = event => {
     // test to see if `mousemove` happened relative to the screen to detect scrolling versus mousemove
-    if (mousePos['x'] !== event.screenX || mousePos['y'] !== event.screenY) {
-      isScrolling = false
-
-      mousePos['x'] = event.screenX
-      mousePos['y'] = event.screenY
-    } else {
-      isScrolling = true
-    }
+    detectScrolling(event)
 
     // only execute if the touch buffer timer isn't running
     // or scrolling isn't happening
     if (!isBuffering && !isScrolling) {
       let value = inputMap[event.type]
-      if (value === 'pointer') value = pointerType(event)
+      if (value === 'pointer') {
+        value = pointerType(event)
+      }
 
       if (currentIntent !== value) {
         currentIntent = value
-
-        docElem.setAttribute('data-whatintent', currentIntent)
+        doUpdate('intent')
       }
     }
   }
@@ -190,12 +203,13 @@ module.exports = (() => {
   const setElement = event => {
     currentElement = event.target.nodeName.toLowerCase()
 
-    let currentElementStr = currentElement === 'input'
-      ? currentElement +
+    let currentElementStr =
+      currentElement === 'input'
+        ? currentElement +
           '[type=' +
           (event.target.getAttribute('type') || 'text') +
           ']'
-      : currentElement
+        : currentElement
 
     docElem.setAttribute('data-whatelement', currentElementStr)
 
@@ -250,12 +264,43 @@ module.exports = (() => {
     } else {
       // Webkit and IE support at least "mousewheel"
       // or assume that remaining browsers are older Firefox
-      wheelType = document.onmousewheel !== undefined
-        ? 'mousewheel'
-        : 'DOMMouseScroll'
+      wheelType =
+        document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll'
     }
 
     return wheelType
+  }
+
+  // runs callback functions
+  const fireFunctions = type => {
+    for (let i = 0, len = functionList.length; i < len; i++) {
+      if (functionList[i].type === type) {
+        functionList[i].fn.call(
+          this,
+          type === 'input' ? currentInput : currentIntent
+        )
+      }
+    }
+  }
+
+  // finds matching element in an object
+  const objPos = match => {
+    for (let i = 0, len = functionList.length; i < len; i++) {
+      if (functionList[i].fn === match) {
+        return i
+      }
+    }
+  }
+
+  const detectScrolling = event => {
+    if (mousePos['x'] !== event.screenX || mousePos['y'] !== event.screenY) {
+      isScrolling = false
+
+      mousePos['x'] = event.screenX
+      mousePos['y'] = event.screenY
+    } else {
+      isScrolling = true
+    }
   }
 
   /*
@@ -289,6 +334,24 @@ module.exports = (() => {
     // overwrites ignored keys with provided array
     ignoreKeys: arr => {
       ignoreMap = arr
+    },
+
+    // attach functions to input and intent "events"
+    // funct: function to fire on change
+    // eventType: 'input'|'intent'
+    registerOnChange: (fn, eventType) => {
+      functionList.push({
+        fn: fn,
+        type: eventType || 'input'
+      })
+    },
+
+    unRegisterOnChange: fn => {
+      let position = objPos(fn)
+
+      if (position) {
+        functionList.splice(position, 1)
+      }
     }
   }
 })()
