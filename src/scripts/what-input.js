@@ -97,7 +97,6 @@ module.exports = (() => {
     // `pointermove`, `MSPointerMove`, `mousemove` and mouse wheel event binding
     // can only demonstrate potential, but not actual, interaction
     // and are treated separately
-
     const options = supportsPassive ? { passive: true } : false
 
     // pointer events (mouse, pen, touch)
@@ -202,16 +201,7 @@ module.exports = (() => {
 
   const setElement = event => {
     currentElement = event.target.nodeName.toLowerCase()
-
-    let currentElementStr =
-      currentElement === 'input'
-        ? currentElement +
-          '[type=' +
-          (event.target.getAttribute('type') || 'text') +
-          ']'
-        : currentElement
-
-    docElem.setAttribute('data-whatelement', currentElementStr)
+    docElem.setAttribute('data-whatelement', currentElement)
 
     if (event.target.classList.length) {
       docElem.setAttribute(

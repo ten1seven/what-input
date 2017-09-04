@@ -160,7 +160,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // `pointermove`, `MSPointerMove`, `mousemove` and mouse wheel event binding
 	    // can only demonstrate potential, but not actual, interaction
 	    // and are treated separately
-
 	    var options = supportsPassive ? { passive: true } : false;
 
 	    // pointer events (mouse, pen, touch)
@@ -254,10 +253,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var setElement = function setElement(event) {
 	    currentElement = event.target.nodeName.toLowerCase();
-
-	    var currentElementStr = currentElement === 'input' ? currentElement + '[type=' + (event.target.getAttribute('type') || 'text') + ']' : currentElement;
-
-	    docElem.setAttribute('data-whatelement', currentElementStr);
+	    docElem.setAttribute('data-whatelement', currentElement);
 
 	    if (event.target.classList.length) {
 	      docElem.setAttribute('data-whatclasses', event.target.classList.toString().replace(' ', ','));
