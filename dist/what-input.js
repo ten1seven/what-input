@@ -105,10 +105,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    pointerdown: 'pointer',
 	    pointermove: 'pointer',
 	    touchstart: 'touch'
-	  };
 
-	  // boolean: true if touch buffer is active
-	  var isBuffering = false;
+	    // boolean: true if touch buffer is active
+	  };var isBuffering = false;
 
 	  // boolean: true if the page is being scrolled
 	  var isScrolling = false;
@@ -117,17 +116,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var mousePos = {
 	    x: null,
 	    y: null
-	  };
 
-	  // map of IE 10 pointer events
-	  var pointerMap = {
+	    // map of IE 10 pointer events
+	  };var pointerMap = {
 	    2: 'touch',
 	    3: 'touch', // treat pen like touch
 	    4: 'mouse'
-	  };
 
-	  // check support for passive event listeners
-	  var supportsPassive = false;
+	    // check support for passive event listeners
+	  };var supportsPassive = false;
 
 	  try {
 	    var opts = Object.defineProperty({}, 'passive', {
