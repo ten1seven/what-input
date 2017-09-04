@@ -63,12 +63,6 @@ or NPM...
 npm install what-input
 ```
 
-or Bower...
-
-```shell
-bower install what-input
-```
-
 ## Usage
 
 Include the script directly in your project.
