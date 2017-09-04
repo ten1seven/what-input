@@ -10,22 +10,24 @@ What Input adds data attributes to the `<html>` tag based on the type of input b
 
 ### Changes from v4
 
-* __Added:__ A new `data-whatelement` attribute exposes any currently focused DOM element (i.e. `data-whatelement="a"` or `data-whatelement="input[type=text]"`).
-* __Added:__ A new `data-whatclasses` attribute exposes any currently focused element's classes as a comma-separated list (i.e. `data-whatclasses="class1,class2"`).
-* __Added:__ A new API option to provide a custom array of keycodes that will be ignored (i.e. `whatInput.ignoreKeys([1, 2, 3])`) Default is `16` _shift_, `17` _control_, `18` _alt_, `91` _Windows key / left Apple cmd_, `93` _Windows menu / right Apple cmd_.
-* __Changed:__ Typing in form fields is no longer filtered out. The `data-whatinput` attribute immediately reflects the current input. The `data-whatintent` attribute now takes on that role by remembering mouse input prior to typing in or clicking on a form field.
+* __Added:__ A the ability to add and remove custom callback function when the input or intent changes with `whatInput.registerOnChange` and `whatInput.unRegisterOnChange`.
+* __Added:__ A `data-whatelement` attribute exposes any currently focused DOM element (i.e. `data-whatelement="a"` or `data-whatelement="input"`).
+* __Added:__ A `data-whatclasses` attribute exposes any currently focused element's classes as a comma-separated list (i.e. `data-whatclasses="class1,class2"`).
+* __Added:__ An API option to provide a custom array of keycodes that will be ignored.
+* __Changed:__ Typing in form fields is no longer filtered out. The `data-whatinput` attribute immediately reflects the current input. The `data-whatintent` attribute now takes on the role of remembering mouse input prior to typing in or clicking on a form field.
 * __Changed:__ If you use the Tab key to move from one input to another one - the `data-whatinput` attribute reflects the current input (switches to "keyboard").
 * __Removed:__ `whatInput.types()` API option.
 * __Fixed:__ Using mouse modifier keys (`shift`, `control`, `alt`, `cmd`) no longer toggles back to keyboard.
 
-### Changes from v3
+## How it works
 
-* `mousemove` and `pointermove` events no longer affect the `data-whatinput` attribute.
-* A new `data-whatintent` attribute now works like v3. This change is intended to separate direct interaction from potential.
-* Key logging and the corresponding `whatInput.keys()` API option has been removed because it felt creepy and wasn't very useful.
-* Event binding and attributes are now added to the `<html>` tag to eliminate the need to test for `DOMContentLoaded`.
-* The `whatInput.set()` API option has been removed.
-* A new set of `whatinput-types-[type]` classes are now added as inputs are detected. New classes are added but existing ones remain, creating the same output as what the `whatInput.types()` returns.
+What Input uses event bubbling on the `window` to watch for mouse, keyboard and touch events (via `mousedown`, `keydown` and `touchstart`). It then sets or updates a `data-whatinput` attribute.
+
+Pointer Events are supported but note that `pen` inputs are remapped to `touch`.
+
+What Input also exposes a tiny API that allows the developer to ask for the current input, set custom ignore keys, and set and remove custom callback functions.
+
+_What Input does not make assumptions about the input environment before the page is interacted with._ However, the `mousemove` and `pointermove` events are used to set a `data-whatintent="mouse"` attribute to indicate that a mouse is being used _indirectly_.
 
 ## Demo
 
@@ -33,19 +35,9 @@ Check out the demo to see What Input in action.
 
 http://ten1seven.github.io/what-input
 
-## How it works
-
-What Input uses event bubbling on the `<html>` tag to watch for mouse, keyboard and touch events (via `mousedown`, `keydown` and `touchstart`). It then sets or updates a `data-whatinput` attribute.
-
-Where present, Pointer Events are supported, but note that `pen` inputs are remapped to `touch`.
-
-What Input also exposes a tiny API that allows the developer to ask for the current input.
-
-_What Input does not make assumptions about the input environment before the page is directly interacted with._ However, the `mousemove` and `pointermove` events are used to set a `data-whatintent="mouse"` attribute to indicate that a mouse is being used _indirectly_.
-
 ### Interacting with Forms
 
-Since interacting with a form requires use of the keyboard, What Input uses the `data-whatintent` attribute to display a "buffered" version of input events while form `<input>`s and `<textarea>`s are being interacted with, preserving the last detected input type.
+Since interacting with a form _always_ requires use of the keyboard, What Input uses the `data-whatintent` attribute to display a "buffered" version of input events while form `<input>`s, `<select>`s, and `<textarea>`s are being interacted with (i.e. mouse user's `data-whatintent` will be preserved as `mouse` while typing).
 
 ## Installing
 
@@ -68,7 +60,7 @@ npm install what-input
 Include the script directly in your project.
 
 ```html
-<script src="assets/scripts/what-input.js"></script>
+<script src="path/to/what-input.js"></script>
 ```
 
 Or require with a script loader.
@@ -108,20 +100,9 @@ What Input will start doing its thing while you do yours.
  * only suppress the focus ring once what-input has successfully started
  */
 
-/* suppress focus ring on buttons when clicked */
-[data-whatinput="mouse"] {
-  button {
-    outline: none;
-  }
-}
-
 /* suppress focus ring on form controls for mouse users */
-[data-whatintent="mouse"] {
-  input,
-  select,
-  textarea {
-    outline: none;
-  }
+[data-whatintent="mouse"] *:focus {
+  outline: none;
 }
 ```
 **Note:** If you remove outlines with `outline: none;`, be sure to provide clear visual `:focus` styles so the user can see which element they are on at any time for greater accessibility. Visit [W3C's WCAG 2.0 2.4.7 Guideline](https://www.w3.org/TR/UNDERSTANDING-WCAG20/navigation-mechanisms-focus-visible.html) to learn more.
@@ -163,10 +144,49 @@ whatInput.ask() // returns `keyboard` because the keyboard was the last direct p
 whatInput.ask('intent') // returns `mouse` because mouse movement was the most recent action detected
 ```
 
-Set a custom array of keycodes that will be ignored when pressed.
+### Current Element
+
+Ask What Input the currently focused DOM element.
 
 ```javascript
+whatInput.element() // returns a string, like `input` or null
+```
+
+#### Ignore Keys
+
+Set a custom array of [keycodes](http://keycode.info/) that will be ignored (will not switch over to `keyboard`) when pressed. _A custom list will overwrite the default values._
+
+```javascript
+/*
+ * default ignored keys:
+ * 16, // shift
+ * 17, // control
+ * 18, // alt
+ * 91, // Windows key / left Apple cmd
+ * 93  // Windows menu / right Apple cmd
+ */
+
 whatInput.ignoreKeys([1, 2, 3])
+```
+
+#### Custom Callbacks
+
+Fire a function when the input or intent changes.
+
+```javascript
+// create a function to be fired
+var myFunction = function(type) {
+  console.log(type)
+};
+
+// fire `myFunction` when the intent changes
+whatInput.registerOnChange(myFunction, 'intent');
+
+// fire `myFunction` when the input changes
+whatInput.registerOnChange(myFunction, 'input');
+
+// remove custom event
+whatInput.unRegisterOnChange(myFunction);
 ```
 
 ## Compatibility
