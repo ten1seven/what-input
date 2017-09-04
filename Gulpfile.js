@@ -11,6 +11,7 @@ const autoprefixer = require('autoprefixer')
 const browserSync = require('browser-sync').create()
 const concat = require('gulp-concat')
 const del = require('del')
+const ghPages = require('gulp-gh-pages')
 const gulp = require('gulp')
 const header = require('gulp-header')
 const mqpacker = require('css-mqpacker')
@@ -33,7 +34,7 @@ const webpack = require('webpack-stream')
  */
 
 gulp.task('clean', () => {
-  return del(['**/.DS_Store'])
+  return del(['**/.DS_Store', './build/*', './dist/*'])
 })
 
 /*
@@ -75,7 +76,7 @@ gulp.task('scripts:main', () => {
     .pipe(rename('what-input.js'))
     .pipe(header(banner, { pkg: pkg }))
     .pipe(gulp.dest('./dist/'))
-    .pipe(gulp.dest('./docs/scripts/'))
+    .pipe(gulp.dest('./build/scripts/'))
     .pipe(uglify())
     .pipe(
       rename({
@@ -98,7 +99,7 @@ gulp.task('scripts:ie8', () => {
     .pipe(concat('lte-IE8.js'))
     .pipe(uglify())
     .pipe(gulp.dest('./dist/'))
-    .pipe(gulp.dest('./docs/scripts/'))
+    .pipe(gulp.dest('./build/scripts/'))
     .pipe(notify('IE8 scripts task complete'))
 })
 
@@ -137,7 +138,7 @@ gulp.task('styles', () => {
       })
     )
     .pipe(sourcemaps.write('maps'))
-    .pipe(gulp.dest('./docs/styles'))
+    .pipe(gulp.dest('./build/styles'))
     .pipe(browserSync.stream())
     .pipe(notify('Styles task complete'))
 })
@@ -147,7 +148,23 @@ gulp.task('styles', () => {
  */
 
 gulp.task('images', () => {
-  return gulp.src(['./src/images/**/*']).pipe(gulp.dest('./docs/images'))
+  return gulp.src(['./src/images/**/*']).pipe(gulp.dest('./build/images'))
+})
+
+/*
+ * markup task
+ */
+
+gulp.task('markup', () => {
+  return gulp.src(['./src/markup/*']).pipe(gulp.dest('./build'))
+})
+
+/*
+ * deploy task
+ */
+
+gulp.task('deploy', function() {
+  return gulp.src('./build/**/*').pipe(ghPages())
 })
 
 /*
@@ -155,10 +172,10 @@ gulp.task('images', () => {
  */
 
 gulp.task('default', () => {
-  runSequence('clean', ['scripts', 'styles', 'images'], () => {
+  runSequence('clean', ['markup', 'scripts', 'styles', 'images'], () => {
     browserSync.init({
       server: {
-        baseDir: './docs/'
+        baseDir: './build/'
       }
     })
 
@@ -171,6 +188,8 @@ gulp.task('default', () => {
 
     gulp.watch(['./src/styles/{,*/}{,*/}*.scss'], ['styles'])
 
-    gulp.watch(['./**/*.html']).on('change', browserSync.reload)
+    gulp
+      .watch(['./src/markup/*.html'], ['markup'])
+      .on('change', browserSync.reload)
   })
 })
