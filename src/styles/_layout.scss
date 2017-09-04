@@ -92,7 +92,7 @@ form.well-column {
     border-radius: 4px;
     color: #fff;
     cursor: pointer;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 14px;
     font-weight: 400;
     margin: 0;
@@ -122,17 +122,18 @@ form.well-column {
   }
 
   input {
-    &:not([type="submit"]):not([type="checkbox"]) {
+    &:not([type='submit']):not([type='checkbox']) {
       @include input-style-base;
-      box-shadow: inset 0 1px 1px rgba(#000, .075);
+      box-shadow: inset 0 1px 1px rgba(#000, 0.075);
 
       @include placeholder {
         color: #999;
       }
 
-      [data-whatintent="mouse"] &:focus {
+      [data-whatintent='mouse'] &:focus {
         border-color: #31708f;
-        box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(49, 112, 143, 0.6);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+          0 0 8px rgba(49, 112, 143, 0.6);
         outline: none;
       }
     }

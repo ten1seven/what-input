@@ -7,7 +7,7 @@
  * what-input styles
  */
 
-/* indicator */
+// indicator
 .input-indicator,
 .input-intent {
   border-radius: 3px;
@@ -36,22 +36,15 @@
   color: #8a6d3b;
 }
 
-[data-whatinput='mouse'] {
-  a:focus,
-  button {
+// suppress focus outline for mouse and touch
+[data-whatintent='mouse'],
+[data-whatintent='touch'] {
+  *:focus {
     outline: none;
   }
 }
 
-[data-whatintent='mouse'] {
-  input,
-  select,
-  textarea {
-    outline: none;
-  }
-}
-
-/* divs or sections with `tabindex` */
+// divs or sections with `tabindex`
 html:not([data-whatinput='keyboard']) div:focus {
   outline: none;
 }
