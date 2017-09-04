@@ -17,6 +17,7 @@ What Input adds data attributes to the `window` based on the type of input being
 * __Changed:__ Typing in form fields is no longer filtered out. The `data-whatinput` attribute immediately reflects the current input. The `data-whatintent` attribute now takes on the role of remembering mouse input prior to typing in or clicking on a form field.
 * __Changed:__ If you use the Tab key to move from one input to another one - the `data-whatinput` attribute reflects the current input (switches to "keyboard").
 * __Removed:__ `whatInput.types()` API option.
+* __Removed:__ Bower support.
 * __Fixed:__ Using mouse modifier keys (`shift`, `control`, `alt`, `cmd`) no longer toggles back to keyboard.
 
 ## How it works
@@ -41,15 +42,15 @@ Since interacting with a form _always_ requires use of the keyboard, What Input 
 
 ## Installing
 
-Download the file directly...
+Download the file directly.
 
-or install via Yarn...
+Install via Yarn:
 
 ```shell
 yarn add what-input
 ```
 
-or NPM...
+Install via NPM:
 
 ```shell
 npm install what-input
