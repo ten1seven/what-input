@@ -6,7 +6,7 @@ __A global utility for tracking the current input method (mouse, keyboard or tou
 
 Now with more information and less opinion!
 
-What Input adds data attributes to the `<html>` tag based on the type of input being used. It also exposes a simple API that can be used for scripting interactions.
+What Input adds data attributes to the `window` based on the type of input being used. It also exposes a simple API that can be used for scripting interactions.
 
 ### Changes from v4
 
