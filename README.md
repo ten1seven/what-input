@@ -34,7 +34,7 @@ _What Input does not make assumptions about the input environment before the pag
 
 Check out the demo to see What Input in action.
 
-http://ten1seven.github.io/what-input
+https://ten1seven.github.io/what-input
 
 ### Interacting with Forms
 
