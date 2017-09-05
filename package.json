@@ -15,7 +15,8 @@
     "url": "https://github.com/ten1seven/what-input/issues"
   },
   "scripts": {
-    "start": "gulp"
+    "start": "gulp",
+    "deploy": "gulp deploy"
   },
   "homepage": "https://github.com/ten1seven/what-input",
   "devDependencies": {
