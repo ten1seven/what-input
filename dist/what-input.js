@@ -1,6 +1,6 @@
 /**
  * what-input - A global utility for tracking the current input method (mouse, keyboard or touch).
- * @version v5.0.1
+ * @version v5.0.2
  * @link https://github.com/ten1seven/what-input
  * @license MIT
  */
@@ -252,7 +252,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    currentElement = event.target.nodeName.toLowerCase();
 	    docElem.setAttribute('data-whatelement', currentElement);
 
-	    if (event.target.classList.length) {
+	    if (event.target.classList && event.target.classList.length) {
 	      docElem.setAttribute('data-whatclasses', event.target.classList.toString().replace(' ', ','));
 	    }
 	  };
