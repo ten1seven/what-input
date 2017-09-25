@@ -60,7 +60,7 @@ gulp.task('scripts:main', () => {
               loader: 'babel-loader',
               exclude: /node_modules/,
               query: {
-                presets: ['es2015']
+                presets: ['env']
               }
             }
           ]
