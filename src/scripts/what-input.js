@@ -203,7 +203,7 @@ module.exports = (() => {
     currentElement = event.target.nodeName.toLowerCase()
     docElem.setAttribute('data-whatelement', currentElement)
 
-    if (event.target.classList.length) {
+    if (event.target.classList && event.target.classList.length) {
       docElem.setAttribute(
         'data-whatclasses',
         event.target.classList.toString().replace(' ', ',')
