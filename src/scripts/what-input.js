@@ -15,6 +15,9 @@ module.exports = (() => {
   // last used input intent
   let currentIntent = currentInput
 
+  // event buffer timer
+  let eventTimer = null
+
   // form input types
   const formInputs = ['input', 'select', 'textarea']
 
@@ -101,20 +104,20 @@ module.exports = (() => {
 
     // pointer events (mouse, pen, touch)
     if (window.PointerEvent) {
-      window.addEventListener('pointerdown', updateInput)
+      window.addEventListener('pointerdown', setInput)
       window.addEventListener('pointermove', setIntent)
     } else if (window.MSPointerEvent) {
-      window.addEventListener('MSPointerDown', updateInput)
+      window.addEventListener('MSPointerDown', setInput)
       window.addEventListener('MSPointerMove', setIntent)
     } else {
       // mouse events
-      window.addEventListener('mousedown', updateInput)
+      window.addEventListener('mousedown', setInput)
       window.addEventListener('mousemove', setIntent)
 
       // touch events
       if ('ontouchstart' in window) {
-        window.addEventListener('touchstart', touchBuffer, options)
-        window.addEventListener('touchend', touchBuffer)
+        window.addEventListener('touchstart', eventBuffer, options)
+        window.addEventListener('touchend', setInput)
       }
     }
 
@@ -122,8 +125,8 @@ module.exports = (() => {
     window.addEventListener(detectWheel(), setIntent, options)
 
     // keyboard events
-    window.addEventListener('keydown', updateInput)
-    window.addEventListener('keyup', updateInput)
+    window.addEventListener('keydown', eventBuffer)
+    window.addEventListener('keyup', eventBuffer)
 
     // focus events
     window.addEventListener('focusin', setElement)
@@ -131,8 +134,8 @@ module.exports = (() => {
   }
 
   // checks conditions before updating new input
-  const updateInput = event => {
-    // only execute if the touch buffer timer isn't running
+  const setInput = event => {
+    // only execute if the event buffer timer isn't running
     if (!isBuffering) {
       let eventKey = event.which
       let value = inputMap[event.type]
@@ -184,7 +187,7 @@ module.exports = (() => {
     // test to see if `mousemove` happened relative to the screen to detect scrolling versus mousemove
     detectScrolling(event)
 
-    // only execute if the touch buffer timer isn't running
+    // only execute if the event buffer timer isn't running
     // or scrolling isn't happening
     if (!isBuffering && !isScrolling) {
       let value = inputMap[event.type]
@@ -218,16 +221,22 @@ module.exports = (() => {
     docElem.removeAttribute('data-whatclasses')
   }
 
-  // buffers touch events because they frequently also fire mouse events
-  const touchBuffer = event => {
-    if (event.type === 'touchstart') {
-      isBuffering = false
+  // buffers events that frequently also fire mouse events
+  const eventBuffer = event => {
+    // set the current input
+    setInput(event)
 
-      // set the current input
-      updateInput(event)
-    } else {
-      isBuffering = true
-    }
+    // clear the timer if it happens to be running
+    window.clearTimeout(eventTimer)
+
+    // set the isBuffering to `true`
+    isBuffering = true
+
+    // run the timer
+    eventTimer = window.setTimeout(() => {
+      // if the timer runs out, set isBuffering back to `false`
+      isBuffering = false
+    }, 100)
   }
 
   /*

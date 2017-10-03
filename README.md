@@ -8,18 +8,6 @@ Now with more information and less opinion!
 
 What Input adds data attributes to the `window` based on the type of input being used. It also exposes a simple API that can be used for scripting interactions.
 
-### Changes from v4
-
-* __Added:__ A the ability to add and remove custom callback function when the input or intent changes with `whatInput.registerOnChange` and `whatInput.unRegisterOnChange`.
-* __Added:__ A `data-whatelement` attribute exposes any currently focused DOM element (i.e. `data-whatelement="a"` or `data-whatelement="input"`).
-* __Added:__ A `data-whatclasses` attribute exposes any currently focused element's classes as a comma-separated list (i.e. `data-whatclasses="class1,class2"`).
-* __Added:__ An API option to provide a custom array of keycodes that will be ignored.
-* __Changed:__ Typing in form fields is no longer filtered out. The `data-whatinput` attribute immediately reflects the current input. The `data-whatintent` attribute now takes on the role of remembering mouse input prior to typing in or clicking on a form field.
-* __Changed:__ If you use the Tab key to move from one input to another one - the `data-whatinput` attribute reflects the current input (switches to "keyboard").
-* __Removed:__ `whatInput.types()` API option.
-* __Removed:__ Bower support.
-* __Fixed:__ Using mouse modifier keys (`shift`, `control`, `alt`, `cmd`) no longer toggles back to keyboard.
-
 ## How it works
 
 What Input uses event bubbling on the `window` to watch for mouse, keyboard and touch events (via `mousedown`, `keydown` and `touchstart`). It then sets or updates a `data-whatinput` attribute.
@@ -204,6 +192,24 @@ Add your own, or grab the bundle included here.
   <script src="lte-IE8.js"></script>
 <![endif]-->
 ```
+
+## Changelog
+
+### v5.0.3
+
+* __Fixed:__ Event buffer for touch was not working correctly.
+
+### Changes from v4
+
+* __Added:__ A the ability to add and remove custom callback function when the input or intent changes with `whatInput.registerOnChange` and `whatInput.unRegisterOnChange`.
+* __Added:__ A `data-whatelement` attribute exposes any currently focused DOM element (i.e. `data-whatelement="a"` or `data-whatelement="input"`).
+* __Added:__ A `data-whatclasses` attribute exposes any currently focused element's classes as a comma-separated list (i.e. `data-whatclasses="class1,class2"`).
+* __Added:__ An API option to provide a custom array of keycodes that will be ignored.
+* __Changed:__ Typing in form fields is no longer filtered out. The `data-whatinput` attribute immediately reflects the current input. The `data-whatintent` attribute now takes on the role of remembering mouse input prior to typing in or clicking on a form field.
+* __Changed:__ If you use the Tab key to move from one input to another one - the `data-whatinput` attribute reflects the current input (switches to "keyboard").
+* __Removed:__ `whatInput.types()` API option.
+* __Removed:__ Bower support.
+* __Fixed:__ Using mouse modifier keys (`shift`, `control`, `alt`, `cmd`) no longer toggles back to keyboard.
 
 ## Acknowledgments
 
