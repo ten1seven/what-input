@@ -23,6 +23,19 @@
   }
 }
 
+@mixin a11y-focus {
+  &:active,
+  &:focus {
+    box-shadow: 0 0 0 3px orange !important;
+    outline: none !important;
+  }
+
+  [data-whatintent='mouse'] &:active,
+  [data-whatintent='mouse'] &:focus {
+    box-shadow: none;
+  }
+}
+
 @mixin input-style-base {
   appearance: none;
   background-color: #fff;

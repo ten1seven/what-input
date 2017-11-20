@@ -15,6 +15,14 @@ body {
   padding: 0;
 }
 
+a,
+button,
+input,
+select,
+textarea {
+  @include a11y-focus;
+}
+
 a {
   color: #337ab7;
   text-decoration: none;

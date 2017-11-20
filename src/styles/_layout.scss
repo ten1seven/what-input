@@ -70,6 +70,7 @@
   }
 
   a {
+    @include a11y-focus;
     background-color: #fff;
     border: 1px solid #ddd;
     border-bottom: none;
@@ -124,7 +125,7 @@ form.well-column {
   }
 
   input {
-    &:not([type='submit']):not([type='checkbox']) {
+    &:not([type='submit']):not([type='checkbox']):not([type='radio']) {
       @include input-style-base;
       box-shadow: inset 0 1px 1px rgba(#000, 0.075);
       transition: all 0.2s ease;
@@ -135,10 +136,13 @@ form.well-column {
 
       [data-whatintent='mouse'] &:focus {
         border-color: #31708f;
-        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
-          0 0 8px rgba(49, 112, 143, 0.6);
-        outline: none;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(49, 112, 143, 0.6);
       }
+    }
+
+    &[type='checkbox'],
+    &[type='radio'] {
+      outline: none;
     }
   }
 
@@ -171,9 +175,7 @@ form.well-column {
 
     [data-whatintent='mouse'] &:focus {
       border-color: #31708f;
-      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
-        0 0 8px rgba(49, 112, 143, 0.6);
-      outline: none;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(49, 112, 143, 0.6);
     }
   }
 }
