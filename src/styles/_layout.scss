@@ -83,6 +83,11 @@
     @include hover {
       background-color: #f5f5f5;
     }
+
+    &:active,
+    &:focus {
+      position: relative;
+    }
   }
 }
 
