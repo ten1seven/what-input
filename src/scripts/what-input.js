@@ -203,8 +203,15 @@ module.exports = (() => {
   }
 
   const setElement = event => {
+    if (!event.target.nodeName) {
+      // If nodeName is undefined, clear the element
+      // This can happen if click inside an <svg> element.
+      clearElement()
+      return
+    }
+    
     currentElement = event.target.nodeName.toLowerCase()
-    docElem.setAttribute('data-whatelement', currentElement)
+    docElem.setAttribute('data-whatelement', currentElement) 
 
     if (event.target.classList && event.target.classList.length) {
       docElem.setAttribute(
