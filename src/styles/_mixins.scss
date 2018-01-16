@@ -32,7 +32,7 @@
 
   [data-whatintent='mouse'] &:active,
   [data-whatintent='mouse'] &:focus {
-    box-shadow: none;
+    box-shadow: none !important;
   }
 }
 
