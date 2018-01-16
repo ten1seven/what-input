@@ -209,9 +209,9 @@ module.exports = (() => {
       clearElement()
       return
     }
-    
+
     currentElement = event.target.nodeName.toLowerCase()
-    docElem.setAttribute('data-whatelement', currentElement) 
+    docElem.setAttribute('data-whatelement', currentElement)
 
     if (event.target.classList && event.target.classList.length) {
       docElem.setAttribute(
