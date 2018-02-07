@@ -1,6 +1,6 @@
 # What Input?
 
-__A global utility for tracking the current input method (mouse, keyboard or touch).__
+**A global utility for tracking the current input method (mouse, keyboard or touch).**
 
 ## What Input is now v5
 
@@ -90,10 +90,11 @@ What Input will start doing its thing while you do yours.
  */
 
 /* suppress focus ring on form controls for mouse users */
-[data-whatintent="mouse"] *:focus {
+[data-whatintent='mouse'] *:focus {
   outline: none;
 }
 ```
+
 **Note:** If you remove outlines with `outline: none;`, be sure to provide clear visual `:focus` styles so the user can see which element they are on at any time for greater accessibility. Visit [W3C's WCAG 2.0 2.4.7 Guideline](https://www.w3.org/TR/UNDERSTANDING-WCAG20/navigation-mechanisms-focus-visible.html) to learn more.
 
 ### Scripting
@@ -117,7 +118,6 @@ myButton.addEventListener('click', () => {
 If it's necessary to know if `mousemove` is being used, use the `'intent'` option. For example:
 
 ```javascript
-
 /*
  * nothing has happened but the mouse has moved
  */
@@ -166,16 +166,16 @@ Fire a function when the input or intent changes.
 // create a function to be fired
 var myFunction = function(type) {
   console.log(type)
-};
+}
 
 // fire `myFunction` when the intent changes
-whatInput.registerOnChange(myFunction, 'intent');
+whatInput.registerOnChange(myFunction, 'intent')
 
 // fire `myFunction` when the input changes
-whatInput.registerOnChange(myFunction, 'input');
+whatInput.registerOnChange(myFunction, 'input')
 
 // remove custom event
-whatInput.unRegisterOnChange(myFunction);
+whatInput.unRegisterOnChange(myFunction)
 ```
 
 ## Compatibility
@@ -195,21 +195,25 @@ Add your own, or grab the bundle included here.
 
 ## Changelog
 
+### v5.0.5
+
+* **Fixed:** Fail gracefully in non-DOM environments.
+
 ### v5.0.3
 
-* __Fixed:__ Event buffer for touch was not working correctly.
+* **Fixed:** Event buffer for touch was not working correctly.
 
 ### Changes from v4
 
-* __Added:__ A the ability to add and remove custom callback function when the input or intent changes with `whatInput.registerOnChange` and `whatInput.unRegisterOnChange`.
-* __Added:__ A `data-whatelement` attribute exposes any currently focused DOM element (i.e. `data-whatelement="a"` or `data-whatelement="input"`).
-* __Added:__ A `data-whatclasses` attribute exposes any currently focused element's classes as a comma-separated list (i.e. `data-whatclasses="class1,class2"`).
-* __Added:__ An API option to provide a custom array of keycodes that will be ignored.
-* __Changed:__ Typing in form fields is no longer filtered out. The `data-whatinput` attribute immediately reflects the current input. The `data-whatintent` attribute now takes on the role of remembering mouse input prior to typing in or clicking on a form field.
-* __Changed:__ If you use the Tab key to move from one input to another one - the `data-whatinput` attribute reflects the current input (switches to "keyboard").
-* __Removed:__ `whatInput.types()` API option.
-* __Removed:__ Bower support.
-* __Fixed:__ Using mouse modifier keys (`shift`, `control`, `alt`, `cmd`) no longer toggles back to keyboard.
+* **Added:** A the ability to add and remove custom callback function when the input or intent changes with `whatInput.registerOnChange` and `whatInput.unRegisterOnChange`.
+* **Added:** A `data-whatelement` attribute exposes any currently focused DOM element (i.e. `data-whatelement="a"` or `data-whatelement="input"`).
+* **Added:** A `data-whatclasses` attribute exposes any currently focused element's classes as a comma-separated list (i.e. `data-whatclasses="class1,class2"`).
+* **Added:** An API option to provide a custom array of keycodes that will be ignored.
+* **Changed:** Typing in form fields is no longer filtered out. The `data-whatinput` attribute immediately reflects the current input. The `data-whatintent` attribute now takes on the role of remembering mouse input prior to typing in or clicking on a form field.
+* **Changed:** If you use the Tab key to move from one input to another one - the `data-whatinput` attribute reflects the current input (switches to "keyboard").
+* **Removed:** `whatInput.types()` API option.
+* **Removed:** Bower support.
+* **Fixed:** Using mouse modifier keys (`shift`, `control`, `alt`, `cmd`) no longer toggles back to keyboard.
 
 ## Acknowledgments
 
