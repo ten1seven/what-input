@@ -64,6 +64,35 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = function () {
 	  /*
+	   * bail out if there is no document or window
+	   * (i.e. in a node/non-DOM environment)
+	   *
+	   * Return a stubbed API instead
+	   */
+	  if (typeof document === 'undefined' || typeof window === 'undefined') {
+	    return {
+	      // always return "initial" because no interaction will ever be detected
+	      ask: function ask() {
+	        return 'initial';
+	      },
+
+	      // always return null
+	      element: function element() {
+	        return null;
+	      },
+
+	      // no-op
+	      ignoreKeys: function ignoreKeys() {},
+
+	      // no-op
+	      registerOnChange: function registerOnChange() {},
+
+	      // no-op
+	      unRegisterOnChange: function unRegisterOnChange() {}
+	    };
+	  }
+
+	  /*
 	   * variables
 	   */
 

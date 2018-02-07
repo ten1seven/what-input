@@ -2,7 +2,7 @@ module.exports = (() => {
   /*
    * bail out if there is no document or window
    * (i.e. in a node/non-DOM environment)
-   * 
+   *
    * Return a stubbed API instead
    */
   if (typeof document === 'undefined' || typeof window === 'undefined') {
@@ -20,7 +20,7 @@ module.exports = (() => {
       registerOnChange: () => {},
 
       // no-op
-      unRegisterOnChange: () => {},
+      unRegisterOnChange: () => {}
     }
   }
 
