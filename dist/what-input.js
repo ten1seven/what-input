@@ -426,7 +426,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    unRegisterOnChange: function unRegisterOnChange(fn) {
 	      var position = objPos(fn);
 
-	      if (position) {
+	      if (position || position === 0) {
 	        functionList.splice(position, 1);
 	      }
 	    }
