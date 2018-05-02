@@ -195,6 +195,10 @@ Add your own, or grab the bundle included here.
 
 ## Changelog
 
+### v5.0.6
+
+* **Fixed:** `unRegisterOnChange` failed to unregister items at index 0.
+
 ### v5.0.5
 
 * **Fixed:** Fail gracefully in non-DOM environments.
