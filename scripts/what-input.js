@@ -1,6 +1,6 @@
 /**
  * what-input - A global utility for tracking the current input method (mouse, keyboard or touch).
- * @version v5.0.4
+ * @version v5.0.5
  * @link https://github.com/ten1seven/what-input
  * @license MIT
  */
@@ -63,6 +63,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	module.exports = function () {
+	  /*
+	   * bail out if there is no document or window
+	   * (i.e. in a node/non-DOM environment)
+	   *
+	   * Return a stubbed API instead
+	   */
+	  if (typeof document === 'undefined' || typeof window === 'undefined') {
+	    return {
+	      // always return "initial" because no interaction will ever be detected
+	      ask: function ask() {
+	        return 'initial';
+	      },
+
+	      // always return null
+	      element: function element() {
+	        return null;
+	      },
+
+	      // no-op
+	      ignoreKeys: function ignoreKeys() {},
+
+	      // no-op
+	      registerOnChange: function registerOnChange() {},
+
+	      // no-op
+	      unRegisterOnChange: function unRegisterOnChange() {}
+	    };
+	  }
+
 	  /*
 	   * variables
 	   */
@@ -397,7 +426,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    unRegisterOnChange: function unRegisterOnChange(fn) {
 	      var position = objPos(fn);
 
-	      if (position) {
+	      if (position || position === 0) {
 	        functionList.splice(position, 1);
 	      }
 	    }
