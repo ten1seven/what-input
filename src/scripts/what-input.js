@@ -380,7 +380,7 @@ module.exports = (() => {
     unRegisterOnChange: fn => {
       let position = objPos(fn)
 
-      if (position) {
+      if (position || position === 0) {
         functionList.splice(position, 1)
       }
     }
