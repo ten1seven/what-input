@@ -1,6 +1,6 @@
 /**
  * what-input - A global utility for tracking the current input method (mouse, keyboard or touch).
- * @version v5.0.7
+ * @version v5.1.0
  * @link https://github.com/ten1seven/what-input
  * @license MIT
  */
@@ -107,6 +107,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  // last used input intent
 	  var currentIntent = currentInput;
+
+	  // check for sessionStorage support
+	  // then check for session variables and use if available
+	  if (window.sessionStorage) {
+	    if (window.sessionStorage.getItem('what-input')) {
+	      currentInput = window.sessionStorage.getItem('what-input');
+	    }
+
+	    if (window.sessionStorage.getItem('what-intent')) {
+	      currentIntent = window.sessionStorage.getItem('what-intent');
+	    }
+	  }
 
 	  // event buffer timer
 	  var eventTimer = null;
@@ -237,6 +249,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (currentInput !== value && shouldUpdate) {
 	        currentInput = value;
+
+	        if (window.sessionStorage) {
+	          window.sessionStorage.setItem('what-input', currentInput);
+	        }
+
 	        doUpdate('input');
 	      }
 
@@ -247,6 +264,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        if (notFormInput) {
 	          currentIntent = value;
+
+	          if (window.sessionStorage) {
+	            window.sessionStorage.setItem('what-intent', currentIntent);
+	          }
+
 	          doUpdate('intent');
 	        }
 	      }
@@ -275,6 +297,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (currentIntent !== value) {
 	        currentIntent = value;
+
+	        if (window.sessionStorage) {
+	          window.sessionStorage.setItem('what-intent', currentIntent);
+	        }
+
 	        doUpdate('intent');
 	      }
 	    }

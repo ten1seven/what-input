@@ -40,6 +40,18 @@ module.exports = (() => {
   // last used input intent
   let currentIntent = currentInput
 
+  // check for sessionStorage support
+  // then check for session variables and use if available
+  if (window.sessionStorage) {
+    if (window.sessionStorage.getItem('what-input')) {
+      currentInput = window.sessionStorage.getItem('what-input')
+    }
+
+    if (window.sessionStorage.getItem('what-intent')) {
+      currentIntent = window.sessionStorage.getItem('what-intent')
+    }
+  }
+
   // event buffer timer
   let eventTimer = null
 
@@ -178,6 +190,11 @@ module.exports = (() => {
 
       if (currentInput !== value && shouldUpdate) {
         currentInput = value
+
+        if (window.sessionStorage) {
+          window.sessionStorage.setItem('what-input', currentInput)
+        }
+
         doUpdate('input')
       }
 
@@ -191,6 +208,11 @@ module.exports = (() => {
 
         if (notFormInput) {
           currentIntent = value
+
+          if (window.sessionStorage) {
+            window.sessionStorage.setItem('what-intent', currentIntent)
+          }
+
           doUpdate('intent')
         }
       }
@@ -222,6 +244,11 @@ module.exports = (() => {
 
       if (currentIntent !== value) {
         currentIntent = value
+
+        if (window.sessionStorage) {
+          window.sessionStorage.setItem('what-intent', currentIntent)
+        }
+
         doUpdate('intent')
       }
     }

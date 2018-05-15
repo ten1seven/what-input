@@ -180,22 +180,16 @@ whatInput.unRegisterOnChange(myFunction)
 
 ## Compatibility
 
-What Input works in all modern browsers. For compatibility with IE8, polyfills are required for:
-
-* addEventListener
-* IndexOf
-
-Add your own, or grab the bundle included here.
-
-```html
-<!--[if lte IE 8]>
-  <script src="lte-IE8.js"></script>
-<![endif]-->
-```
+What Input works in all modern browsers.
 
 ## Changelog
 
-### v5.0.6
+### v5.1.0
+
+* **Added:** Session variable stores last used input and intent so subsiquent page loads don't have to wait for interactions to set the correct input and intent state.
+* **Removed:** IE8 support.
+
+### v5.0.7
 
 * **Fixed:** `unRegisterOnChange` failed to unregister items at index 0.
 
