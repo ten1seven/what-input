@@ -41,7 +41,7 @@ gulp.task('clean', () => {
  * scripts tasks
  */
 
-gulp.task('scripts:main', () => {
+gulp.task('scripts', () => {
   return gulp
     .src(['./src/scripts/what-input.js'])
     .pipe(standard())
@@ -88,29 +88,12 @@ gulp.task('scripts:main', () => {
     .pipe(notify('Build complete'))
 })
 
-gulp.task('scripts:ie8', () => {
-  return gulp
-    .src(['./src/scripts/polyfills/ie8/*.js'])
-    .pipe(
-      plumber({
-        errorHandler: notify.onError('Error: <%= error.message %>')
-      })
-    )
-    .pipe(concat('lte-IE8.js'))
-    .pipe(uglify())
-    .pipe(gulp.dest('./dist/'))
-    .pipe(gulp.dest('./build/scripts/'))
-    .pipe(notify('IE8 scripts task complete'))
-})
-
-gulp.task('scripts', ['scripts:main', 'scripts:ie8'])
-
 /*
  * stylesheets
  */
 
 gulp.task('styles', () => {
-  var processors = [
+  let processors = [
     autoprefixer({
       browsers: ['last 3 versions', '> 1%', 'ie >= 10']
     }),
@@ -163,7 +146,7 @@ gulp.task('markup', () => {
  * deploy task
  */
 
-gulp.task('deploy', function() {
+gulp.task('deploy', () => {
   return gulp.src('./build/**/*').pipe(ghPages())
 })
 
