@@ -184,6 +184,10 @@ What Input works in all modern browsers.
 
 ## Changelog
 
+### v5.1.1
+
+* **Fixed:** Browsers with cookies turned off would throw an error with session storage. Fix via [yuheiy](https://github.com/yuheiy).
+
 ### v5.1.0
 
 * **Added:** Session variable stores last used input and intent so subsiquent page loads don't have to wait for interactions to set the correct input and intent state.
