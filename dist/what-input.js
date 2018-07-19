@@ -110,7 +110,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  // check for sessionStorage support
 	  // then check for session variables and use if available
-	  if (window.sessionStorage) {
+	  try {
 	    if (window.sessionStorage.getItem('what-input')) {
 	      currentInput = window.sessionStorage.getItem('what-input');
 	    }
@@ -118,7 +118,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (window.sessionStorage.getItem('what-intent')) {
 	      currentIntent = window.sessionStorage.getItem('what-intent');
 	    }
-	  }
+	  } catch (e) {}
 
 	  // event buffer timer
 	  var eventTimer = null;
@@ -250,9 +250,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (currentInput !== value && shouldUpdate) {
 	        currentInput = value;
 
-	        if (window.sessionStorage) {
+	        try {
 	          window.sessionStorage.setItem('what-input', currentInput);
-	        }
+	        } catch (e) {}
 
 	        doUpdate('input');
 	      }
@@ -265,9 +265,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (notFormInput) {
 	          currentIntent = value;
 
-	          if (window.sessionStorage) {
+	          try {
 	            window.sessionStorage.setItem('what-intent', currentIntent);
-	          }
+	          } catch (e) {}
 
 	          doUpdate('intent');
 	        }
@@ -298,9 +298,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (currentIntent !== value) {
 	        currentIntent = value;
 
-	        if (window.sessionStorage) {
+	        try {
 	          window.sessionStorage.setItem('what-intent', currentIntent);
-	        }
+	        } catch (e) {}
 
 	        doUpdate('intent');
 	      }
