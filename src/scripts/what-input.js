@@ -17,6 +17,9 @@ module.exports = (() => {
       ignoreKeys: () => {},
 
       // no-op
+      specificKeys: () => {},
+
+      // no-op
       registerOnChange: () => {},
 
       // no-op
@@ -70,6 +73,8 @@ module.exports = (() => {
     91, // Windows key / left Apple cmd
     93 // Windows menu / right Apple cmd
   ]
+
+  let specificMap = []
 
   // mapping of events to input types
   const inputMap = {
@@ -181,10 +186,18 @@ module.exports = (() => {
         value = pointerType(event)
       }
 
+      const ignoreMatch = (
+        !specificMap.length &&
+        ignoreMap.indexOf(eventKey) === -1
+      )
+
+      const specificMatch = (
+        specificMap.length &&
+        specificMap.indexOf(eventKey) !== -1
+      )
+
       let shouldUpdate =
-        (value === 'keyboard' &&
-          eventKey &&
-          ignoreMap.indexOf(eventKey) === -1) ||
+        value === 'keyboard' && eventKey && (ignoreMatch || specificMatch) ||
         value === 'mouse' ||
         value === 'touch'
 
@@ -392,6 +405,11 @@ module.exports = (() => {
     // overwrites ignored keys with provided array
     ignoreKeys: arr => {
       ignoreMap = arr
+    },
+
+    // overwrites specific char keys to update on
+    specificKeys: arr => {
+      specificMap = arr
     },
 
     // attach functions to input and intent "events"
