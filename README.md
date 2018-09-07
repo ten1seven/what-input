@@ -158,6 +158,15 @@ Set a custom array of [keycodes](http://keycode.info/) that will be ignored (wil
 whatInput.ignoreKeys([1, 2, 3])
 ```
 
+#### Specific Keys
+
+Set a custom array of [keycodes](http://keycode.info/) that will trigger the keyboard pressed intent (will not switch to `keyboard` unless these keys are pressed). _This overrides ignoreKeys._
+
+```javascript`
+// only listen to tab keyboard press
+whatInput.specificKeys([9])
+```
+
 #### Custom Callbacks
 
 Fire a function when the input or intent changes.

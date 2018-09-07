@@ -85,6 +85,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      ignoreKeys: function ignoreKeys() {},
 
 	      // no-op
+	      specificKeys: function specificKeys() {},
+
+	      // no-op
 	      registerOnChange: function registerOnChange() {},
 
 	      // no-op
@@ -137,6 +140,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  91, // Windows key / left Apple cmd
 	  93 // Windows menu / right Apple cmd
 	  ];
+
+	  var specificMap = [];
 
 	  // mapping of events to input types
 	  var inputMap = {
@@ -245,7 +250,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value = pointerType(event);
 	      }
 
-	      var shouldUpdate = value === 'keyboard' && eventKey && ignoreMap.indexOf(eventKey) === -1 || value === 'mouse' || value === 'touch';
+	      var ignoreMatch = !specificMap.length && ignoreMap.indexOf(eventKey) === -1;
+
+	      var specificMatch = specificMap.length && specificMap.indexOf(eventKey) !== -1;
+
+	      var shouldUpdate = value === 'keyboard' && eventKey && (ignoreMatch || specificMatch) || value === 'mouse' || value === 'touch';
 
 	      if (currentInput !== value && shouldUpdate) {
 	        currentInput = value;
@@ -438,6 +447,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // overwrites ignored keys with provided array
 	    ignoreKeys: function ignoreKeys(arr) {
 	      ignoreMap = arr;
+	    },
+
+	    // overwrites specific char keys to update on
+	    specificKeys: function specificKeys(arr) {
+	      specificMap = arr;
 	    },
 
 	    // attach functions to input and intent "events"
