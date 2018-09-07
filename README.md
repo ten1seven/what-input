@@ -162,7 +162,7 @@ whatInput.ignoreKeys([1, 2, 3])
 
 Set a custom array of [keycodes](http://keycode.info/) that will trigger the keyboard pressed intent (will not switch to `keyboard` unless these keys are pressed). _This overrides ignoreKeys._
 
-```javascript`
+```javascript
 // only listen to tab keyboard press
 whatInput.specificKeys([9])
 ```
@@ -192,6 +192,10 @@ whatInput.unRegisterOnChange(myFunction)
 What Input works in all modern browsers.
 
 ## Changelog
+
+### v5.1.2
+
+* **Added:** `specificKeys` functionality to allow overriding of keyboard keys list. Fix via [bk3](https://github.com/bk3).
 
 ### v5.1.1
 
