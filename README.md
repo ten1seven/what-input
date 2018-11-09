@@ -193,6 +193,10 @@ What Input works in all modern browsers.
 
 ## Changelog
 
+### v5.1.3
+
+- **Added:** Sourcemap for the minified version.
+
 ### v5.1.2
 
 - **Added:** `specificKeys` functionality to allow overriding of keyboard keys list. Fix via [bk3](https://github.com/bk3).
