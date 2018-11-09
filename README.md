@@ -195,40 +195,40 @@ What Input works in all modern browsers.
 
 ### v5.1.2
 
-* **Added:** `specificKeys` functionality to allow overriding of keyboard keys list. Fix via [bk3](https://github.com/bk3).
+- **Added:** `specificKeys` functionality to allow overriding of keyboard keys list. Fix via [bk3](https://github.com/bk3).
 
 ### v5.1.1
 
-* **Fixed:** Browsers with cookies turned off would throw an error with session storage. Fix via [yuheiy](https://github.com/yuheiy).
+- **Fixed:** Browsers with cookies turned off would throw an error with session storage. Fix via [yuheiy](https://github.com/yuheiy).
 
 ### v5.1.0
 
-* **Added:** Session variable stores last used input and intent so subsiquent page loads don't have to wait for interactions to set the correct input and intent state.
-* **Removed:** IE8 support.
+- **Added:** Session variable stores last used input and intent so subsiquent page loads don't have to wait for interactions to set the correct input and intent state.
+- **Removed:** IE8 support.
 
 ### v5.0.7
 
-* **Fixed:** `unRegisterOnChange` failed to unregister items at index 0.
+- **Fixed:** `unRegisterOnChange` failed to unregister items at index 0.
 
 ### v5.0.5
 
-* **Fixed:** Fail gracefully in non-DOM environments.
+- **Fixed:** Fail gracefully in non-DOM environments.
 
 ### v5.0.3
 
-* **Fixed:** Event buffer for touch was not working correctly.
+- **Fixed:** Event buffer for touch was not working correctly.
 
 ### Changes from v4
 
-* **Added:** A the ability to add and remove custom callback function when the input or intent changes with `whatInput.registerOnChange` and `whatInput.unRegisterOnChange`.
-* **Added:** A `data-whatelement` attribute exposes any currently focused DOM element (i.e. `data-whatelement="a"` or `data-whatelement="input"`).
-* **Added:** A `data-whatclasses` attribute exposes any currently focused element's classes as a comma-separated list (i.e. `data-whatclasses="class1,class2"`).
-* **Added:** An API option to provide a custom array of keycodes that will be ignored.
-* **Changed:** Typing in form fields is no longer filtered out. The `data-whatinput` attribute immediately reflects the current input. The `data-whatintent` attribute now takes on the role of remembering mouse input prior to typing in or clicking on a form field.
-* **Changed:** If you use the Tab key to move from one input to another one - the `data-whatinput` attribute reflects the current input (switches to "keyboard").
-* **Removed:** `whatInput.types()` API option.
-* **Removed:** Bower support.
-* **Fixed:** Using mouse modifier keys (`shift`, `control`, `alt`, `cmd`) no longer toggles back to keyboard.
+- **Added:** A the ability to add and remove custom callback function when the input or intent changes with `whatInput.registerOnChange` and `whatInput.unRegisterOnChange`.
+- **Added:** A `data-whatelement` attribute exposes any currently focused DOM element (i.e. `data-whatelement="a"` or `data-whatelement="input"`).
+- **Added:** A `data-whatclasses` attribute exposes any currently focused element's classes as a comma-separated list (i.e. `data-whatclasses="class1,class2"`).
+- **Added:** An API option to provide a custom array of keycodes that will be ignored.
+- **Changed:** Typing in form fields is no longer filtered out. The `data-whatinput` attribute immediately reflects the current input. The `data-whatintent` attribute now takes on the role of remembering mouse input prior to typing in or clicking on a form field.
+- **Changed:** If you use the Tab key to move from one input to another one - the `data-whatinput` attribute reflects the current input (switches to "keyboard").
+- **Removed:** `whatInput.types()` API option.
+- **Removed:** Bower support.
+- **Fixed:** Using mouse modifier keys (`shift`, `control`, `alt`, `cmd`) no longer toggles back to keyboard.
 
 ## Acknowledgments
 

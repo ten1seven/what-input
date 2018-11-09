@@ -1,14 +1,18 @@
 {
   "name": "what-input",
   "version": "5.1.2",
-  "description":
-    "A global utility for tracking the current input method (mouse, keyboard or touch).",
+  "description": "A global utility for tracking the current input method (mouse, keyboard or touch).",
   "main": "dist/what-input.js",
   "repository": {
     "url": "https://github.com/ten1seven/what-input.git",
     "type": "git"
   },
-  "keywords": ["accessibility", "a11y", "input", "javascript"],
+  "keywords": [
+    "accessibility",
+    "a11y",
+    "input",
+    "javascript"
+  ],
   "author": "Jeremy Fields <jeremy.fields@viget.com>",
   "license": "MIT",
   "bugs": {
@@ -32,6 +36,7 @@
     "gulp-cssnano": "^2.1.2",
     "gulp-gh-pages": "^0.5.4",
     "gulp-header": "1.7.1",
+    "gulp-load-plugins": "^1.5.0",
     "gulp-notify": "2.2.0",
     "gulp-plumber": "1.1.0",
     "gulp-postcss": "^6.4.0",
