@@ -71,6 +71,7 @@ gulp.task('scripts', () => {
     .pipe($.header(banner, { pkg: pkg }))
     .pipe(gulp.dest('./dist/'))
     .pipe(gulp.dest('./build/scripts/'))
+    .pipe($.sourcemaps.init())
     .pipe($.uglify())
     .pipe(
       $.rename({
@@ -78,6 +79,7 @@ gulp.task('scripts', () => {
       })
     )
     .pipe($.header(banner, { pkg: pkg }))
+    .pipe($.sourcemaps.write('./maps'))
     .pipe(gulp.dest('./dist/'))
     .pipe($.notify('Build complete'))
 })
