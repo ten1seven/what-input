@@ -304,7 +304,7 @@ module.exports = (() => {
     eventTimer = window.setTimeout(() => {
       // if the timer runs out, set isBuffering back to `false`
       isBuffering = false
-    }, 100)
+    }, 120)
   }
 
   /*

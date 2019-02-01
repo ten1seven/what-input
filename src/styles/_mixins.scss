@@ -31,7 +31,9 @@
   }
 
   [data-whatintent='mouse'] &:active,
-  [data-whatintent='mouse'] &:focus {
+  [data-whatintent='mouse'] &:focus,
+  [data-whatintent='touch'] &:active,
+  [data-whatintent='touch'] &:focus {
     box-shadow: none !important;
   }
 }
