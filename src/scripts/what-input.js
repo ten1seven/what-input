@@ -86,7 +86,8 @@ module.exports = (() => {
     MSPointerMove: 'pointer',
     pointerdown: 'pointer',
     pointermove: 'pointer',
-    touchstart: 'touch'
+    touchstart: 'touch',
+    touchend: 'touch'
   }
 
   // boolean: true if touch buffer is active

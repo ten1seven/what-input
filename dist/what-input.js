@@ -153,7 +153,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    MSPointerMove: 'pointer',
 	    pointerdown: 'pointer',
 	    pointermove: 'pointer',
-	    touchstart: 'touch'
+	    touchstart: 'touch',
+	    touchend: 'touch'
 
 	    // boolean: true if touch buffer is active
 	  };var isBuffering = false;
