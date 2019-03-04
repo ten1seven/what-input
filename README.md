@@ -193,6 +193,11 @@ What Input works in all modern browsers.
 
 ## Changelog
 
+### v5.1.4
+
+- **Fixed:** Increase buffering time by 20ms to fix iOS reporting mousedown
+- **Fixed:** Adds `touchend` to input map
+
 ### v5.1.3
 
 - **Added:** Sourcemap for the minified version.
