@@ -86,7 +86,8 @@ module.exports = (() => {
     MSPointerMove: 'pointer',
     pointerdown: 'pointer',
     pointermove: 'pointer',
-    touchstart: 'touch'
+    touchstart: 'touch',
+    touchend: 'touch'
   }
 
   // boolean: true if touch buffer is active
@@ -304,7 +305,7 @@ module.exports = (() => {
     eventTimer = window.setTimeout(() => {
       // if the timer runs out, set isBuffering back to `false`
       isBuffering = false
-    }, 100)
+    }, 120)
   }
 
   /*

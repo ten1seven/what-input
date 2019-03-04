@@ -1,6 +1,6 @@
 /**
  * what-input - A global utility for tracking the current input method (mouse, keyboard or touch).
- * @version v5.1.3
+ * @version v5.1.4
  * @link https://github.com/ten1seven/what-input
  * @license MIT
  */
@@ -153,7 +153,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    MSPointerMove: 'pointer',
 	    pointerdown: 'pointer',
 	    pointermove: 'pointer',
-	    touchstart: 'touch'
+	    touchstart: 'touch',
+	    touchend: 'touch'
 
 	    // boolean: true if touch buffer is active
 	  };var isBuffering = false;
@@ -354,7 +355,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    eventTimer = window.setTimeout(function () {
 	      // if the timer runs out, set isBuffering back to `false`
 	      isBuffering = false;
-	    }, 100);
+	    }, 120);
 	  };
 
 	  /*
