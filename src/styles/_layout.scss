@@ -3,8 +3,8 @@
   font-size: 14px;
   line-height: 1.4;
   margin: 0 auto;
-  padding: 0 ($unit * 2);
   max-width: $container-width;
+  padding: 0 ($unit * 2);
 
   @media (min-width: 800px) {
     padding: 0 ($unit * 3);
@@ -175,8 +175,8 @@ form.well-column {
     @include input-style-base;
     box-shadow: inset 0 1px 1px rgba(#000, 0.075);
     height: 5em;
-    padding-top: $unit;
     padding-bottom: $unit;
+    padding-top: $unit;
     transition: all 0.2s ease;
 
     [data-whatintent='mouse'] &:focus {
