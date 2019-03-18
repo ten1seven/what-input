@@ -90,25 +90,36 @@
 
     <script src="scripts/what-input.js"></script>
     <script>
-      var links = document.querySelectorAll('a');
-
+      // use `whatInput.ask()`
+      var links = document.querySelectorAll('a, button');
       for (var i = 0, len = links.length; i < len; i++) {
         links[i].addEventListener('click', function(event) {
-          console.log('[script test] ' + whatInput.ask() + ' ' + whatInput.element());
+          //console.log('[script test] ' + whatInput.ask() + ' ' + whatInput.element());
 
           event.preventDefault();
-        })
+        });
       }
 
+      var links = document.querySelectorAll('input, textarea, select');
+      for (var i = 0, len = links.length; i < len; i++) {
+        links[i].addEventListener('click', function(event) {
+          //console.log('[script test] ' + whatInput.ask() + ' ' + whatInput.element());
+        });
+      }
+
+      // use `whatInput.registerOnChange()`
       var myInputFunction = function(type) {
-        console.log('input: ' + type)
+        //console.log('input: ' + type)
       };
+
       var myIntentFunction = function(type) {
-        console.log('intent: ' + type)
+        //console.log('intent: ' + type)
       };
+
       whatInput.registerOnChange(myInputFunction);
       whatInput.registerOnChange(myIntentFunction, 'intent');
 
+      // don't let the form submit because it's not real
       var form = document.querySelector('form');
       form.addEventListener('submit', function(event) {
         event.preventDefault();
