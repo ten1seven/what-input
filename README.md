@@ -193,6 +193,10 @@ What Input works in all modern browsers.
 
 ## Changelog
 
+### v5.2.0
+
+- **Fixed:** iOS was occasionally reporting `mouse` because of event execution order
+
 ### v5.1.4
 
 - **Fixed:** Increase buffering time by 20ms to fix iOS reporting mousedown
