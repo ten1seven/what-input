@@ -43,6 +43,9 @@ module.exports = (() => {
   // last used input intent
   let currentIntent = currentInput
 
+  // UNIX timestamp of current event
+  let currentTimestamp = Date.now()
+
   // check for sessionStorage support
   // then check for session variables and use if available
   try {
@@ -54,9 +57,6 @@ module.exports = (() => {
       currentIntent = window.sessionStorage.getItem('what-intent')
     }
   } catch (e) {}
-
-  // event buffer timer
-  let eventTimer = null
 
   // form input types
   const formInputs = ['input', 'select', 'textarea']
@@ -89,9 +89,6 @@ module.exports = (() => {
     touchstart: 'touch',
     touchend: 'touch'
   }
-
-  // boolean: true if touch buffer is active
-  let isBuffering = false
 
   // boolean: true if the page is being scrolled
   let isScrolling = false
@@ -159,7 +156,7 @@ module.exports = (() => {
 
       // touch events
       if ('ontouchstart' in window) {
-        window.addEventListener('touchstart', eventBuffer, options)
+        window.addEventListener('touchstart', setInput, options)
         window.addEventListener('touchend', setInput)
       }
     }
@@ -168,8 +165,8 @@ module.exports = (() => {
     window.addEventListener(detectWheel(), setIntent, options)
 
     // keyboard events
-    window.addEventListener('keydown', eventBuffer)
-    window.addEventListener('keyup', eventBuffer)
+    window.addEventListener('keydown', setInput)
+    window.addEventListener('keyup', setInput)
 
     // focus events
     window.addEventListener('focusin', setElement)
@@ -178,53 +175,55 @@ module.exports = (() => {
 
   // checks conditions before updating new input
   const setInput = event => {
-    // only execute if the event buffer timer isn't running
-    if (!isBuffering) {
-      let eventKey = event.which
-      let value = inputMap[event.type]
+    let eventKey = event.which
+    let value = inputMap[event.type]
 
-      if (value === 'pointer') {
-        value = pointerType(event)
-      }
+    if (value === 'pointer') {
+      value = pointerType(event)
+    }
 
-      const ignoreMatch =
-        !specificMap.length && ignoreMap.indexOf(eventKey) === -1
+    const ignoreMatch =
+      !specificMap.length && ignoreMap.indexOf(eventKey) === -1
 
-      const specificMatch =
-        specificMap.length && specificMap.indexOf(eventKey) !== -1
+    const specificMatch =
+      specificMap.length && specificMap.indexOf(eventKey) !== -1
 
-      let shouldUpdate =
-        (value === 'keyboard' && eventKey && (ignoreMatch || specificMatch)) ||
-        value === 'mouse' ||
-        value === 'touch'
+    let shouldUpdate =
+      (value === 'keyboard' && eventKey && (ignoreMatch || specificMatch)) ||
+      value === 'mouse' ||
+      value === 'touch'
 
-      if (currentInput !== value && shouldUpdate) {
-        currentInput = value
+    // prevent touch detection from being overridden by event execution order
+    if (validateTouch(value)) {
+      shouldUpdate = false
+    }
+
+    if (shouldUpdate && currentInput !== value) {
+      currentInput = value
+
+      try {
+        window.sessionStorage.setItem('what-input', currentInput)
+      } catch (e) {}
+
+      doUpdate('input')
+    }
+
+    if (shouldUpdate && currentIntent !== value) {
+      // preserve intent for keyboard typing in form fields
+      let activeElem = document.activeElement
+      let notFormInput =
+        activeElem &&
+        activeElem.nodeName &&
+        formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1
+
+      if (notFormInput) {
+        currentIntent = value
 
         try {
-          window.sessionStorage.setItem('what-input', currentInput)
+          window.sessionStorage.setItem('what-intent', currentIntent)
         } catch (e) {}
 
-        doUpdate('input')
-      }
-
-      if (currentIntent !== value && shouldUpdate) {
-        // preserve intent for keyboard typing in form fields
-        let activeElem = document.activeElement
-        let notFormInput =
-          activeElem &&
-          activeElem.nodeName &&
-          formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1
-
-        if (notFormInput) {
-          currentIntent = value
-
-          try {
-            window.sessionStorage.setItem('what-intent', currentIntent)
-          } catch (e) {}
-
-          doUpdate('intent')
-        }
+        doUpdate('intent')
       }
     }
   }
@@ -241,26 +240,24 @@ module.exports = (() => {
 
   // updates input intent for `mousemove` and `pointermove`
   const setIntent = event => {
+    let value = inputMap[event.type]
+
+    if (value === 'pointer') {
+      value = pointerType(event)
+    }
+
     // test to see if `mousemove` happened relative to the screen to detect scrolling versus mousemove
     detectScrolling(event)
 
-    // only execute if the event buffer timer isn't running
-    // or scrolling isn't happening
-    if (!isBuffering && !isScrolling) {
-      let value = inputMap[event.type]
-      if (value === 'pointer') {
-        value = pointerType(event)
-      }
+    // only execute if scrolling isn't happening
+    if (!isScrolling && !validateTouch(value) && currentIntent !== value) {
+      currentIntent = value
 
-      if (currentIntent !== value) {
-        currentIntent = value
+      try {
+        window.sessionStorage.setItem('what-intent', currentIntent)
+      } catch (e) {}
 
-        try {
-          window.sessionStorage.setItem('what-intent', currentIntent)
-        } catch (e) {}
-
-        doUpdate('intent')
-      }
+      doUpdate('intent')
     }
   }
 
@@ -290,24 +287,6 @@ module.exports = (() => {
     docElem.removeAttribute('data-whatclasses')
   }
 
-  // buffers events that frequently also fire mouse events
-  const eventBuffer = event => {
-    // set the current input
-    setInput(event)
-
-    // clear the timer if it happens to be running
-    window.clearTimeout(eventTimer)
-
-    // set the isBuffering to `true`
-    isBuffering = true
-
-    // run the timer
-    eventTimer = window.setTimeout(() => {
-      // if the timer runs out, set isBuffering back to `false`
-      isBuffering = false
-    }, 120)
-  }
-
   /*
    * utilities
    */
@@ -319,6 +298,20 @@ module.exports = (() => {
       // treat pen like touch
       return event.pointerType === 'pen' ? 'touch' : event.pointerType
     }
+  }
+
+  // prevent touch detection from being overridden by event execution order
+  const validateTouch = value => {
+    let timestamp = Date.now()
+
+    let touchIsValid =
+      value === 'mouse' &&
+      currentInput === 'touch' &&
+      timestamp - currentTimestamp < 200
+
+    currentTimestamp = timestamp
+
+    return touchIsValid
   }
 
   // detect version of mouse wheel event to use
