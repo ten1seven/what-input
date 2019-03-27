@@ -193,9 +193,12 @@ What Input works in all modern browsers.
 
 ## Changelog
 
-### v5.2.0
+### v5.2.1
 
-- **Fixed:** iOS was occasionally reporting `mouse` because of event execution order
+- **Fixed:** iOS was occasionally reporting `mouse` because of event execution order.
+- **Added:** `touchend` to input map
+- **Added:** Allows buttons inside forms to be treated like other form inputs.
+- **Added:** iTouch intent indicator in demo page (it worked all along, you just couldn't see it).
 
 ### v5.1.4
 
