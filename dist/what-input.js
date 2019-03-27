@@ -409,15 +409,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  // manual version of `closest()`
 	  var checkClosest = function checkClosest(elem, tag) {
-	    do {
-	      if (elem.matches(tag)) {
-	        return elem;
-	      }
+	    if (!Element.prototype.matches) {
+	      Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+	    }
 
-	      elem = elem.parentElement || elem.parentNode;
-	    } while (elem !== null && elem.nodeType === 1);
+	    if (!Element.prototype.closest) {
+	      do {
+	        if (elem.matches(tag)) {
+	          return elem;
+	        }
 
-	    return null;
+	        elem = elem.parentElement || elem.parentNode;
+	      } while (elem !== null && elem.nodeType === 1);
+
+	      return null;
+	    } else {
+	      return elem.closest(tag);
+	    }
 	  };
 
 	  /*
