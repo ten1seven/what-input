@@ -212,14 +212,11 @@ module.exports = (() => {
       // preserve intent for keyboard interaction with form fields
       let activeElem = document.activeElement
       let notFormInput =
-        activeElem &&
-        activeElem.nodeName &&
-        formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1
-
-      // handle buttons outside forms
-      if (activeElem.nodeName.toLowerCase() === 'button' && !activeElem.closest('form')) {
-        notFormInput = true
-      }
+        (activeElem &&
+          activeElem.nodeName &&
+          formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1) ||
+        (activeElem.nodeName.toLowerCase() === 'button' &&
+          !activeElem.closest('form'))
 
       if (notFormInput) {
         currentIntent = value
