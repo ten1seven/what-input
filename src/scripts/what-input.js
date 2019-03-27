@@ -216,7 +216,7 @@ module.exports = (() => {
           activeElem.nodeName &&
           formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1) ||
         (activeElem.nodeName.toLowerCase() === 'button' &&
-          !activeElem.closest('form'))
+          !checkClosest(activeElem, 'form'))
 
       if (notFormInput) {
         currentIntent = value
@@ -364,6 +364,19 @@ module.exports = (() => {
     } else {
       isScrolling = true
     }
+  }
+
+  // manual version of `closest()`
+  const checkClosest = (elem, tag) => {
+    do {
+      if (elem.matches(tag)) {
+        return elem
+      }
+
+      elem = elem.parentElement || elem.parentNode
+    } while (elem !== null && elem.nodeType === 1)
+
+    return null;
   }
 
   /*
