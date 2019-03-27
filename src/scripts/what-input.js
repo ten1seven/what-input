@@ -71,7 +71,7 @@ module.exports = (() => {
     17, // control
     18, // alt
     91, // Windows key / left Apple cmd
-    93 // Windows menu / right Apple cmd
+    93  // Windows menu / right Apple cmd
   ]
 
   let specificMap = []
@@ -182,10 +182,10 @@ module.exports = (() => {
       value = pointerType(event)
     }
 
-    const ignoreMatch =
+    let ignoreMatch =
       !specificMap.length && ignoreMap.indexOf(eventKey) === -1
 
-    const specificMatch =
+    let specificMatch =
       specificMap.length && specificMap.indexOf(eventKey) !== -1
 
     let shouldUpdate =

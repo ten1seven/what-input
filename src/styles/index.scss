@@ -30,7 +30,8 @@
   color: orange;
 }
 
-[data-whatinput='touch'] .input-indicator.-touch {
+[data-whatinput='touch'] .input-indicator.-touch,
+[data-whatintent='touch'] .input-intent.-touch {
   background-color: rgba(#8a6d3b, 0.1);
   box-shadow: 0 0 0 1px rgba(#8a6d3b, 0.3);
   color: #8a6d3b;
