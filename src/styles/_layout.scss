@@ -144,6 +144,10 @@ form.well-column {
         box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
           0 0 8px rgba(49, 112, 143, 0.6);
       }
+
+      [data-whatinput='touch'] &:focus {
+        border-color: #8a6d3b;
+      }
     }
 
     &[type='checkbox'],
@@ -159,6 +163,16 @@ form.well-column {
     background-repeat: no-repeat;
     background-size: 10px 6px;
     padding-right: 30px;
+
+    [data-whatintent='mouse'] &:focus {
+      border-color: #31708f;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+        0 0 8px rgba(49, 112, 143, 0.6);
+    }
+
+    [data-whatinput='touch'] &:focus {
+      border-color: #8a6d3b;
+    }
 
     @media (min-width: 800px) {
       min-width: 50%;
@@ -178,6 +192,10 @@ form.well-column {
     padding-bottom: $unit;
     padding-top: $unit;
     transition: all 0.2s ease;
+
+    [data-whatinput='touch'] &:focus {
+      border-color: #8a6d3b;
+    }
 
     [data-whatintent='mouse'] &:focus {
       border-color: #31708f;
