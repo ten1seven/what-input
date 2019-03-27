@@ -368,11 +368,13 @@ module.exports = (() => {
 
   // manual version of `closest()`
   const checkClosest = (elem, tag) => {
-    if (!Element.prototype.matches) {
-      Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector
+    const ElementPrototype = window.Element.prototype
+
+    if (!ElementPrototype.matches) {
+      ElementPrototype.matches = ElementPrototype.msMatchesSelector || ElementPrototype.webkitMatchesSelector
     }
 
-    if (!Element.prototype.closest) {
+    if (!ElementPrototype.closest) {
       do {
         if (elem.matches(tag)) {
           return elem

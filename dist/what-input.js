@@ -409,11 +409,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  // manual version of `closest()`
 	  var checkClosest = function checkClosest(elem, tag) {
-	    if (!Element.prototype.matches) {
-	      Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+	    var ElementPrototype = window.Element.prototype;
+
+	    if (!ElementPrototype.matches) {
+	      ElementPrototype.matches = ElementPrototype.msMatchesSelector || ElementPrototype.webkitMatchesSelector;
 	    }
 
-	    if (!Element.prototype.closest) {
+	    if (!ElementPrototype.closest) {
 	      do {
 	        if (elem.matches(tag)) {
 	          return elem;
