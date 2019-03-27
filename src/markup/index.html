@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>What Input?</title>
 
-    <link rel="stylesheet" href="styles/index.css" />
+    <link rel="stylesheet" href="styles/index.css">
   </head>
   <body>
     <div class="container">
@@ -43,18 +43,22 @@
                 <a href="#">Vestibulum at eros</a>
               </li>
             </ul>
+
+            <p>
+              <button data-module="alert" data-message="Something!">Do Something</button>
+            </p>
           </div>
 
           <form class="well-column">
             <p>
               <label for="exampleInput">Example Text Input</label>
-              <input type="email" id="exampleInput" name="exampleInput" />
+              <input type="email" id="exampleInput" name="exampleInput">
             </p>
 
             <p>
               <label for="exampleSelect">Selection</label>
               <select id="exampleSelect" name="exampleSelect">
-                <option value="" disabled selected>Select an option</option>
+                <option value="" disabled selected>Select an Option</option>
                 <option>Option 1</option>
                 <option>Option 2</option>
                 <option>Option 3</option>
@@ -67,10 +71,12 @@
             </p>
 
             <p class="checkbox">
-              <label> <input type="checkbox" /> Check me out </label>
+              <label><input type="checkbox"> Check me out</label>
             </p>
 
-            <p><button type="submit">Submit</button></p>
+            <p>
+              <button type="submit">Form Submit</button>
+            </p>
           </form>
         </div>
       </div>
@@ -128,6 +134,15 @@
       form.addEventListener('submit', function(event) {
         event.preventDefault()
       })
+
+      // alert functionality
+      var alerts = document.querySelectorAll('[data-module="alert"]')
+      for (var i = 0, len = alerts.length; i < len; i++) {
+        alerts[i].addEventListener('click', function(event) {
+          alert(this.dataset.message)
+          event.preventDefault()
+        })
+      }
     </script>
   </body>
 </html>
