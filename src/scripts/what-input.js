@@ -59,7 +59,7 @@ module.exports = (() => {
   } catch (e) {}
 
   // form input types
-  const formInputs = ['input', 'select', 'textarea']
+  const formInputs = ['button', 'input', 'select', 'textarea']
 
   // empty array for holding callback functions
   let functionList = []
@@ -209,12 +209,17 @@ module.exports = (() => {
     }
 
     if (shouldUpdate && currentIntent !== value) {
-      // preserve intent for keyboard typing in form fields
+      // preserve intent for keyboard interaction with form fields
       let activeElem = document.activeElement
       let notFormInput =
         activeElem &&
         activeElem.nodeName &&
         formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1
+
+      // handle buttons outside forms
+      if (activeElem.nodeName.toLowerCase() === 'button' && !activeElem.closest('form')) {
+        notFormInput = true
+      }
 
       if (notFormInput) {
         currentIntent = value

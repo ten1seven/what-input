@@ -91,7 +91,7 @@
   }
 }
 
-form.well-column {
+.well-column {
   button {
     appearance: none;
     background-color: #337ab7;
@@ -148,11 +148,6 @@ form.well-column {
       [data-whatinput='touch'] &:focus {
         border-color: #8a6d3b;
       }
-    }
-
-    &[type='checkbox'],
-    &[type='radio'] {
-      outline: none;
     }
   }
 

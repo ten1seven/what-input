@@ -127,7 +127,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  } catch (e) {}
 
 	  // form input types
-	  var formInputs = ['input', 'select', 'textarea'];
+	  var formInputs = ['button', 'input', 'select', 'textarea'];
 
 	  // empty array for holding callback functions
 	  var functionList = [];
@@ -268,9 +268,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    if (shouldUpdate && currentIntent !== value) {
-	      // preserve intent for keyboard typing in form fields
+	      // preserve intent for keyboard interaction with form fields
 	      var activeElem = document.activeElement;
 	      var notFormInput = activeElem && activeElem.nodeName && formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1;
+
+	      // handle buttons outside forms
+	      if (activeElem.nodeName.toLowerCase() === 'button' && !activeElem.closest('form')) {
+	        notFormInput = true;
+	      }
 
 	      if (notFormInput) {
 	        currentIntent = value;
