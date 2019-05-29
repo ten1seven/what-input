@@ -71,7 +71,7 @@ module.exports = (() => {
     17, // control
     18, // alt
     91, // Windows key / left Apple cmd
-    93  // Windows menu / right Apple cmd
+    93 // Windows menu / right Apple cmd
   ]
 
   let specificMap = []
@@ -182,8 +182,7 @@ module.exports = (() => {
       value = pointerType(event)
     }
 
-    let ignoreMatch =
-      !specificMap.length && ignoreMap.indexOf(eventKey) === -1
+    let ignoreMatch = !specificMap.length && ignoreMap.indexOf(eventKey) === -1
 
     let specificMatch =
       specificMap.length && specificMap.indexOf(eventKey) !== -1
@@ -212,11 +211,11 @@ module.exports = (() => {
       // preserve intent for keyboard interaction with form fields
       let activeElem = document.activeElement
       let notFormInput =
-        (activeElem &&
-          activeElem.nodeName &&
-          formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1) ||
-        (activeElem.nodeName.toLowerCase() === 'button' &&
-          !checkClosest(activeElem, 'form'))
+        activeElem &&
+        activeElem.nodeName &&
+        (formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1 ||
+          (activeElem.nodeName.toLowerCase() === 'button' &&
+            !checkClosest(activeElem, 'form')))
 
       if (notFormInput) {
         currentIntent = value
@@ -371,7 +370,9 @@ module.exports = (() => {
     const ElementPrototype = window.Element.prototype
 
     if (!ElementPrototype.matches) {
-      ElementPrototype.matches = ElementPrototype.msMatchesSelector || ElementPrototype.webkitMatchesSelector
+      ElementPrototype.matches =
+        ElementPrototype.msMatchesSelector ||
+        ElementPrototype.webkitMatchesSelector
     }
 
     if (!ElementPrototype.closest) {
