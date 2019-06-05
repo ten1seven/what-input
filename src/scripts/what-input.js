@@ -251,7 +251,13 @@ module.exports = (() => {
     detectScrolling(event)
 
     // only execute if scrolling isn't happening
-    if (!isScrolling && !validateTouch(value) && currentIntent !== value) {
+    if (
+      ((!isScrolling && !validateTouch(value)) ||
+        ((isScrolling && event.type === 'wheel') ||
+          event.type === 'mousewheel' ||
+          event.type === 'DOMMouseScroll')) &&
+      currentIntent !== value
+    ) {
       currentIntent = value
 
       try {
@@ -316,9 +322,9 @@ module.exports = (() => {
   }
 
   // detect version of mouse wheel event to use
-  // via https://developer.mozilla.org/en-US/docs/Web/Events/wheel
+  // via https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event
   const detectWheel = () => {
-    let wheelType
+    let wheelType = null
 
     // Modern browsers support "wheel"
     if ('onwheel' in document.createElement('div')) {

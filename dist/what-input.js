@@ -1,6 +1,6 @@
 /**
  * what-input - A global utility for tracking the current input method (mouse, keyboard or touch).
- * @version v5.2.2
+ * @version v5.2.3
  * @link https://github.com/ten1seven/what-input
  * @license MIT
  */
@@ -303,7 +303,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    detectScrolling(event);
 
 	    // only execute if scrolling isn't happening
-	    if (!isScrolling && !validateTouch(value) && currentIntent !== value) {
+	    if ((!isScrolling && !validateTouch(value) || isScrolling && event.type === 'wheel' || event.type === 'mousewheel' || event.type === 'DOMMouseScroll') && currentIntent !== value) {
 	      currentIntent = value;
 
 	      try {
@@ -362,9 +362,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  // detect version of mouse wheel event to use
-	  // via https://developer.mozilla.org/en-US/docs/Web/Events/wheel
+	  // via https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event
 	  var detectWheel = function detectWheel() {
-	    var wheelType = void 0;
+	    var wheelType = null;
 
 	    // Modern browsers support "wheel"
 	    if ('onwheel' in document.createElement('div')) {
