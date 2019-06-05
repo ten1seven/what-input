@@ -193,6 +193,11 @@ What Input works in all modern browsers.
 
 ## Changelog
 
+### v5.2.3
+
+- **Fixed:** `activeElement` is null bug in IE is fixed (thanks @EasterPeanut).
+- **Fixed:** Mousewheel event detection works correctly again.
+
 ### v5.2.1
 
 - **Fixed:** iOS was occasionally reporting `mouse` because of event execution order.
