@@ -90,7 +90,7 @@
     <script src="scripts/what-input.js"></script>
     <script>
       // use `whatInput.ask()`
-      var links = document.querySelectorAll('a, button')
+      var links = document.querySelectorAll('.well a, .well button')
       for (var i = 0, len = links.length; i < len; i++) {
         links[i].addEventListener('click', function(event) {
           console.log(
@@ -101,9 +101,9 @@
         })
       }
 
-      var links = document.querySelectorAll('input, textarea, select')
-      for (var i = 0, len = links.length; i < len; i++) {
-        links[i].addEventListener('click', function(event) {
+      var formControls = document.querySelectorAll('input, textarea, select')
+      for (var i = 0, len = formControls.length; i < len; i++) {
+        formControls[i].addEventListener('click', function(event) {
           console.log(
             '[script test] ' + whatInput.ask() + ' ' + whatInput.element()
           )
