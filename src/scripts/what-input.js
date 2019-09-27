@@ -182,7 +182,8 @@ module.exports = (() => {
       value = pointerType(event)
     }
 
-    const ignoreMatch = !specificMap.length && ignoreMap.indexOf(eventKey) === -1
+    const ignoreMatch =
+      !specificMap.length && ignoreMap.indexOf(eventKey) === -1
 
     const specificMatch =
       specificMap.length && specificMap.indexOf(eventKey) !== -1

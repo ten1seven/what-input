@@ -148,26 +148,31 @@ function deploy() {
  * default task
  */
 
-exports.default = gulp.series(clean, gulp.parallel(markup, scripts, styles, images))
-// gulp.task('default', () => {
-//   gulp.series('clean', gulp.parallel('markup', 'scripts', 'styles', 'images'), () => {
-//     $.browserSync.init({
-//       server: {
-//         baseDir: './build/'
-//       }
-//     })
+function watch() {
+  $.browserSync.init({
+    server: {
+      baseDir: './build/'
+    }
+  })
 
-//     gulp
-//       .watch(
-//         ['./src/scripts/what-input.js', './src/scripts/polyfills/*.js'],
-//         ['scripts']
-//       )
-//       .on('change', $.browserSync.reload)
+  gulp.watch(
+    ['./src/scripts/what-input.js', './src/scripts/polyfills/*.js'],
+    scripts,
+    { events: 'all' },
+    function() {
+      $.browserSync.reload
+    }
+  )
 
-//     gulp.watch(['./src/styles/{,*/}{,*/}*.scss'], ['styles'])
+  gulp.watch(['./src/styles/{,*/}{,*/}*.scss'], styles)
 
-//     gulp
-//       .watch(['./src/markup/*.html'], ['markup'])
-//       .on('change', $.browserSync.reload)
-//   })
-// })
+  gulp.watch(['./src/markup/*.html'], markup, { events: 'all' }, function() {
+    $.browserSync.reload
+  })
+}
+
+exports.default = gulp.series(
+  clean,
+  gulp.parallel(markup, scripts, styles, images),
+  watch
+)
