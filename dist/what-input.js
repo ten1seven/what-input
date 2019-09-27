@@ -397,11 +397,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  var detectScrolling = function detectScrolling(event) {
-	    if (mousePos['x'] !== event.screenX || mousePos['y'] !== event.screenY) {
+	    if (mousePos.x !== event.screenX || mousePos.y !== event.screenY) {
 	      isScrolling = false;
 
-	      mousePos['x'] = event.screenX;
-	      mousePos['y'] = event.screenY;
+	      mousePos.x = event.screenX;
+	      mousePos.y = event.screenY;
 	    } else {
 	      isScrolling = true;
 	    }

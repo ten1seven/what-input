@@ -62,7 +62,7 @@ module.exports = (() => {
   const formInputs = ['button', 'input', 'select', 'textarea']
 
   // empty array for holding callback functions
-  let functionList = []
+  const functionList = []
 
   // list of modifier keys commonly used with the mouse and
   // can be safely ignored to prevent false keyboard detection
@@ -94,7 +94,7 @@ module.exports = (() => {
   let isScrolling = false
 
   // store current mouse position
-  let mousePos = {
+  const mousePos = {
     x: null,
     y: null
   }
@@ -110,7 +110,7 @@ module.exports = (() => {
   let supportsPassive = false
 
   try {
-    let opts = Object.defineProperty({}, 'passive', {
+    const opts = Object.defineProperty({}, 'passive', {
       get: () => {
         supportsPassive = true
       }
@@ -175,16 +175,16 @@ module.exports = (() => {
 
   // checks conditions before updating new input
   const setInput = event => {
-    let eventKey = event.which
+    const eventKey = event.which
     let value = inputMap[event.type]
 
     if (value === 'pointer') {
       value = pointerType(event)
     }
 
-    let ignoreMatch = !specificMap.length && ignoreMap.indexOf(eventKey) === -1
+    const ignoreMatch = !specificMap.length && ignoreMap.indexOf(eventKey) === -1
 
-    let specificMatch =
+    const specificMatch =
       specificMap.length && specificMap.indexOf(eventKey) !== -1
 
     let shouldUpdate =
@@ -209,8 +209,8 @@ module.exports = (() => {
 
     if (shouldUpdate && currentIntent !== value) {
       // preserve intent for keyboard interaction with form fields
-      let activeElem = document.activeElement
-      let notFormInput =
+      const activeElem = document.activeElement
+      const notFormInput =
         activeElem &&
         activeElem.nodeName &&
         (formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1 ||
@@ -309,9 +309,9 @@ module.exports = (() => {
 
   // prevent touch detection from being overridden by event execution order
   const validateTouch = value => {
-    let timestamp = Date.now()
+    const timestamp = Date.now()
 
-    let touchIsValid =
+    const touchIsValid =
       value === 'mouse' &&
       currentInput === 'touch' &&
       timestamp - currentTimestamp < 200
@@ -361,11 +361,11 @@ module.exports = (() => {
   }
 
   const detectScrolling = event => {
-    if (mousePos['x'] !== event.screenX || mousePos['y'] !== event.screenY) {
+    if (mousePos.x !== event.screenX || mousePos.y !== event.screenY) {
       isScrolling = false
 
-      mousePos['x'] = event.screenX
-      mousePos['y'] = event.screenY
+      mousePos.x = event.screenX
+      mousePos.y = event.screenY
     } else {
       isScrolling = true
     }
@@ -445,7 +445,7 @@ module.exports = (() => {
     },
 
     unRegisterOnChange: fn => {
-      let position = objPos(fn)
+      const position = objPos(fn)
 
       if (position || position === 0) {
         functionList.splice(position, 1)
