@@ -27,15 +27,15 @@ const $ = require('gulp-load-plugins')({
  * clean task
  */
 
-gulp.task('clean', () => {
+function clean() {
   return $.del(['**/.DS_Store', './build/*', './dist/*'])
-})
+}
 
 /*
  * scripts tasks
  */
 
-gulp.task('scripts', () => {
+function scripts() {
   return gulp
     .src(['./src/scripts/what-input.js'])
     .pipe($.standard())
@@ -82,17 +82,15 @@ gulp.task('scripts', () => {
     .pipe($.sourcemaps.write('./maps'))
     .pipe(gulp.dest('./dist/'))
     .pipe($.notify('Build complete'))
-})
+}
 
 /*
  * stylesheets
  */
 
-gulp.task('styles', () => {
+function styles() {
   let processors = [
-    $.autoprefixer({
-      browsers: ['last 3 versions', '> 1%', 'ie >= 10']
-    }),
+    $.autoprefixer(),
     $.cssMqpacker({
       sort: true
     })
@@ -120,55 +118,56 @@ gulp.task('styles', () => {
     .pipe(gulp.dest('./build/styles'))
     .pipe($.browserSync.stream())
     .pipe($.notify('Styles task complete'))
-})
+}
 
 /*
  * images task
  */
 
-gulp.task('images', () => {
+function images() {
   return gulp.src(['./src/images/**/*']).pipe(gulp.dest('./build/images'))
-})
+}
 
 /*
  * markup task
  */
 
-gulp.task('markup', () => {
+function markup() {
   return gulp.src(['./src/markup/*']).pipe(gulp.dest('./build'))
-})
+}
 
 /*
  * deploy task
  */
 
-gulp.task('deploy', () => {
+function deploy() {
   return gulp.src('./build/**/*').pipe($.ghPages())
-})
+}
 
 /*
  * default task
  */
 
-gulp.task('default', () => {
-  $.runSequence('clean', ['markup', 'scripts', 'styles', 'images'], () => {
-    $.browserSync.init({
-      server: {
-        baseDir: './build/'
-      }
-    })
+exports.default = gulp.series(clean, gulp.parallel(markup, scripts, styles, images))
+// gulp.task('default', () => {
+//   gulp.series('clean', gulp.parallel('markup', 'scripts', 'styles', 'images'), () => {
+//     $.browserSync.init({
+//       server: {
+//         baseDir: './build/'
+//       }
+//     })
 
-    gulp
-      .watch(
-        ['./src/scripts/what-input.js', './src/scripts/polyfills/*.js'],
-        ['scripts']
-      )
-      .on('change', $.browserSync.reload)
+//     gulp
+//       .watch(
+//         ['./src/scripts/what-input.js', './src/scripts/polyfills/*.js'],
+//         ['scripts']
+//       )
+//       .on('change', $.browserSync.reload)
 
-    gulp.watch(['./src/styles/{,*/}{,*/}*.scss'], ['styles'])
+//     gulp.watch(['./src/styles/{,*/}{,*/}*.scss'], ['styles'])
 
-    gulp
-      .watch(['./src/markup/*.html'], ['markup'])
-      .on('change', $.browserSync.reload)
-  })
-})
+//     gulp
+//       .watch(['./src/markup/*.html'], ['markup'])
+//       .on('change', $.browserSync.reload)
+//   })
+// })
