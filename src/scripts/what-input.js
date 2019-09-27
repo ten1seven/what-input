@@ -46,17 +46,25 @@ module.exports = (() => {
   // UNIX timestamp of current event
   let currentTimestamp = Date.now()
 
-  // check for sessionStorage support
-  // then check for session variables and use if available
-  try {
-    if (window.sessionStorage.getItem('what-input')) {
-      currentInput = window.sessionStorage.getItem('what-input')
-    }
+  // check for a `data-whatpersist` attribute on either the `html` or `body` elements, defaults to `true`
+  const shouldPersist = !(
+    docElem.dataset.whatpersist || document.body.dataset.whatpersist === 'false'
+  )
 
-    if (window.sessionStorage.getItem('what-intent')) {
-      currentIntent = window.sessionStorage.getItem('what-intent')
+  if (shouldPersist) {
+    // check for session variables and use if available
+    try {
+      if (window.sessionStorage.getItem('what-input')) {
+        currentInput = window.sessionStorage.getItem('what-input')
+      }
+
+      if (window.sessionStorage.getItem('what-intent')) {
+        currentIntent = window.sessionStorage.getItem('what-intent')
+      }
+    } catch (e) {
+      // fail silently
     }
-  } catch (e) {}
+  }
 
   // form input types
   const formInputs = ['button', 'input', 'select', 'textarea']
@@ -117,7 +125,9 @@ module.exports = (() => {
     })
 
     window.addEventListener('test', null, opts)
-  } catch (e) {}
+  } catch (e) {
+    // fail silently
+  }
 
   /*
    * set up
@@ -201,10 +211,7 @@ module.exports = (() => {
     if (shouldUpdate && currentInput !== value) {
       currentInput = value
 
-      try {
-        window.sessionStorage.setItem('what-input', currentInput)
-      } catch (e) {}
-
+      persistInput('input', currentInput)
       doUpdate('input')
     }
 
@@ -221,10 +228,7 @@ module.exports = (() => {
       if (notFormInput) {
         currentIntent = value
 
-        try {
-          window.sessionStorage.setItem('what-intent', currentIntent)
-        } catch (e) {}
-
+        persistInput('intent', currentIntent)
         doUpdate('intent')
       }
     }
@@ -261,10 +265,7 @@ module.exports = (() => {
     ) {
       currentIntent = value
 
-      try {
-        window.sessionStorage.setItem('what-intent', currentIntent)
-      } catch (e) {}
-
+      persistInput('intent', currentIntent)
       doUpdate('intent')
     }
   }
@@ -293,6 +294,14 @@ module.exports = (() => {
 
     docElem.removeAttribute('data-whatelement')
     docElem.removeAttribute('data-whatclasses')
+  }
+
+  const persistInput = (which, value) => {
+    try {
+      window.sessionStorage.setItem('what-' + which, value)
+    } catch (e) {
+      // fail silently
+    }
   }
 
   /*
@@ -451,6 +460,10 @@ module.exports = (() => {
       if (position || position === 0) {
         functionList.splice(position, 1)
       }
+    },
+
+    clearStorage: () => {
+      window.sessionStorage.clear()
     }
   }
 })()

@@ -2,31 +2,31 @@
 
 **A global utility for tracking the current input method (mouse, keyboard or touch).**
 
-## What Input is now v5
+## _What Input_ is now v5
 
 Now with more information and less opinion!
 
-What Input adds data attributes to the `window` based on the type of input being used. It also exposes a simple API that can be used for scripting interactions.
+_What Input_ adds data attributes to the `window` based on the type of input being used. It also exposes a simple API that can be used for scripting interactions.
 
 ## How it works
 
-What Input uses event bubbling on the `window` to watch for mouse, keyboard and touch events (via `mousedown`, `keydown` and `touchstart`). It then sets or updates a `data-whatinput` attribute.
+_What Input_ uses event bubbling on the `window` to watch for mouse, keyboard and touch events (via `mousedown`, `keydown` and `touchstart`). It then sets or updates a `data-whatinput` attribute.
 
 Pointer Events are supported but note that `pen` inputs are remapped to `touch`.
 
-What Input also exposes a tiny API that allows the developer to ask for the current input, set custom ignore keys, and set and remove custom callback functions.
+_What Input_ also exposes a tiny API that allows the developer to ask for the current input, set custom ignore keys, and set and remove custom callback functions.
 
 _What Input does not make assumptions about the input environment before the page is interacted with._ However, the `mousemove` and `pointermove` events are used to set a `data-whatintent="mouse"` attribute to indicate that a mouse is being used _indirectly_.
 
 ## Demo
 
-Check out the demo to see What Input in action.
+Check out the demo to see _What Input_ in action.
 
 https://ten1seven.github.io/what-input
 
 ### Interacting with Forms
 
-Since interacting with a form _always_ requires use of the keyboard, What Input uses the `data-whatintent` attribute to display a "buffered" version of input events while form `<input>`s, `<select>`s, and `<textarea>`s are being interacted with (i.e. mouse user's `data-whatintent` will be preserved as `mouse` while typing).
+Since interacting with a form _always_ requires use of the keyboard, _What Input_ uses the `data-whatintent` attribute to display a "buffered" version of input events while form `<input>`s, `<select>`s, and `<textarea>`s are being interacted with (i.e. mouse user's `data-whatintent` will be preserved as `mouse` while typing).
 
 ## Installing
 
@@ -80,7 +80,35 @@ requirejs.config({
 require(['whatInput'], function() {})
 ```
 
-What Input will start doing its thing while you do yours.
+_What Input_ will start doing its thing while you do yours.
+
+### Default Behavior
+
+#### Persisting Input/Intent Across Pages
+
+By default, _What Input_ uses [session storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage) to persist the input and intent values across pages. The benefit is that once a visitor has interacted with the page, subsequent pages won't have to wait for interactions to know the input method.
+
+This behavior can be disabled by adding a `data-whatpersist="false"` attribute on either the `<html>` or `<body>`.
+
+```html
+<html dir="ltr" lang="en" data-whatpersist="false">
+  ...
+</html>
+```
+
+or
+
+```html
+<body data-whatpersist="false">
+  ...
+</body>
+```
+
+Session storage can be cleared at any time with:
+
+```javascript
+whatInput.clearStorage()
+```
 
 ### Basic Styling
 
@@ -101,7 +129,7 @@ What Input will start doing its thing while you do yours.
 
 #### Current Input
 
-Ask What Input what the current input method is. This works best if asked after the events What Input is bound to (`mousedown`, `keydown` and `touchstart`).
+Ask _What Input_ what the current input method is. This works best if asked after the events _What Input_ is bound to (`mousedown`, `keydown` and `touchstart`).
 
 ```javascript
 whatInput.ask() // returns `mouse`, `keyboard` or `touch`
@@ -135,7 +163,7 @@ whatInput.ask('intent') // returns `mouse` because mouse movement was the most r
 
 ### Current Element
 
-Ask What Input the currently focused DOM element.
+Ask _What Input_ the currently focused DOM element.
 
 ```javascript
 whatInput.element() // returns a string, like `input` or null
@@ -189,9 +217,14 @@ whatInput.unRegisterOnChange(myFunction)
 
 ## Compatibility
 
-What Input works in all modern browsers.
+_What Input_ works in all modern browsers.
 
 ## Changelog
+
+### v5.2.4
+
+- **Added:** Ability to add `data-whatpersist="false"` attribute to the `<html>` or `<body>` tag to disable usage of session storage to persist input/intent across pages.
+- **Updated:** Build tools and added linting.
 
 ### v5.2.3
 
@@ -224,7 +257,7 @@ What Input works in all modern browsers.
 
 ### v5.1.0
 
-- **Added:** Session variable stores last used input and intent so subsiquent page loads don't have to wait for interactions to set the correct input and intent state.
+- **Added:** Session variable stores last used input and intent so subsequent page loads don't have to wait for interactions to set the correct input and intent state.
 - **Removed:** IE8 support.
 
 ### v5.0.7
@@ -257,8 +290,8 @@ Special thanks to [Viget](http://viget.com/) for their encouragement and commitm
 
 Thanks to [mAAdhaTTah](https://github.com/mAAdhaTTah) for the initial conversion to Webpack.
 
-What Input is written and maintained by [@ten1seven](https://github.com/ten1seven).
+_What Input_ is written and maintained by [@ten1seven](https://github.com/ten1seven).
 
 ## License
 
-What Input is freely available under the [MIT License](http://opensource.org/licenses/MIT).
+_What Input_ is freely available under the [MIT License](http://opensource.org/licenses/MIT).

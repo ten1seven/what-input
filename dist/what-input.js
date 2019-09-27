@@ -1,6 +1,6 @@
 /**
  * what-input - A global utility for tracking the current input method (mouse, keyboard or touch).
- * @version v5.2.3
+ * @version v5.2.4
  * @link https://github.com/ten1seven/what-input
  * @license MIT
  */
@@ -114,17 +114,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // UNIX timestamp of current event
 	  var currentTimestamp = Date.now();
 
-	  // check for sessionStorage support
-	  // then check for session variables and use if available
-	  try {
-	    if (window.sessionStorage.getItem('what-input')) {
-	      currentInput = window.sessionStorage.getItem('what-input');
-	    }
+	  // check for a `data-whatpersist` attribute on either the `html` or `body` elements, defaults to `true`
+	  var shouldPersist = !(docElem.dataset.whatpersist || document.body.dataset.whatpersist === 'false');
 
-	    if (window.sessionStorage.getItem('what-intent')) {
-	      currentIntent = window.sessionStorage.getItem('what-intent');
+	  if (shouldPersist) {
+	    // check for session variables and use if available
+	    try {
+	      if (window.sessionStorage.getItem('what-input')) {
+	        currentInput = window.sessionStorage.getItem('what-input');
+	      }
+
+	      if (window.sessionStorage.getItem('what-intent')) {
+	        currentIntent = window.sessionStorage.getItem('what-intent');
+	      }
+	    } catch (e) {
+	      // fail silently
 	    }
-	  } catch (e) {}
+	  }
 
 	  // form input types
 	  var formInputs = ['button', 'input', 'select', 'textarea'];
@@ -182,6 +188,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    window.addEventListener('test', null, opts);
 	  } catch (e) {}
+	  // fail silently
+
 
 	  /*
 	   * set up
@@ -260,10 +268,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (shouldUpdate && currentInput !== value) {
 	      currentInput = value;
 
-	      try {
-	        window.sessionStorage.setItem('what-input', currentInput);
-	      } catch (e) {}
-
+	      persistInput('input', currentInput);
 	      doUpdate('input');
 	    }
 
@@ -275,10 +280,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (notFormInput) {
 	        currentIntent = value;
 
-	        try {
-	          window.sessionStorage.setItem('what-intent', currentIntent);
-	        } catch (e) {}
-
+	        persistInput('intent', currentIntent);
 	        doUpdate('intent');
 	      }
 	    }
@@ -306,10 +308,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if ((!isScrolling && !validateTouch(value) || isScrolling && event.type === 'wheel' || event.type === 'mousewheel' || event.type === 'DOMMouseScroll') && currentIntent !== value) {
 	      currentIntent = value;
 
-	      try {
-	        window.sessionStorage.setItem('what-intent', currentIntent);
-	      } catch (e) {}
-
+	      persistInput('intent', currentIntent);
 	      doUpdate('intent');
 	    }
 	  };
@@ -335,6 +334,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    docElem.removeAttribute('data-whatelement');
 	    docElem.removeAttribute('data-whatclasses');
+	  };
+
+	  var persistInput = function persistInput(which, value) {
+	    try {
+	      window.sessionStorage.setItem('what-' + which, value);
+	    } catch (e) {
+	      // fail silently
+	    }
 	  };
 
 	  /*
@@ -484,6 +491,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (position || position === 0) {
 	        functionList.splice(position, 1);
 	      }
+	    },
+
+	    clearStorage: function clearStorage() {
+	      window.sessionStorage.clear();
 	    }
 	  };
 	}();
