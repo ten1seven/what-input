@@ -1,6 +1,6 @@
 /**
  * what-input - A global utility for tracking the current input method (mouse, keyboard or touch).
- * @version v5.2.4
+ * @version v5.2.5
  * @link https://github.com/ten1seven/what-input
  * @license MIT
  */
@@ -115,7 +115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var currentTimestamp = Date.now();
 
 	  // check for a `data-whatpersist` attribute on either the `html` or `body` elements, defaults to `true`
-	  var shouldPersist = !(docElem.dataset.whatpersist || document.body.dataset.whatpersist === 'false');
+	  var shouldPersist = !(docElem.getAttribute('data-whatpersist') || document.body.getAttribute('data-whatpersist') === 'false');
 
 	  if (shouldPersist) {
 	    // check for session variables and use if available

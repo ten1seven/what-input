@@ -48,7 +48,8 @@ module.exports = (() => {
 
   // check for a `data-whatpersist` attribute on either the `html` or `body` elements, defaults to `true`
   const shouldPersist = !(
-    docElem.dataset.whatpersist || document.body.dataset.whatpersist === 'false'
+    docElem.getAttribute('data-whatpersist') ||
+    document.body.getAttribute('data-whatpersist') === 'false'
   )
 
   if (shouldPersist) {
