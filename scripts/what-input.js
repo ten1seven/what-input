@@ -1,6 +1,6 @@
 /**
  * what-input - A global utility for tracking the current input method (mouse, keyboard or touch).
- * @version v5.2.5
+ * @version v5.2.6
  * @link https://github.com/ten1seven/what-input
  * @license MIT
  */
@@ -115,22 +115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var currentTimestamp = Date.now();
 
 	  // check for a `data-whatpersist` attribute on either the `html` or `body` elements, defaults to `true`
-	  var shouldPersist = !(docElem.getAttribute('data-whatpersist') || document.body.getAttribute('data-whatpersist') === 'false');
-
-	  if (shouldPersist) {
-	    // check for session variables and use if available
-	    try {
-	      if (window.sessionStorage.getItem('what-input')) {
-	        currentInput = window.sessionStorage.getItem('what-input');
-	      }
-
-	      if (window.sessionStorage.getItem('what-intent')) {
-	        currentIntent = window.sessionStorage.getItem('what-intent');
-	      }
-	    } catch (e) {
-	      // fail silently
-	    }
-	  }
+	  var shouldPersist = 'false';
 
 	  // form input types
 	  var formInputs = ['button', 'input', 'select', 'textarea'];
@@ -200,8 +185,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    inputMap[detectWheel()] = 'mouse';
 
 	    addListeners();
-	    doUpdate('input');
-	    doUpdate('intent');
 	  };
 
 	  /*
@@ -213,6 +196,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // can only demonstrate potential, but not actual, interaction
 	    // and are treated separately
 	    var options = supportsPassive ? { passive: true } : false;
+
+	    document.addEventListener('DOMContentLoaded', setPersist);
 
 	    // pointer events (mouse, pen, touch)
 	    if (window.PointerEvent) {
@@ -243,6 +228,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // focus events
 	    window.addEventListener('focusin', setElement);
 	    window.addEventListener('focusout', clearElement);
+	  };
+
+	  // checks if input persistence should happen and
+	  // get saved state from session storage if true (defaults to `false`)
+	  var setPersist = function setPersist() {
+	    shouldPersist = !(docElem.getAttribute('data-whatpersist') || document.body.getAttribute('data-whatpersist') === 'false');
+
+	    if (shouldPersist) {
+	      // check for session variables and use if available
+	      try {
+	        if (window.sessionStorage.getItem('what-input')) {
+	          currentInput = window.sessionStorage.getItem('what-input');
+	        }
+
+	        if (window.sessionStorage.getItem('what-intent')) {
+	          currentIntent = window.sessionStorage.getItem('what-intent');
+	        }
+	      } catch (e) {
+	        // fail silently
+	      }
+	    }
+
+	    // always run these so at least `initial` state is set
+	    doUpdate('input');
+	    doUpdate('intent');
 	  };
 
 	  // checks conditions before updating new input
@@ -337,10 +347,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  var persistInput = function persistInput(which, value) {
-	    try {
-	      window.sessionStorage.setItem('what-' + which, value);
-	    } catch (e) {
-	      // fail silently
+	    if (shouldPersist) {
+	      try {
+	        window.sessionStorage.setItem('what-' + which, value);
+	      } catch (e) {
+	        // fail silently
+	      }
 	    }
 	  };
 
