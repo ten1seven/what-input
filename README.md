@@ -221,6 +221,10 @@ _What Input_ works in all modern browsers.
 
 ## Changelog
 
+### v5.2.5
+
+- **Fixed:** Hotfix for shaky support of `dataset` in IE10.
+
 ### v5.2.4
 
 - **Added:** Ability to add `data-whatpersist="false"` attribute to the `<html>` or `<body>` tag to disable usage of session storage to persist input/intent across pages.
