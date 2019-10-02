@@ -221,6 +221,10 @@ _What Input_ works in all modern browsers.
 
 ## Changelog
 
+### v5.2.6
+
+- **Fixed:** adds `DOMContentLoaded` event before looking for `data-whatpersist` attribute on body.
+
 ### v5.2.5
 
 - **Fixed:** Hotfix for shaky support of `dataset` in IE10.
