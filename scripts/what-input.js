@@ -1,6 +1,6 @@
 /**
  * what-input - A global utility for tracking the current input method (mouse, keyboard or touch).
- * @version v5.2.1
+ * @version v5.2.5
  * @link https://github.com/ten1seven/what-input
  * @license MIT
  */
@@ -114,17 +114,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // UNIX timestamp of current event
 	  var currentTimestamp = Date.now();
 
-	  // check for sessionStorage support
-	  // then check for session variables and use if available
-	  try {
-	    if (window.sessionStorage.getItem('what-input')) {
-	      currentInput = window.sessionStorage.getItem('what-input');
-	    }
+	  // check for a `data-whatpersist` attribute on either the `html` or `body` elements, defaults to `true`
+	  var shouldPersist = !(docElem.getAttribute('data-whatpersist') || document.body.getAttribute('data-whatpersist') === 'false');
 
-	    if (window.sessionStorage.getItem('what-intent')) {
-	      currentIntent = window.sessionStorage.getItem('what-intent');
+	  if (shouldPersist) {
+	    // check for session variables and use if available
+	    try {
+	      if (window.sessionStorage.getItem('what-input')) {
+	        currentInput = window.sessionStorage.getItem('what-input');
+	      }
+
+	      if (window.sessionStorage.getItem('what-intent')) {
+	        currentIntent = window.sessionStorage.getItem('what-intent');
+	      }
+	    } catch (e) {
+	      // fail silently
 	    }
-	  } catch (e) {}
+	  }
 
 	  // form input types
 	  var formInputs = ['button', 'input', 'select', 'textarea'];
@@ -182,6 +188,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    window.addEventListener('test', null, opts);
 	  } catch (e) {}
+	  // fail silently
+
 
 	  /*
 	   * set up
@@ -260,25 +268,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (shouldUpdate && currentInput !== value) {
 	      currentInput = value;
 
-	      try {
-	        window.sessionStorage.setItem('what-input', currentInput);
-	      } catch (e) {}
-
+	      persistInput('input', currentInput);
 	      doUpdate('input');
 	    }
 
 	    if (shouldUpdate && currentIntent !== value) {
 	      // preserve intent for keyboard interaction with form fields
 	      var activeElem = document.activeElement;
-	      var notFormInput = activeElem && activeElem.nodeName && formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1 || activeElem.nodeName.toLowerCase() === 'button' && !checkClosest(activeElem, 'form');
+	      var notFormInput = activeElem && activeElem.nodeName && (formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1 || activeElem.nodeName.toLowerCase() === 'button' && !checkClosest(activeElem, 'form'));
 
 	      if (notFormInput) {
 	        currentIntent = value;
 
-	        try {
-	          window.sessionStorage.setItem('what-intent', currentIntent);
-	        } catch (e) {}
-
+	        persistInput('intent', currentIntent);
 	        doUpdate('intent');
 	      }
 	    }
@@ -303,13 +305,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    detectScrolling(event);
 
 	    // only execute if scrolling isn't happening
-	    if (!isScrolling && !validateTouch(value) && currentIntent !== value) {
+	    if ((!isScrolling && !validateTouch(value) || isScrolling && event.type === 'wheel' || event.type === 'mousewheel' || event.type === 'DOMMouseScroll') && currentIntent !== value) {
 	      currentIntent = value;
 
-	      try {
-	        window.sessionStorage.setItem('what-intent', currentIntent);
-	      } catch (e) {}
-
+	      persistInput('intent', currentIntent);
 	      doUpdate('intent');
 	    }
 	  };
@@ -337,6 +336,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    docElem.removeAttribute('data-whatclasses');
 	  };
 
+	  var persistInput = function persistInput(which, value) {
+	    try {
+	      window.sessionStorage.setItem('what-' + which, value);
+	    } catch (e) {
+	      // fail silently
+	    }
+	  };
+
 	  /*
 	   * utilities
 	   */
@@ -362,9 +369,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  // detect version of mouse wheel event to use
-	  // via https://developer.mozilla.org/en-US/docs/Web/Events/wheel
+	  // via https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event
 	  var detectWheel = function detectWheel() {
-	    var wheelType = void 0;
+	    var wheelType = null;
 
 	    // Modern browsers support "wheel"
 	    if ('onwheel' in document.createElement('div')) {
@@ -397,11 +404,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  var detectScrolling = function detectScrolling(event) {
-	    if (mousePos['x'] !== event.screenX || mousePos['y'] !== event.screenY) {
+	    if (mousePos.x !== event.screenX || mousePos.y !== event.screenY) {
 	      isScrolling = false;
 
-	      mousePos['x'] = event.screenX;
-	      mousePos['y'] = event.screenY;
+	      mousePos.x = event.screenX;
+	      mousePos.y = event.screenY;
 	    } else {
 	      isScrolling = true;
 	    }
@@ -484,6 +491,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (position || position === 0) {
 	        functionList.splice(position, 1);
 	      }
+	    },
+
+	    clearStorage: function clearStorage() {
+	      window.sessionStorage.clear();
 	    }
 	  };
 	}();
