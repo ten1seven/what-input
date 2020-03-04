@@ -1,6 +1,6 @@
 {
   "name": "what-input",
-  "version": "5.2.6",
+  "version": "5.2.7",
   "description": "A global utility for tracking the current input method (mouse, keyboard or touch).",
   "main": "dist/what-input.js",
   "repository": {
@@ -19,8 +19,7 @@
     "url": "https://github.com/ten1seven/what-input/issues"
   },
   "scripts": {
-    "start": "gulp",
-    "deploy": "gulp deploy"
+    "start": "gulp"
   },
   "homepage": "https://github.com/ten1seven/what-input",
   "devDependencies": {

@@ -79,7 +79,7 @@ function scripts() {
       })
     )
     .pipe($.header(banner, { pkg: pkg }))
-    .pipe($.sourcemaps.write('./maps'))
+    .pipe($.sourcemaps.write('./'))
     .pipe(gulp.dest('./dist/'))
     .pipe($.notify('Build complete'))
 }
@@ -114,7 +114,7 @@ function styles() {
         zindex: false
       })
     )
-    .pipe($.sourcemaps.write('maps'))
+    .pipe($.sourcemaps.write('./'))
     .pipe(gulp.dest('./build/styles'))
     .pipe($.browserSync.stream())
     .pipe($.notify('Styles task complete'))
