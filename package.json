@@ -7,6 +7,9 @@
     "url": "https://github.com/ten1seven/what-input.git",
     "type": "git"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "keywords": [
     "accessibility",
     "a11y",
