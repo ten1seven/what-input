@@ -3,6 +3,7 @@
   "version": "5.2.7",
   "description": "A global utility for tracking the current input method (mouse, keyboard or touch).",
   "main": "dist/what-input.js",
+  "types": "src/scripts/what-input.d.ts",
   "repository": {
     "url": "https://github.com/ten1seven/what-input.git",
     "type": "git"
