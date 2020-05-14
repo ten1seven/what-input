@@ -1,4 +1,4 @@
-export interface WhatInput {
+declare const whatInput: {
   ask: (strategy?: "intent") => "pointer" | "keyboard" | "mouse" | "touch";
   element: () => string | null;
   ignoreKeys: (keyCodes: number[]) => void;
@@ -6,7 +6,6 @@ export interface WhatInput {
   registerOnChange: (callback: () => void, strategy?: "intent") => void;
   unRegisterOnChange: (callback: () => void) => void;
   clearStorage: () => void;
-}
+};
 
-const whatInput: WhatInput;
 export default whatInput;
