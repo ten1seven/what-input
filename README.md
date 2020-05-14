@@ -73,11 +73,11 @@ var whatInput = require('what-input')
 
 requirejs.config({
   paths: {
-    whatInput: 'path/to/what-input'
-  }
+    whatInput: 'path/to/what-input',
+  },
 })
 
-require(['whatInput'], function() {})
+require(['whatInput'], function () {})
 ```
 
 _What Input_ will start doing its thing while you do yours.
@@ -201,7 +201,7 @@ Fire a function when the input or intent changes.
 
 ```javascript
 // create a function to be fired
-var myFunction = function(type) {
+var myFunction = function (type) {
   console.log(type)
 }
 
@@ -221,7 +221,7 @@ _What Input_ works in all modern browsers.
 
 ## Changelog
 
-### v5.2.8
+### v5.2.8 - 5.2.9
 
 - **Added:** TypeScript definitions via @greypants
 
