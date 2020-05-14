@@ -221,6 +221,10 @@ _What Input_ works in all modern browsers.
 
 ## Changelog
 
+### v5.2.8
+
+- **Added:** TypeScript definitions via @greypants
+
 ### v5.2.7
 
 - **Fixed:** Moves sourcemap to sit next to JavaScript package.
@@ -300,7 +304,7 @@ _What Input_ works in all modern browsers.
 
 Special thanks to [Viget](http://viget.com/) for their encouragement and commitment to open source projects. Visit [code.viget.com](http://code.viget.com/) to see more projects from [Viget](http://viget.com).
 
-Thanks to [mAAdhaTTah](https://github.com/mAAdhaTTah) for the initial conversion to Webpack.
+Thanks to [mAAdhaTTah](https://github.com/mAAdhaTTah) for the initial conversion to Webpack. Thanks to [greypants](https://github.com/greypants) for adding TypeScript definitions.
 
 _What Input_ is written and maintained by [@ten1seven](https://github.com/ten1seven).
 
