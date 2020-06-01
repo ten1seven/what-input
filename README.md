@@ -221,7 +221,7 @@ _What Input_ works in all modern browsers.
 
 ## Changelog
 
-### v5.2.8 - 5.2.9
+### v5.2.8 - 5.2.10
 
 - **Added:** TypeScript definitions via @greypants
 

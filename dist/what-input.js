@@ -1,6 +1,6 @@
 /**
  * what-input - A global utility for tracking the current input method (mouse, keyboard or touch).
- * @version v5.2.9
+ * @version v5.2.10
  * @link https://github.com/ten1seven/what-input
  * @license MIT
  */
