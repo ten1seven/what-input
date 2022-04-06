@@ -131,26 +131,26 @@ module.exports = (() => {
     // `pointermove`, `MSPointerMove`, `mousemove` and mouse wheel event binding
     // can only demonstrate potential, but not actual, interaction
     // and are treated separately
-    const options = supportsPassive ? { passive: true } : false
+    const options = supportsPassive ? { passive: true, capture: true } : true
 
-    document.addEventListener('DOMContentLoaded', setPersist)
+    document.addEventListener('DOMContentLoaded', setPersist, true)
 
     // pointer events (mouse, pen, touch)
     if (window.PointerEvent) {
-      window.addEventListener('pointerdown', setInput)
-      window.addEventListener('pointermove', setIntent)
+      window.addEventListener('pointerdown', setInput, true)
+      window.addEventListener('pointermove', setIntent, true)
     } else if (window.MSPointerEvent) {
-      window.addEventListener('MSPointerDown', setInput)
-      window.addEventListener('MSPointerMove', setIntent)
+      window.addEventListener('MSPointerDown', setInput, true)
+      window.addEventListener('MSPointerMove', setIntent, true)
     } else {
       // mouse events
-      window.addEventListener('mousedown', setInput)
-      window.addEventListener('mousemove', setIntent)
+      window.addEventListener('mousedown', setInput, true)
+      window.addEventListener('mousemove', setIntent, true)
 
       // touch events
       if ('ontouchstart' in window) {
         window.addEventListener('touchstart', setInput, options)
-        window.addEventListener('touchend', setInput)
+        window.addEventListener('touchend', setInput, true)
       }
     }
 
@@ -158,12 +158,12 @@ module.exports = (() => {
     window.addEventListener(detectWheel(), setIntent, options)
 
     // keyboard events
-    window.addEventListener('keydown', setInput)
-    window.addEventListener('keyup', setInput)
+    window.addEventListener('keydown', setInput, true)
+    window.addEventListener('keyup', setInput, true)
 
     // focus events
-    window.addEventListener('focusin', setElement)
-    window.addEventListener('focusout', clearElement)
+    window.addEventListener('focusin', setElement, true)
+    window.addEventListener('focusout', clearElement, true)
   }
 
   // checks if input persistence should happen and
