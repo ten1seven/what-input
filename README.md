@@ -221,6 +221,10 @@ _What Input_ works in all modern browsers.
 
 ## Changelog
 
+### v5.2.11
+
+- **Fixed:** Adds `useCapture` so events can be detected before `preventDefault` cancels them on local listeners (h/t [jojo080889](https://github.com/jojo080889)).
+
 ### v5.2.8 - 5.2.10
 
 - **Added:** TypeScript definitions via @greypants
