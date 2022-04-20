@@ -1,4 +1,5 @@
 .git
 .publish
+.idea
 node_modules
 build
