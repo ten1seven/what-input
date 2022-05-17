@@ -115,7 +115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var currentTimestamp = Date.now();
 
 	  // check for a `data-whatpersist` attribute on either the `html` or `body` elements, defaults to `true`
-	  var shouldPersist = 'false';
+	  var shouldPersist = false;
 
 	  // form input types
 	  var formInputs = ['button', 'input', 'select', 'textarea'];
@@ -233,7 +233,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // checks if input persistence should happen and
 	  // get saved state from session storage if true (defaults to `false`)
 	  var setPersist = function setPersist() {
-	    shouldPersist = !(docElem.getAttribute('data-whatpersist') || document.body.getAttribute('data-whatpersist') === 'false');
+	    shouldPersist = !(docElem.getAttribute('data-whatpersist') === 'false' || document.body.getAttribute('data-whatpersist') === 'false');
 
 	    if (shouldPersist) {
 	      // check for session variables and use if available
