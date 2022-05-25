@@ -221,13 +221,17 @@ _What Input_ works in all modern browsers.
 
 ## Changelog
 
+### v5.2.12
+
+- **Fixed:** Improved detection and respect for of `data-whatpersist` before `DOMContentLoaded`. Fix via [FanFataL](https://github.com/FanFataL).
+
 ### v5.2.11
 
 - **Fixed:** Adds `useCapture` so events can be detected before `preventDefault` cancels them on local listeners (h/t [jojo080889](https://github.com/jojo080889)).
 
 ### v5.2.8 - 5.2.10
 
-- **Added:** TypeScript definitions via @greypants
+- **Added:** TypeScript definitions via [greypants](https://github.com/greypants).
 
 ### v5.2.7
 

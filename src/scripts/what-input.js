@@ -195,7 +195,7 @@ module.exports = (() => {
   }
 
   // checks conditions before updating new input
-  const setInput = event => {
+  const setInput = (event) => {
     const eventKey = event.which
     let value = inputMap[event.type]
 
@@ -246,7 +246,7 @@ module.exports = (() => {
   }
 
   // updates the doc and `inputTypes` array with new input
-  const doUpdate = which => {
+  const doUpdate = (which) => {
     docElem.setAttribute(
       'data-what' + which,
       which === 'input' ? currentInput : currentIntent
@@ -256,7 +256,7 @@ module.exports = (() => {
   }
 
   // updates input intent for `mousemove` and `pointermove`
-  const setIntent = event => {
+  const setIntent = (event) => {
     let value = inputMap[event.type]
 
     if (value === 'pointer') {
@@ -269,9 +269,9 @@ module.exports = (() => {
     // only execute if scrolling isn't happening
     if (
       ((!isScrolling && !validateTouch(value)) ||
-        ((isScrolling && event.type === 'wheel') ||
-          event.type === 'mousewheel' ||
-          event.type === 'DOMMouseScroll')) &&
+        (isScrolling && event.type === 'wheel') ||
+        event.type === 'mousewheel' ||
+        event.type === 'DOMMouseScroll') &&
       currentIntent !== value
     ) {
       currentIntent = value
@@ -281,7 +281,7 @@ module.exports = (() => {
     }
   }
 
-  const setElement = event => {
+  const setElement = (event) => {
     if (!event.target.nodeName) {
       // If nodeName is undefined, clear the element
       // This can happen if click inside an <svg> element.
@@ -321,7 +321,7 @@ module.exports = (() => {
    * utilities
    */
 
-  const pointerType = event => {
+  const pointerType = (event) => {
     if (typeof event.pointerType === 'number') {
       return pointerMap[event.pointerType]
     } else {
@@ -331,7 +331,7 @@ module.exports = (() => {
   }
 
   // prevent touch detection from being overridden by event execution order
-  const validateTouch = value => {
+  const validateTouch = (value) => {
     const timestamp = Date.now()
 
     const touchIsValid =
@@ -363,7 +363,7 @@ module.exports = (() => {
   }
 
   // runs callback functions
-  const fireFunctions = type => {
+  const fireFunctions = (type) => {
     for (let i = 0, len = functionList.length; i < len; i++) {
       if (functionList[i].type === type) {
         functionList[i].fn.call(
@@ -375,7 +375,7 @@ module.exports = (() => {
   }
 
   // finds matching element in an object
-  const objPos = match => {
+  const objPos = (match) => {
     for (let i = 0, len = functionList.length; i < len; i++) {
       if (functionList[i].fn === match) {
         return i
@@ -383,7 +383,7 @@ module.exports = (() => {
     }
   }
 
-  const detectScrolling = event => {
+  const detectScrolling = (event) => {
     if (mousePos.x !== event.screenX || mousePos.y !== event.screenY) {
       isScrolling = false
 
@@ -438,7 +438,7 @@ module.exports = (() => {
     // opt: 'intent'|'input'
     // 'input' (default): returns the same value as the `data-whatinput` attribute
     // 'intent': includes `data-whatintent` value if it's different than `data-whatinput`
-    ask: opt => {
+    ask: (opt) => {
       return opt === 'intent' ? currentIntent : currentInput
     },
 
@@ -448,12 +448,12 @@ module.exports = (() => {
     },
 
     // overwrites ignored keys with provided array
-    ignoreKeys: arr => {
+    ignoreKeys: (arr) => {
       ignoreMap = arr
     },
 
     // overwrites specific char keys to update on
-    specificKeys: arr => {
+    specificKeys: (arr) => {
       specificMap = arr
     },
 
@@ -467,7 +467,7 @@ module.exports = (() => {
       })
     },
 
-    unRegisterOnChange: fn => {
+    unRegisterOnChange: (fn) => {
       const position = objPos(fn)
 
       if (position || position === 0) {
