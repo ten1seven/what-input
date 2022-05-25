@@ -47,7 +47,7 @@ module.exports = (() => {
   let currentTimestamp = Date.now()
 
   // check for a `data-whatpersist` attribute on either the `html` or `body` elements, defaults to `true`
-  let shouldPersist = 'false'
+  let shouldPersist = false
 
   // form input types
   const formInputs = ['button', 'input', 'select', 'textarea']
@@ -170,7 +170,7 @@ module.exports = (() => {
   // get saved state from session storage if true (defaults to `false`)
   const setPersist = () => {
     shouldPersist = !(
-      docElem.getAttribute('data-whatpersist') ||
+      docElem.getAttribute('data-whatpersist') === 'false' ||
       document.body.getAttribute('data-whatpersist') === 'false'
     )
 
