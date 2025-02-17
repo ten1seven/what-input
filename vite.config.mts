@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
 import * as terser from 'terser'
 import { version } from './package.json'
 
@@ -10,7 +11,7 @@ const banner = `/**
  */`
 
 export default defineConfig({
-  plugins: [],
+  plugins: [tailwindcss()],
   build: {
     lib: {
       entry: 'src/what-input.js',
