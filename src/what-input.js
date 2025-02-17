@@ -1,74 +1,24 @@
-const createWhatInput = () => {
-  /*
-   * bail out if there is no document or window
-   * (i.e. in a node/non-DOM environment)
-   *
-   * Return a stubbed API instead
-   */
-  if (typeof document === 'undefined' || typeof window === 'undefined') {
-    return {
-      // always return "initial" because no interaction will ever be detected
-      ask: () => 'initial',
+class WhatInput {
+  // Core state
+  docElem = document.documentElement;
+  currentElement = null;
+  currentInput = 'initial';
+  currentIntent = this.currentInput;
+  currentTimestamp = Date.now();
+  shouldPersist = false;
+  isScrolling = false;
 
-      // always return null
-      element: () => null,
+  // Constants
+  formInputs = ['button', 'input', 'select', 'textarea'];
+  functionList = [];
+  ignoreMap = [16, 17, 18, 91, 93]; // modifier keys
+  specificMap = [];
 
-      // no-op
-      ignoreKeys: () => {},
+  // Mouse position tracking
+  mousePos = { x: null, y: null };
 
-      // no-op
-      specificKeys: () => {},
-
-      // no-op
-      registerOnChange: () => {},
-
-      // no-op
-      unRegisterOnChange: () => {}
-    }
-  }
-
-  /*
-   * variables
-   */
-
-  // cache document.documentElement
-  const docElem = document.documentElement
-
-  // currently focused dom element
-  let currentElement = null
-
-  // last used input type
-  let currentInput = 'initial'
-
-  // last used input intent
-  let currentIntent = currentInput
-
-  // UNIX timestamp of current event
-  let currentTimestamp = Date.now()
-
-  // check for a `data-whatpersist` attribute on either the `html` or `body` elements, defaults to `true`
-  let shouldPersist = false
-
-  // form input types
-  const formInputs = ['button', 'input', 'select', 'textarea']
-
-  // empty array for holding callback functions
-  const functionList = []
-
-  // list of modifier keys commonly used with the mouse and
-  // can be safely ignored to prevent false keyboard detection
-  let ignoreMap = [
-    16, // shift
-    17, // control
-    18, // alt
-    91, // Windows key / left Apple cmd
-    93 // Windows menu / right Apple cmd
-  ]
-
-  let specificMap = []
-
-  // mapping of events to input types
-  const inputMap = {
+  // Event mappings
+  inputMap = {
     keydown: 'keyboard',
     keyup: 'keyboard',
     mousedown: 'mouse',
@@ -79,396 +29,335 @@ const createWhatInput = () => {
     pointermove: 'pointer',
     touchstart: 'touch',
     touchend: 'touch'
-  }
+  };
 
-  // boolean: true if the page is being scrolled
-  let isScrolling = false
-
-  // store current mouse position
-  const mousePos = {
-    x: null,
-    y: null
-  }
-
-  // map of IE 10 pointer events
-  const pointerMap = {
+  pointerMap = {
     2: 'touch',
     3: 'touch', // treat pen like touch
     4: 'mouse'
-  }
+  };
 
-  // check support for passive event listeners
-  let supportsPassive = false
+  supportsPassive = this.checkPassiveSupport();
 
-  try {
-    const opts = Object.defineProperty({}, 'passive', {
-      get: () => {
-        supportsPassive = true
-      }
-    })
-
-    window.addEventListener('test', null, opts)
-  } catch (e) {
-    // fail silently
-  }
-
-  /*
-   * set up
-   */
-
-  const api = {
-    ask: (opt) => opt === 'intent' ? currentIntent : currentInput,
-    element: () => currentElement,
-    ignoreKeys: (arr) => { ignoreMap = arr },
-    specificKeys: (arr) => { specificMap = arr },
-    registerOnChange: (fn, eventType) => {
-      functionList.push({
-        fn: fn,
-        type: eventType || 'input'
-      })
-    },
-    unRegisterOnChange: (fn) => {
-      const position = objPos(fn)
-      if (position || position === 0) {
-        functionList.splice(position, 1)
-      }
-    },
-    clearStorage: () => {
-      window.sessionStorage.clear()
-    }
-  }
-
-  const setUp = () => {
-    // Prevent multiple initializations
+  constructor() {
     if (typeof document === 'undefined' || typeof window === 'undefined') {
-      return api
+      return this.createStubAPI();
     }
-
-    // Add correct mouse wheel event mapping to `inputMap`
-    inputMap[detectWheel()] = 'mouse'
-
-    addListeners()
-    return api
   }
 
-  /*
-   * events
-   */
+  createStubAPI() {
+    return {
+      ask: () => 'initial',
+      element: () => null,
+      ignoreKeys: () => {},
+      specificKeys: () => {},
+      registerOnChange: () => {},
+      unRegisterOnChange: () => {},
+      clearStorage: () => {}
+    };
+  }
 
-  const addListeners = () => {
-    // `pointermove`, `MSPointerMove`, `mousemove` and mouse wheel event binding
-    // can only demonstrate potential, but not actual, interaction
-    // and are treated separately
-    const options = supportsPassive ? { passive: true, capture: true } : true
+  init() {
+    this.inputMap[this.detectWheel()] = 'mouse';
+    this.addListeners();
+    return this;
+  }
 
-    document.addEventListener('DOMContentLoaded', setPersist, true)
+  // Public API methods
+  ask = (opt) => opt === 'intent' ? this.currentIntent : this.currentInput;
+
+  element = () => this.currentElement;
+
+  ignoreKeys = (arr) => {
+    this.ignoreMap = arr;
+  };
+
+  specificKeys = (arr) => {
+    this.specificMap = arr;
+  };
+
+  registerOnChange = (fn, eventType) => {
+    this.functionList.push({
+      fn,
+      type: eventType || 'input'
+    });
+  };
+
+  unRegisterOnChange = (fn) => {
+    const position = this.findFunctionPosition(fn);
+    if (position || position === 0) {
+      this.functionList.splice(position, 1);
+    }
+  };
+
+  clearStorage = () => {
+    window.sessionStorage.clear();
+  };
+
+  // Event handlers
+  addListeners() {
+    const options = this.supportsPassive ? { passive: true, capture: true } : true;
+
+    document.addEventListener('DOMContentLoaded', () => this.setPersist(), true);
 
     // pointer events (mouse, pen, touch)
     if (window.PointerEvent) {
-      window.addEventListener('pointerdown', setInput, true)
-      window.addEventListener('pointermove', setIntent, true)
+      window.addEventListener('pointerdown', (e) => this.setInput(e), true);
+      window.addEventListener('pointermove', (e) => this.setIntent(e), true);
     } else if (window.MSPointerEvent) {
-      window.addEventListener('MSPointerDown', setInput, true)
-      window.addEventListener('MSPointerMove', setIntent, true)
+      window.addEventListener('MSPointerDown', (e) => this.setInput(e), true);
+      window.addEventListener('MSPointerMove', (e) => this.setIntent(e), true);
     } else {
       // mouse events
-      window.addEventListener('mousedown', setInput, true)
-      window.addEventListener('mousemove', setIntent, true)
+      window.addEventListener('mousedown', (e) => this.setInput(e), true);
+      window.addEventListener('mousemove', (e) => this.setIntent(e), true);
 
       // touch events
       if ('ontouchstart' in window) {
-        window.addEventListener('touchstart', setInput, options)
-        window.addEventListener('touchend', setInput, true)
+        window.addEventListener('touchstart', (e) => this.setInput(e), options);
+        window.addEventListener('touchend', (e) => this.setInput(e), true);
       }
     }
 
     // mouse wheel
-    window.addEventListener(detectWheel(), setIntent, options)
+    window.addEventListener(this.detectWheel(), (e) => this.setIntent(e), options);
 
     // keyboard events
-    window.addEventListener('keydown', setInput, true)
-    window.addEventListener('keyup', setInput, true)
+    window.addEventListener('keydown', (e) => this.setInput(e), true);
+    window.addEventListener('keyup', (e) => this.setInput(e), true);
 
     // focus events
-    window.addEventListener('focusin', setElement, true)
-    window.addEventListener('focusout', clearElement, true)
+    window.addEventListener('focusin', (e) => this.setElement(e), true);
+    window.addEventListener('focusout', () => this.clearElement(), true);
   }
 
-  // checks if input persistence should happen and
-  // get saved state from session storage if true (defaults to `false`)
-  const setPersist = () => {
-    shouldPersist = !(
-      docElem.getAttribute('data-whatpersist') === 'false' ||
+  setPersist() {
+    this.shouldPersist = !(
+      this.docElem.getAttribute('data-whatpersist') === 'false' ||
       document.body.getAttribute('data-whatpersist') === 'false'
-    )
+    );
 
-    if (shouldPersist) {
-      // check for session variables and use if available
+    if (this.shouldPersist) {
       try {
         if (window.sessionStorage.getItem('what-input')) {
-          currentInput = window.sessionStorage.getItem('what-input')
+          this.currentInput = window.sessionStorage.getItem('what-input');
         }
 
         if (window.sessionStorage.getItem('what-intent')) {
-          currentIntent = window.sessionStorage.getItem('what-intent')
+          this.currentIntent = window.sessionStorage.getItem('what-intent');
         }
       } catch (e) {
         // fail silently
       }
     }
 
-    // always run these so at least `initial` state is set
-    doUpdate('input')
-    doUpdate('intent')
+    this.doUpdate('input');
+    this.doUpdate('intent');
   }
 
-  // checks conditions before updating new input
-  const setInput = (event) => {
-    const eventKey = event.which
-    let value = inputMap[event.type]
+  setInput(event) {
+    const eventKey = event.which;
+    let value = this.inputMap[event.type];
 
     if (value === 'pointer') {
-      value = pointerType(event)
+      value = this.pointerType(event);
     }
 
-    const ignoreMatch =
-      !specificMap.length && ignoreMap.indexOf(eventKey) === -1
+    const ignoreMatch = !this.specificMap.length && this.ignoreMap.indexOf(eventKey) === -1;
+    const specificMatch = this.specificMap.length && this.specificMap.indexOf(eventKey) !== -1;
+    let shouldUpdate = (value === 'keyboard' && eventKey && (ignoreMatch || specificMatch)) ||
+                      value === 'mouse' ||
+                      value === 'touch';
 
-    const specificMatch =
-      specificMap.length && specificMap.indexOf(eventKey) !== -1
-
-    let shouldUpdate =
-      (value === 'keyboard' && eventKey && (ignoreMatch || specificMatch)) ||
-      value === 'mouse' ||
-      value === 'touch'
-
-    // prevent touch detection from being overridden by event execution order
-    if (validateTouch(value)) {
-      shouldUpdate = false
+    if (this.validateTouch(value)) {
+      shouldUpdate = false;
     }
 
-    if (shouldUpdate && currentInput !== value) {
-      currentInput = value
-
-      persistInput('input', currentInput)
-      doUpdate('input')
+    if (shouldUpdate && this.currentInput !== value) {
+      this.currentInput = value;
+      this.persistInput('input', this.currentInput);
+      this.doUpdate('input');
     }
 
-    if (shouldUpdate && currentIntent !== value) {
-      // preserve intent for keyboard interaction with form fields
-      const activeElem = document.activeElement
-      const notFormInput =
-        activeElem &&
+    if (shouldUpdate && this.currentIntent !== value) {
+      const activeElem = document.activeElement;
+      const notFormInput = activeElem &&
         activeElem.nodeName &&
-        (formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1 ||
+        (this.formInputs.indexOf(activeElem.nodeName.toLowerCase()) === -1 ||
           (activeElem.nodeName.toLowerCase() === 'button' &&
-            !checkClosest(activeElem, 'form')))
+            !this.checkClosest(activeElem, 'form')));
 
       if (notFormInput) {
-        currentIntent = value
-
-        persistInput('intent', currentIntent)
-        doUpdate('intent')
+        this.currentIntent = value;
+        this.persistInput('intent', this.currentIntent);
+        this.doUpdate('intent');
       }
     }
   }
 
-  // updates the doc and `inputTypes` array with new input
-  const doUpdate = (which) => {
-    docElem.setAttribute(
-      'data-what' + which,
-      which === 'input' ? currentInput : currentIntent
-    )
-
-    fireFunctions(which)
-  }
-
-  // updates input intent for `mousemove` and `pointermove`
-  const setIntent = (event) => {
-    let value = inputMap[event.type]
+  setIntent(event) {
+    let value = this.inputMap[event.type];
 
     if (value === 'pointer') {
-      value = pointerType(event)
+      value = this.pointerType(event);
     }
 
-    // test to see if `mousemove` happened relative to the screen to detect scrolling versus mousemove
-    detectScrolling(event)
+    this.detectScrolling(event);
 
-    // only execute if scrolling isn't happening
     if (
-      ((!isScrolling && !validateTouch(value)) ||
-        (isScrolling && event.type === 'wheel') ||
+      ((!this.isScrolling && !this.validateTouch(value)) ||
+        (this.isScrolling && event.type === 'wheel') ||
         event.type === 'mousewheel' ||
         event.type === 'DOMMouseScroll') &&
-      currentIntent !== value
+      this.currentIntent !== value
     ) {
-      currentIntent = value
-
-      persistInput('intent', currentIntent)
-      doUpdate('intent')
+      this.currentIntent = value;
+      this.persistInput('intent', this.currentIntent);
+      this.doUpdate('intent');
     }
   }
 
-  const setElement = (event) => {
+  setElement(event) {
     if (!event.target.nodeName) {
-      // If nodeName is undefined, clear the element
-      // This can happen if click inside an <svg> element.
-      clearElement()
-      return
+      this.clearElement();
+      return;
     }
 
-    currentElement = event.target.nodeName.toLowerCase()
-    docElem.setAttribute('data-whatelement', currentElement)
+    this.currentElement = event.target.nodeName.toLowerCase();
+    this.docElem.setAttribute('data-whatelement', this.currentElement);
 
     if (event.target.classList && event.target.classList.length) {
-      docElem.setAttribute(
+      this.docElem.setAttribute(
         'data-whatclasses',
         event.target.classList.toString().replace(' ', ',')
-      )
+      );
     }
   }
 
-  const clearElement = () => {
-    currentElement = null
-
-    docElem.removeAttribute('data-whatelement')
-    docElem.removeAttribute('data-whatclasses')
+  clearElement() {
+    this.currentElement = null;
+    this.docElem.removeAttribute('data-whatelement');
+    this.docElem.removeAttribute('data-whatclasses');
   }
 
-  const persistInput = (which, value) => {
-    if (shouldPersist) {
+  // Utility methods
+  checkPassiveSupport() {
+    let supportsPassive = false;
+    try {
+      const opts = Object.defineProperty({}, 'passive', {
+        get: () => {
+          supportsPassive = true;
+        }
+      });
+      window.addEventListener('test', null, opts);
+    } catch (e) {
+      // fail silently
+    }
+    return supportsPassive;
+  }
+
+  persistInput(which, value) {
+    if (this.shouldPersist) {
       try {
-        window.sessionStorage.setItem('what-' + which, value)
+        window.sessionStorage.setItem(`what-${which}`, value);
       } catch (e) {
         // fail silently
       }
     }
   }
 
-  /*
-   * utilities
-   */
-
-  const pointerType = (event) => {
+  pointerType(event) {
     if (typeof event.pointerType === 'number') {
-      return pointerMap[event.pointerType]
-    } else {
-      // treat pen like touch
-      return event.pointerType === 'pen' ? 'touch' : event.pointerType
+      return this.pointerMap[event.pointerType];
     }
+    return event.pointerType === 'pen' ? 'touch' : event.pointerType;
   }
 
-  // prevent touch detection from being overridden by event execution order
-  const validateTouch = (value) => {
-    const timestamp = Date.now()
+  validateTouch(value) {
+    const timestamp = Date.now();
+    const touchIsValid = value === 'mouse' &&
+      this.currentInput === 'touch' &&
+      timestamp - this.currentTimestamp < 200;
 
-    const touchIsValid =
-      value === 'mouse' &&
-      currentInput === 'touch' &&
-      timestamp - currentTimestamp < 200
-
-    currentTimestamp = timestamp
-
-    return touchIsValid
+    this.currentTimestamp = timestamp;
+    return touchIsValid;
   }
 
-  // detect version of mouse wheel event to use
-  // via https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event
-  const detectWheel = () => {
-    let wheelType = null
-
-    // Modern browsers support "wheel"
+  detectWheel() {
     if ('onwheel' in document.createElement('div')) {
-      wheelType = 'wheel'
-    } else {
-      // Webkit and IE support at least "mousewheel"
-      // or assume that remaining browsers are older Firefox
-      wheelType =
-        document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll'
+      return 'wheel';
     }
-
-    return wheelType
+    return document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll';
   }
 
-  // runs callback functions
-  const fireFunctions = (type) => {
-    for (let i = 0, len = functionList.length; i < len; i++) {
-      if (functionList[i].type === type) {
-        functionList[i].fn.call(
+  doUpdate(which) {
+    this.docElem.setAttribute(
+      `data-what${which}`,
+      which === 'input' ? this.currentInput : this.currentIntent
+    );
+    this.fireFunctions(which);
+  }
+
+  fireFunctions(type) {
+    for (let i = 0; i < this.functionList.length; i++) {
+      if (this.functionList[i].type === type) {
+        this.functionList[i].fn.call(
           this,
-          type === 'input' ? currentInput : currentIntent
-        )
+          type === 'input' ? this.currentInput : this.currentIntent
+        );
       }
     }
   }
 
-  // finds matching element in an object
-  const objPos = (match) => {
-    for (let i = 0, len = functionList.length; i < len; i++) {
-      if (functionList[i].fn === match) {
-        return i
-      }
-    }
+  findFunctionPosition(match) {
+    return this.functionList.findIndex(item => item.fn === match);
   }
 
-  const detectScrolling = (event) => {
-    if (mousePos.x !== event.screenX || mousePos.y !== event.screenY) {
-      isScrolling = false
-
-      mousePos.x = event.screenX
-      mousePos.y = event.screenY
+  detectScrolling(event) {
+    if (this.mousePos.x !== event.screenX || this.mousePos.y !== event.screenY) {
+      this.isScrolling = false;
+      this.mousePos.x = event.screenX;
+      this.mousePos.y = event.screenY;
     } else {
-      isScrolling = true
+      this.isScrolling = true;
     }
   }
 
-  // manual version of `closest()`
-  const checkClosest = (elem, tag) => {
-    const ElementPrototype = window.Element.prototype
+  checkClosest(elem, tag) {
+    const ElementPrototype = window.Element.prototype;
 
     if (!ElementPrototype.matches) {
       ElementPrototype.matches =
         ElementPrototype.msMatchesSelector ||
-        ElementPrototype.webkitMatchesSelector
+        ElementPrototype.webkitMatchesSelector;
     }
 
     if (!ElementPrototype.closest) {
       do {
         if (elem.matches(tag)) {
-          return elem
+          return elem;
         }
-
-        elem = elem.parentElement || elem.parentNode
-      } while (elem !== null && elem.nodeType === 1)
-
-      return null
-    } else {
-      return elem.closest(tag)
+        elem = elem.parentElement || elem.parentNode;
+      } while (elem !== null && elem.nodeType === 1);
+      return null;
     }
-  }
-
-  return {
-    setUp,
-    ...api
+    return elem.closest(tag);
   }
 }
 
-// Create instance and initialize it
-const whatInput = createWhatInput()
-whatInput.setUp()
+// Create instance and export
+const whatInput = new WhatInput();
+whatInput.init();
 
 // Support both module imports and direct script tag inclusion
 if (typeof module !== 'undefined' && module.exports) {
-  // CommonJS/Node.js
-  module.exports = whatInput
+  module.exports = whatInput;
 } else if (typeof define === 'function' && define.amd) {
-  // AMD/RequireJS
-  define([], () => whatInput)
+  define([], () => whatInput);
 } else {
-  // Browser globals (root is window)
-  window.whatInput = whatInput
+  window.whatInput = whatInput;
 }
 
-// Also support ES modules
-export const setUp = whatInput.setUp
-export default whatInput
+export const setUp = () => whatInput.init();
+export default whatInput;
+

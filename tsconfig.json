@@ -13,12 +13,16 @@
     "moduleDetection": "force",
     "noEmit": true,
 
+    /* Type Definitions */
+    "typeRoots": ["./src", "node_modules/@types"],
+
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src"]
 }
