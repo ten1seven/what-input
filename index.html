@@ -5,89 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>What Input?</title>
-
-    <link rel="stylesheet" href="/src/app.css">
   </head>
-  <body class="">
-    <div class="container">
-      <h1>What Input?</h1>
+  <body class="p-6 font-sans text-gray-700">
+    <div class="max-w-screen-lg mx-auto">
+      <h1 class="font-bold text-4xl border-b border-gray-200 pb-4">What Input?</h1>
 
-      <p class="lede">
-        A global utility for tracking the current input method (<span class="input-indicator -mouse">mouse</span>, <span class="input-indicator -keyboard">keyboard</span>, or <span class="input-indicator -touch">touch</span>), as well as the current <em>intent</em> (<span class="input-intent -mouse">mouse</span>, <span class="input-intent -keyboard">keyboard</span>, or <span class="input-intent -touch">touch</span>).
+      <p class="text-xl font-light">
+        A global utility for tracking the current input method (<span
+        class="input-indicator mouse-input:text-blue-700 mouse-input:bg-blue-100! mouse-input:border-blue-700!">mouse</span>, <span
+        class="input-indicator keyboard-input:text-orange-700 keyboard-input:bg-orange-100! keyboard-input:border-orange-700!">keyboard</span>, or <span
+        class="input-indicator touch-input:text-yellow-700 touch-input:bg-yellow-100! touch-input:border-yellow-700!">touch</span>), as well as the current <em>intent</em> (<span
+        class="input-indicator mouse-intent:text-blue-700 mouse-intent:bg-blue-100! mouse-intent:border-blue-700!">mouse</span>, <span
+        class="input-indicator keyboard-intent:text-orange-700 keyboard-intent:bg-orange-100! keyboard-intent:border-orange-700!">keyboard</span>, or <span
+        class="input-indicator touch-intent:text-yellow-700 touch-intent:bg-yellow-100! touch-intent:border-yellow-700!">touch</span>).
       </p>
 
       <p>
         Tab, click or tap the links and form controls to see how <strong>What Input</strong> allows them to be styled differently.
       </p>
 
-      <div class="well">
-        <div class="well-row">
-          <div class="well-column">
-            <ul class="list-group">
-              <li class="list-group-item"><a href="#">Cras justo odio</a></li>
-              <li class="list-group-item">
-                <a href="#">Dapibus ac facilisis in</a>
-              </li>
-              <li class="list-group-item"><a href="#">Morbi leo risus</a></li>
-              <li class="list-group-item">
-                <a href="#">Porta ac consectetur ac</a>
-              </li>
-              <li class="list-group-item">
-                <a href="#">Vestibulum at eros</a>
-              </li>
-            </ul>
+      <div class="grid grid-cols-2 gap-4 bg-gray-100 p-4 rounded-md">
+        <div class="">
+          <ul class="">
+            <li class=""><a href="#">Cras justo odio</a></li>
+            <li class="">
+              <a href="#">Dapibus ac facilisis in</a>
+            </li>
+            <li class=""><a href="#">Morbi leo risus</a></li>
+            <li class="">
+              <a href="#">Porta ac consectetur ac</a>
+            </li>
+            <li class="">
+              <a href="#">Vestibulum at eros</a>
+            </li>
+          </ul>
 
-            <p>
-              <button data-module="alert" data-message="This button is not inside a form.">Do Something</button>
-            </p>
-          </div>
-
-          <form class="well-column">
-            <p>
-              <label for="exampleInput">Example Text Input</label>
-              <input type="email" id="exampleInput" name="exampleInput">
-            </p>
-
-            <p>
-              <label for="exampleSelect">Selection</label>
-              <select id="exampleSelect" name="exampleSelect">
-                <option value="" disabled selected>Select an Option</option>
-                <option>Option 1</option>
-                <option>Option 2</option>
-                <option>Option 3</option>
-              </select>
-            </p>
-
-            <p>
-              <label for="exampleTextarea">Example Textarea</label>
-              <textarea id="exampleTextarea" name="exampleTextarea"></textarea>
-            </p>
-
-            <p class="checkbox">
-              <label><input type="checkbox"> Check me out</label>
-            </p>
-
-            <p>
-              <button type="submit" data-module="alert" data-message="This button is inside a form.">Form Submit</button>
-            </p>
-          </form>
+          <p>
+            <button data-module="alert" data-message="This button is not inside a form.">Do Something</button>
+          </p>
         </div>
+
+        <form class="">
+          <p>
+            <label for="exampleInput">Example Text Input</label>
+            <input type="email" id="exampleInput" name="exampleInput">
+          </p>
+
+          <p>
+            <label for="exampleSelect">Selection</label>
+            <select id="exampleSelect" name="exampleSelect">
+              <option value="" disabled selected>Select an Option</option>
+              <option>Option 1</option>
+              <option>Option 2</option>
+              <option>Option 3</option>
+            </select>
+          </p>
+
+          <p>
+            <label for="exampleTextarea">Example Textarea</label>
+            <textarea id="exampleTextarea" name="exampleTextarea"></textarea>
+          </p>
+
+          <p class="checkbox">
+            <label><input type="checkbox"> Check me out</label>
+          </p>
+
+          <p>
+            <button type="submit" data-module="alert" data-message="This button is inside a form.">Form Submit</button>
+          </p>
+        </form>
       </div>
 
-      <footer>
-        <p class="pull-left">
+      <footer class="grid grid-cols-2 gap-4">
+        <p>
           Made with <span class="text-red-500">&hearts;</span> at
           <a href="http://viget.com/">Viget</a>.
         </p>
 
-        <p class="pull-right">
+        <p class="text-right">
           Check out the project
           <a href="https://github.com/ten1seven/what-input">on GitHub</a>.
         </p>
       </footer>
     </div>
 
-    <script type="module" src="/src/what-input.js"></script>
+    <script type="module" src="/src/app.js"></script>
     <script type="module">
       // Move all the script code inside this module
       // use `whatInput.ask()`

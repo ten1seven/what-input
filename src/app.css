@@ -1,1 +1,11 @@
+@config "../tailwind.config.js";
+
 @import "tailwindcss";
+
+a {
+  @apply text-blue-500 underline;
+}
+
+.input-indicator {
+  @apply inline-block bg-transparent px-1 pb-0.5 rounded-md border border-transparent;
+}

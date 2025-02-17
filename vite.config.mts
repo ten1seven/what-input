@@ -11,10 +11,12 @@ const banner = `/**
  */`
 
 export default defineConfig({
-  plugins: [tailwindcss()],
+  plugins: [
+    tailwindcss(),
+  ],
   build: {
     lib: {
-      entry: 'src/what-input.js',
+      entry: 'src/app.js',
       name: 'WhatInput',
       formats: ['es'],
       fileName: 'what-input'
