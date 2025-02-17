@@ -1,22 +1,60 @@
-# What Input?
+# What Input? 👆
 
-**A global utility for tracking the current input method (mouse, keyboard or touch).**
+> A lightweight (~3kB) utility for tracking the current input method (mouse, keyboard or touch) in modern browsers
 
-## _What Input_ is now v5
+[![npm version](https://badge.fury.io/js/what-input.svg)](https://badge.fury.io/js/what-input)
+[![Bundle Size](https://img.shields.io/bundlephobia/minzip/what-input)](https://bundlephobia.com/package/what-input)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Now with more information and less opinion!
+## Key Features
+- 🎯 Real-time detection of mouse, keyboard, and touch inputs
+- 🔄 Automatic input method switching
+- 🎨 CSS-friendly with data attributes
+- 📦 Framework agnostic
+- 💪 TypeScript support
+- 🪶 Zero dependencies
 
-_What Input_ adds data attributes to the `window` based on the type of input being used. It also exposes a simple API that can be used for scripting interactions.
+## Table of Contents
+- [How it works](#how-it-works)
+- [Demo](#demo)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Browser Support](#browser-support)
+- [Contributing](#contributing)
+- [Changelog](#changelog)
+- [Acknowledgments](#acknowledgments)
+- [License](#license)
+
+
+
+
+- [TypeScript Support](#typescript-support)
+- [API Reference](#api-reference)
+
+
+
+
 
 ## How it works
 
 _What Input_ uses event bubbling on the `window` to watch for mouse, keyboard and touch events (via `mousedown`, `keydown` and `touchstart`). It then sets or updates a `data-whatinput` attribute.
 
-Pointer Events are supported but note that `pen` inputs are remapped to `touch`.
+Pointer Events are supported but note that `pen` inputs are remapped to `touch`. The script uses passive event listeners when supported for better performance, particularly for touch and wheel events.
 
-_What Input_ also exposes a tiny API that allows the developer to ask for the current input, set custom ignore keys, and set and remove custom callback functions.
+_What Input_ also exposes a typed API that allows the developer to:
+- Query the current input method (`ask()`)
+- Get the currently focused element (`element()`)
+- Set custom ignore keys (`ignoreKeys()`)
+- Set specific trigger keys (`specificKeys()`)
+- Set and remove custom callback functions (`registerOnChange()` and `unRegisterOnChange()`)
 
 _What Input does not make assumptions about the input environment before the page is interacted with._ However, the `mousemove` and `pointermove` events are used to set a `data-whatintent="mouse"` attribute to indicate that a mouse is being used _indirectly_.
+
+### Interacting with Forms
+
+Since interacting with a form _always_ requires use of the keyboard, _What Input_ uses the `data-whatintent` attribute to display a "buffered" version of input events while form `<input>`s, `<select>`s, and `<textarea>`s are being interacted with (i.e. mouse user's `data-whatintent` will be preserved as `mouse` while typing).
+
+The script maintains a list of form inputs (`['button', 'input', 'select', 'textarea']`) and provides special handling for buttons within forms to ensure consistent behavior.
 
 ## Demo
 
@@ -24,21 +62,9 @@ Check out the demo to see _What Input_ in action.
 
 https://ten1seven.github.io/what-input
 
-### Interacting with Forms
+## Installation
 
-Since interacting with a form _always_ requires use of the keyboard, _What Input_ uses the `data-whatintent` attribute to display a "buffered" version of input events while form `<input>`s, `<select>`s, and `<textarea>`s are being interacted with (i.e. mouse user's `data-whatintent` will be preserved as `mouse` while typing).
-
-## Installing
-
-Download the file directly.
-
-Install via Yarn:
-
-```shell
-yarn add what-input
-```
-
-Install via NPM:
+Download the file directly or install via NPM:
 
 ```shell
 npm install what-input
@@ -46,41 +72,54 @@ npm install what-input
 
 ## Usage
 
-Include the script directly in your project.
+There are three ways to initialize _What Input_:
+
+### 1. Script Tag (Auto-initialized)
+
+Include the script directly in your project:
 
 ```html
-<script src="path/to/what-input.js"></script>
+<script src="path/to/what-input.min.js"></script>
 ```
 
-Or require with a script loader.
+The global `window.whatInput` will be available immediately.
 
-```javascript
-import 'what-input'
+### 2. Module Import (Auto-initialized)
 
-// or
-
+```typescript
+// TypeScript/ES Modules - auto-initialized instance
 import whatInput from 'what-input'
 
-// or
+// CommonJS - auto-initialized instance
+const whatInput = require('what-input')
+```
 
-require('what-input')
+### 3. Manual Initialization
 
-// or
+For cases where you need more control over when _What Input_ starts:
 
-var whatInput = require('what-input')
+```typescript
+import { setUp } from 'what-input'
 
-// or
+// Initialize when ready
+const whatInput = setUp()
+```
 
+For legacy AMD/RequireJS usage:
+
+```javascript
 requirejs.config({
   paths: {
     whatInput: 'path/to/what-input',
   },
 })
 
-require(['whatInput'], function () {})
+require(['whatInput'], function(whatInput) {
+  // whatInput is ready to use
+})
 ```
 
-_What Input_ will start doing its thing while you do yours.
+Once initialized, _What Input_ will start doing its thing while you do yours.
 
 ### Default Behavior
 
@@ -125,43 +164,40 @@ whatInput.clearStorage()
 
 **Note:** If you remove outlines with `outline: none;`, be sure to provide clear visual `:focus` styles so the user can see which element they are on at any time for greater accessibility. Visit [W3C's WCAG 2.0 2.4.7 Guideline](https://www.w3.org/TR/UNDERSTANDING-WCAG20/navigation-mechanisms-focus-visible.html) to learn more.
 
-### Scripting
+### API Reference
+
+#### Core Methods
+
+| Method | Return Type | Description |
+|--------|------------|-------------|
+| `ask()` | `InputType` | Returns current input method |
+| `element()` | `string \| null` | Returns focused DOM element |
+| `ignoreKeys()` | `void` | Set keys to ignore |
+| `specificKeys()` | `void` | Set specific trigger keys |
+
+#### Types
+```typescript
+type InputType = 'initial' | 'keyboard' | 'mouse' | 'pointer' | 'touch'
+type EventType = 'input' | 'intent'
+```
 
 #### Current Input
 
-Ask _What Input_ what the current input method is. This works best if asked after the events _What Input_ is bound to (`mousedown`, `keydown` and `touchstart`).
-
-```javascript
-whatInput.ask() // returns `mouse`, `keyboard` or `touch`
+```typescript
+whatInput.ask() // returns InputType
+whatInput.ask('intent') // returns InputType
 
 myButton.addEventListener('click', () => {
-  if (whatInput.ask() === 'mouse') {
+  const input = whatInput.ask()
+  if (input === 'mouse') {
     // do mousy things
-  } else if (whatInput.ask() === 'keyboard') {
+  } else if (input === 'keyboard') {
     // do keyboard things
   }
 })
 ```
 
-If it's necessary to know if `mousemove` is being used, use the `'intent'` option. For example:
-
-```javascript
-/*
- * nothing has happened but the mouse has moved
- */
-
-whatInput.ask() // returns `initial` because the page has not been directly interacted with
-whatInput.ask('intent') // returns `mouse` because mouse movement was detected
-
-/*
- * the keyboard has been used, then the mouse was moved
- */
-
-whatInput.ask() // returns `keyboard` because the keyboard was the last direct page interaction
-whatInput.ask('intent') // returns `mouse` because mouse movement was the most recent action detected
-```
-
-### Current Element
+#### Current Element
 
 Ask _What Input_ the currently focused DOM element.
 
@@ -172,6 +208,17 @@ whatInput.element() // returns a string, like `input` or null
 #### Ignore Keys
 
 Set a custom array of [keycodes](http://keycode.info/) that will be ignored (will not switch over to `keyboard`) when pressed. _A custom list will overwrite the default values._
+
+### Events and Callbacks
+```typescript
+// Register callback for input changes
+whatInput.registerOnChange((type: InputType) => {
+  console.log(`Input changed to: ${type}`)
+}, 'input')
+
+// Unregister callback
+whatInput.unRegisterOnChange(myFunction)
+```
 
 ```javascript
 /*
@@ -197,29 +244,49 @@ whatInput.specificKeys([9])
 
 #### Custom Callbacks
 
-Fire a function when the input or intent changes.
-
-```javascript
-// create a function to be fired
-var myFunction = function (type) {
+```typescript
+// TypeScript function signature
+const myFunction = (type: InputType) => {
   console.log(type)
 }
 
-// fire `myFunction` when the intent changes
-whatInput.registerOnChange(myFunction, 'intent')
+// Register for changes
+whatInput.registerOnChange(myFunction, 'intent') // for intent changes
+whatInput.registerOnChange(myFunction, 'input')  // for input changes
 
-// fire `myFunction` when the input changes
-whatInput.registerOnChange(myFunction, 'input')
-
-// remove custom event
+// Remove callback
 whatInput.unRegisterOnChange(myFunction)
 ```
 
-## Compatibility
+## Browser Support
 
 _What Input_ works in all modern browsers.
 
+## Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Development Setup
+```shell
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+```
+
 ## Changelog
+
+### v5.3.0
+
+- **Updated:** New build tools with Vite.
+- **Updated:** README updates.
 
 ### v5.2.12
 
@@ -311,8 +378,6 @@ _What Input_ works in all modern browsers.
 ## Acknowledgments
 
 Special thanks to [Viget](http://viget.com/) for their encouragement and commitment to open source projects. Visit [code.viget.com](http://code.viget.com/) to see more projects from [Viget](http://viget.com).
-
-Thanks to [mAAdhaTTah](https://github.com/mAAdhaTTah) for the initial conversion to Webpack. Thanks to [greypants](https://github.com/greypants) for adding TypeScript definitions.
 
 _What Input_ is written and maintained by [@ten1seven](https://github.com/ten1seven).
 

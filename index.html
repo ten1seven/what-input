@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>What Input?</title>
-
-    <link rel="stylesheet" href="styles/index.css">
   </head>
-  <body>
+  <body class="bg-black">
     <div class="container">
       <h1>What Input?</h1>
 
@@ -76,7 +74,7 @@
 
       <footer>
         <p class="pull-left">
-          Made with <span class="text-love">&hearts;</span> at
+          Made with <span class="text-red-500">&hearts;</span> at
           <a href="http://viget.com/">Viget</a>.
         </p>
 
@@ -87,8 +85,9 @@
       </footer>
     </div>
 
-    <script src="scripts/what-input.js"></script>
-    <script>
+    <script type="module" src="/src/what-input.js"></script>
+    <script type="module">
+      // Move all the script code inside this module
       // use `whatInput.ask()`
       var links = document.querySelectorAll('.well a, .well button')
       for (var i = 0, len = links.length; i < len; i++) {

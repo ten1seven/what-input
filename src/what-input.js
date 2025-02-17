@@ -1,4 +1,4 @@
-module.exports = (() => {
+const createWhatInput = () => {
   /*
    * bail out if there is no document or window
    * (i.e. in a node/non-DOM environment)
@@ -116,11 +116,39 @@ module.exports = (() => {
    * set up
    */
 
+  const api = {
+    ask: (opt) => opt === 'intent' ? currentIntent : currentInput,
+    element: () => currentElement,
+    ignoreKeys: (arr) => { ignoreMap = arr },
+    specificKeys: (arr) => { specificMap = arr },
+    registerOnChange: (fn, eventType) => {
+      functionList.push({
+        fn: fn,
+        type: eventType || 'input'
+      })
+    },
+    unRegisterOnChange: (fn) => {
+      const position = objPos(fn)
+      if (position || position === 0) {
+        functionList.splice(position, 1)
+      }
+    },
+    clearStorage: () => {
+      window.sessionStorage.clear()
+    }
+  }
+
   const setUp = () => {
-    // add correct mouse wheel event mapping to `inputMap`
+    // Prevent multiple initializations
+    if (typeof document === 'undefined' || typeof window === 'undefined') {
+      return api
+    }
+
+    // Add correct mouse wheel event mapping to `inputMap`
     inputMap[detectWheel()] = 'mouse'
 
     addListeners()
+    return api
   }
 
   /*
@@ -419,64 +447,28 @@ module.exports = (() => {
     }
   }
 
-  /*
-   * init
-   */
-
-  // don't start script unless browser cuts the mustard
-  // (also passes if polyfills are used)
-  if ('addEventListener' in window && Array.prototype.indexOf) {
-    setUp()
-  }
-
-  /*
-   * api
-   */
-
   return {
-    // returns string: the current input type
-    // opt: 'intent'|'input'
-    // 'input' (default): returns the same value as the `data-whatinput` attribute
-    // 'intent': includes `data-whatintent` value if it's different than `data-whatinput`
-    ask: (opt) => {
-      return opt === 'intent' ? currentIntent : currentInput
-    },
-
-    // returns string: the currently focused element or null
-    element: () => {
-      return currentElement
-    },
-
-    // overwrites ignored keys with provided array
-    ignoreKeys: (arr) => {
-      ignoreMap = arr
-    },
-
-    // overwrites specific char keys to update on
-    specificKeys: (arr) => {
-      specificMap = arr
-    },
-
-    // attach functions to input and intent "events"
-    // funct: function to fire on change
-    // eventType: 'input'|'intent'
-    registerOnChange: (fn, eventType) => {
-      functionList.push({
-        fn: fn,
-        type: eventType || 'input'
-      })
-    },
-
-    unRegisterOnChange: (fn) => {
-      const position = objPos(fn)
-
-      if (position || position === 0) {
-        functionList.splice(position, 1)
-      }
-    },
-
-    clearStorage: () => {
-      window.sessionStorage.clear()
-    }
+    setUp,
+    ...api
   }
-})()
+}
+
+// Create instance and initialize it
+const whatInput = createWhatInput()
+whatInput.setUp()
+
+// Support both module imports and direct script tag inclusion
+if (typeof module !== 'undefined' && module.exports) {
+  // CommonJS/Node.js
+  module.exports = whatInput
+} else if (typeof define === 'function' && define.amd) {
+  // AMD/RequireJS
+  define([], () => whatInput)
+} else {
+  // Browser globals (root is window)
+  window.whatInput = whatInput
+}
+
+// Also support ES modules
+export const setUp = whatInput.setUp
+export default whatInput
