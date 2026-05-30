@@ -1,4 +1,4 @@
-module.exports = (() => {
+export default (() => {
   /*
    * bail out if there is no document or window
    * (i.e. in a node/non-DOM environment)
