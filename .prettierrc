@@ -1,5 +1,14 @@
 {
   "semi": false,
   "singleQuote": true,
-  "useTabs": true
+  "useTabs": true,
+  "overrides": [
+    {
+      "files": ["*.json", ".prettier*"],
+      "options": {
+        "tabWidth": 2,
+        "useTabs": false
+      }
+    }
+  ]
 }
