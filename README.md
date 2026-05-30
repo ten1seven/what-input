@@ -2,9 +2,11 @@
 
 **A global utility for tracking the current input method (mouse, keyboard or touch).**
 
-## _What Input_ is now v5
+> This is a fork of [ten1seven/what-input](https://github.com/ten1seven/what-input), originally created and maintained by [Jeremy Fields](https://github.com/ten1seven) at [Viget](https://viget.com/). Current maintenance and the v6 ESM rewrite are by [EJ Mason](https://github.com/mxmason).
 
-Now with more information and less opinion!
+## _What Input_ is now v6
+
+ESM-only, no bundler, no transpile — source is shipped directly.
 
 _What Input_ adds data attributes to the `window` based on the type of input being used. It also exposes a simple API that can be used for scripting interactions.
 
@@ -22,15 +24,13 @@ _What Input does not make assumptions about the input environment before the pag
 
 Check out the demo to see _What Input_ in action.
 
-https://ten1seven.github.io/what-input
+https://ten1seven.github.io/what-input (original maintainer's demo)
 
 ### Interacting with Forms
 
 Since interacting with a form _always_ requires use of the keyboard, _What Input_ uses the `data-whatintent` attribute to display a "buffered" version of input events while form `<input>`s, `<select>`s, and `<textarea>`s are being interacted with (i.e. mouse user's `data-whatintent` will be preserved as `mouse` while typing).
 
 ## Installing
-
-Download the file directly.
 
 Install via Yarn:
 
@@ -46,38 +46,14 @@ npm install what-input
 
 ## Usage
 
-Include the script directly in your project.
-
-```html
-<script src="path/to/what-input.js"></script>
-```
-
-Or require with a script loader.
+> **v6 is ESM-only.** For CommonJS, AMD, or browser-global `<script>` usage, pin to `what-input@^5`.
 
 ```javascript
 import 'what-input'
 
-// or
+// or, to use the API
 
 import whatInput from 'what-input'
-
-// or
-
-require('what-input')
-
-// or
-
-var whatInput = require('what-input')
-
-// or
-
-requirejs.config({
-  paths: {
-    whatInput: 'path/to/what-input',
-  },
-})
-
-require(['whatInput'], function () {})
 ```
 
 _What Input_ will start doing its thing while you do yours.
@@ -221,6 +197,13 @@ _What Input_ works in all modern browsers.
 
 ## Changelog
 
+### v6.0.0
+
+- **Breaking:** Package is now ESM-only. The CommonJS/UMD/AMD/global builds have been removed. Source is shipped directly — no bundler, no transpile.
+- **Removed:** `dist/` build artifacts, gulp/webpack pipeline, all build-time devDependencies.
+- **Repo:** Moved to https://github.com/mxmason/what-input. Original by [@ten1seven](https://github.com/ten1seven) at Viget.
+- For legacy module systems, pin to `what-input@^5`.
+
 ### v5.2.12
 
 - **Fixed:** Improved detection and respect for of `data-whatpersist` before `DOMContentLoaded`. Fix via [FanFataL](https://github.com/FanFataL).
@@ -314,7 +297,7 @@ Special thanks to [Viget](http://viget.com/) for their encouragement and commitm
 
 Thanks to [mAAdhaTTah](https://github.com/mAAdhaTTah) for the initial conversion to Webpack. Thanks to [greypants](https://github.com/greypants) for adding TypeScript definitions.
 
-_What Input_ is written and maintained by [@ten1seven](https://github.com/ten1seven).
+_What Input_ was originally written by [@ten1seven](https://github.com/ten1seven) (Jeremy Fields, Viget). This fork is maintained by [@mxmason](https://github.com/mxmason) (EJ Mason).
 
 ## License
 
