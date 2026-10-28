@@ -1,5 +1,6 @@
-.git
-.publish
+.DS_Store
 .idea
+.publish
 node_modules
 build
+.claude

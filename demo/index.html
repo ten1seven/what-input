@@ -1,0 +1,140 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+
+    <title>What Input?</title>
+
+    <link rel="stylesheet" href="./demo.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>What Input?</h1>
+
+      <p class="lede">
+        A global utility for tracking the current input method (<span class="input-indicator -mouse"
+          >mouse</span
+        >, <span class="input-indicator -keyboard">keyboard</span>, or
+        <span class="input-indicator -touch">touch</span>), as well as the current
+        <em>intent</em> (<span class="input-intent -mouse">mouse</span>,
+        <span class="input-intent -keyboard">keyboard</span>, or
+        <span class="input-intent -touch">touch</span>).
+      </p>
+
+      <p>
+        Tab, click or tap the links and form controls to see how <strong>What Input</strong> allows
+        them to be styled differently.
+      </p>
+
+      <dl class="readout" aria-live="polite">
+        <div>
+          <dt><code>data-whatinput</code></dt>
+          <dd data-readout="input">initial</dd>
+        </div>
+        <div>
+          <dt><code>data-whatintent</code></dt>
+          <dd data-readout="intent">initial</dd>
+        </div>
+        <div>
+          <dt><code>data-whathint</code></dt>
+          <dd data-readout="hint">unknown</dd>
+        </div>
+        <div>
+          <dt><code>data-whatelement</code></dt>
+          <dd data-readout="element">–</dd>
+        </div>
+        <div>
+          <dt><code>data-whatclasses</code></dt>
+          <dd data-readout="classes">–</dd>
+        </div>
+      </dl>
+
+      <div class="well">
+        <div class="well-row">
+          <div class="well-column">
+            <ul class="list-group">
+              <li class="list-group-item"><a href="#">Cras justo odio</a></li>
+              <li class="list-group-item"><a href="#">Dapibus ac facilisis in</a></li>
+              <li class="list-group-item"><a href="#">Morbi leo risus</a></li>
+              <li class="list-group-item"><a href="#">Porta ac consectetur ac</a></li>
+              <li class="list-group-item"><a href="#">Vestibulum at eros</a></li>
+            </ul>
+
+            <p>
+              <button
+                type="button"
+                data-module="alert"
+                data-message="This button is not inside a form."
+              >
+                Do Something
+              </button>
+            </p>
+
+            <p>
+              <span class="editor-label" id="editor-label">Example contenteditable</span>
+              <span
+                class="editor"
+                contenteditable="true"
+                role="textbox"
+                aria-multiline="true"
+                aria-labelledby="editor-label"
+              ></span>
+            </p>
+          </div>
+
+          <form class="well-column">
+            <p>
+              <label for="exampleInput">Example Text Input</label>
+              <input type="email" id="exampleInput" name="exampleInput" class="field -email" />
+            </p>
+
+            <p>
+              <label for="exampleSelect">Selection</label>
+              <select id="exampleSelect" name="exampleSelect">
+                <option value="" disabled selected>Select an Option</option>
+                <option>Option 1</option>
+                <option>Option 2</option>
+                <option>Option 3</option>
+              </select>
+            </p>
+
+            <p>
+              <label for="exampleTextarea">Example Textarea</label>
+              <textarea id="exampleTextarea" name="exampleTextarea"></textarea>
+            </p>
+
+            <p class="checkbox">
+              <label><input type="checkbox" /> Check me out</label>
+            </p>
+
+            <p>
+              <button
+                type="submit"
+                data-module="alert"
+                data-message="This button is inside a form."
+              >
+                Form Submit
+              </button>
+            </p>
+          </form>
+        </div>
+      </div>
+
+      <footer>
+        <p>
+          Made with <span class="text-love">&hearts;</span> at
+          <a href="https://viget.com/">Viget</a>.
+        </p>
+
+        <p>
+          Check out the project
+          <a href="https://github.com/ten1seven/what-input">on GitHub</a>.
+        </p>
+      </footer>
+    </main>
+
+    <script type="module" src="./demo.ts"></script>
+  </body>
+</html>

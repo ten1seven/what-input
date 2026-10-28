@@ -1,0 +1,415 @@
+/*
+ * demo styles
+ */
+
+:root {
+  --unit: 8px;
+  --container-width: 1100px;
+  --font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  --color-text: #555;
+  --color-heading: #333;
+  --color-link: #337ab7;
+  --color-link-hover: #286090;
+  --color-link-border: #2e6da4;
+  --color-link-border-hover: #204d74;
+  --color-border: #ddd;
+  --color-rule: #eee;
+  --color-surface: #fff;
+  --color-well: #f5f5f5;
+  --color-well-border: #e3e3e3;
+  --color-field-border: #ccc;
+  --color-placeholder: #999;
+  --color-love: #a94442;
+
+  --color-mouse: #337ab7;
+  --color-keyboard: orange;
+  --color-touch: #8a6d3b;
+  --color-mouse-focus: #31708f;
+
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-text: #c9c9c9;
+    --color-heading: #eee;
+    --color-link: #6cb0ea;
+    --color-link-hover: #8cc4f5;
+    --color-border: #3a3a3a;
+    --color-rule: #333;
+    --color-surface: #1e1e1e;
+    --color-well: #262626;
+    --color-well-border: #333;
+    --color-field-border: #444;
+    --color-placeholder: #777;
+    --color-mouse-focus: #6cb0ea;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font);
+  margin: 0;
+  padding: 0;
+}
+
+/*
+ * focus
+ *
+ * keyboard users get a strong ring, pointer users get none
+ */
+
+a,
+button,
+input,
+select,
+textarea,
+[contenteditable] {
+  &:active,
+  &:focus {
+    box-shadow: 0 0 0 3px var(--color-keyboard);
+    outline: none;
+  }
+
+  [data-whatintent='mouse'] &:active,
+  [data-whatintent='mouse'] &:focus,
+  [data-whatintent='touch'] &:active,
+  [data-whatintent='touch'] &:focus {
+    box-shadow: none;
+  }
+}
+
+a {
+  color: var(--color-link);
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    text-decoration: underline;
+  }
+}
+
+h1 {
+  border-bottom: 1px solid var(--color-rule);
+  color: var(--color-heading);
+  font-size: 36px;
+  font-weight: 500;
+  margin: 20px 0 10px;
+  padding-bottom: 9px;
+}
+
+p {
+  margin: calc(var(--unit) * 2) 0;
+
+  @media (min-width: 800px) {
+    margin: calc(var(--unit) * 3) 0;
+  }
+}
+
+code {
+  font-size: 0.95em;
+}
+
+/*
+ * layout
+ */
+
+.container {
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0 auto;
+  max-width: var(--container-width);
+  padding: 0 calc(var(--unit) * 2);
+
+  @media (min-width: 800px) {
+    padding: 0 calc(var(--unit) * 3);
+  }
+}
+
+.lede {
+  font-size: 20px;
+  font-weight: 300;
+  line-height: calc(var(--unit) * 4);
+
+  @media (min-width: 800px) {
+    font-size: 22px;
+  }
+}
+
+.readout {
+  display: grid;
+  gap: var(--unit) calc(var(--unit) * 3);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin: calc(var(--unit) * 3) 0;
+
+  > div {
+    border-left: 3px solid var(--color-border);
+    padding-left: calc(var(--unit) * 1.5);
+  }
+
+  dt {
+    color: var(--color-placeholder);
+    font-size: 12px;
+  }
+
+  dd {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 2px 0 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+.well {
+  background-color: var(--color-well);
+  border: 1px solid var(--color-well-border);
+  border-radius: 4px;
+  margin: calc(var(--unit) * 3) 0;
+  padding: calc(var(--unit) * 3);
+}
+
+.well-row {
+  @media (min-width: 800px) {
+    display: flex;
+    margin-left: calc(var(--unit) * -3);
+  }
+}
+
+.well-column {
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 799px) {
+    + .well-column {
+      border-top: 1px solid var(--color-field-border);
+      margin-top: calc(var(--unit) * 4);
+      padding-top: calc(var(--unit) * 3);
+    }
+  }
+
+  @media (min-width: 800px) {
+    padding-left: calc(var(--unit) * 3);
+    width: 50%;
+  }
+
+  button {
+    appearance: none;
+    background-color: var(--color-link);
+    border: 1px solid var(--color-link-border);
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 400;
+    margin: 0;
+    padding: var(--unit) calc(var(--unit) * 2);
+    text-align: center;
+    transition: all 0.2s ease;
+
+    &:hover,
+    &:focus {
+      background-color: var(--color-link-hover);
+      border-color: var(--color-link-border-hover);
+    }
+  }
+
+  label,
+  .editor-label {
+    color: var(--color-heading);
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: calc(var(--unit) * 3);
+  }
+
+  p {
+    margin: calc(var(--unit) * 2) 0;
+
+    &.checkbox label {
+      font-weight: 400;
+    }
+  }
+
+  input:not([type='submit'], [type='checkbox'], [type='radio']),
+  select,
+  textarea,
+  .editor {
+    appearance: none;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-field-border);
+    border-radius: 4px;
+    color: var(--color-text);
+    display: block;
+    font-family: var(--font);
+    font-size: 16px;
+    height: calc(var(--unit) * 4);
+    margin: 0;
+    padding: 0 var(--unit);
+    transition: all 0.2s ease;
+    width: 100%;
+
+    &::placeholder {
+      color: var(--color-placeholder);
+    }
+
+    [data-whatintent='mouse'] &:focus {
+      border-color: var(--color-mouse-focus);
+      box-shadow:
+        inset 0 1px 1px rgb(0 0 0 / 7.5%),
+        0 0 8px rgb(49 112 143 / 60%);
+    }
+
+    [data-whatinput='touch'] &:focus {
+      border-color: var(--color-touch);
+    }
+  }
+
+  input:not([type='submit'], [type='checkbox'], [type='radio']),
+  textarea,
+  .editor {
+    box-shadow: inset 0 1px 1px rgb(0 0 0 / 7.5%);
+  }
+
+  select {
+    background-image: url('./select-arrow.svg');
+    background-position: calc(100% - 10px) 50%;
+    background-repeat: no-repeat;
+    background-size: 10px 6px;
+    padding-right: 30px;
+
+    @media (min-width: 800px) {
+      min-width: 50%;
+      width: auto;
+    }
+  }
+
+  textarea,
+  .editor {
+    height: 5em;
+    padding-bottom: var(--unit);
+    padding-top: var(--unit);
+  }
+
+  .editor {
+    overflow: auto;
+  }
+}
+
+.list-group {
+  list-style: none;
+  margin: 0 0 calc(var(--unit) * 2);
+  padding: 0;
+}
+
+.list-group-item {
+  &:first-child a {
+    border-radius: 4px 4px 0 0;
+  }
+
+  &:last-child a {
+    border-bottom: 1px solid var(--color-border);
+    border-radius: 0 0 4px 4px;
+  }
+
+  a {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-bottom: none;
+    color: var(--color-text);
+    display: block;
+    padding: calc(var(--unit) * 2);
+    text-decoration: none;
+    transition: all 0.2s ease;
+
+    &:hover,
+    &:focus {
+      background-color: var(--color-well);
+    }
+
+    &:active,
+    &:focus {
+      position: relative;
+    }
+  }
+}
+
+footer {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 14px;
+  gap: var(--unit) calc(var(--unit) * 3);
+  justify-content: space-between;
+  margin: calc(var(--unit) * 4) 0;
+
+  p {
+    margin: 0;
+  }
+
+  .text-love {
+    color: var(--color-love);
+  }
+}
+
+/*
+ * what-input styles
+ */
+
+.input-indicator,
+.input-intent {
+  border-radius: 3px;
+  display: inline-block;
+  padding: 0 3px;
+  transition: all 0.2s ease;
+}
+
+[data-whatinput='mouse'] .input-indicator.-mouse,
+[data-whatintent='mouse'] .input-intent.-mouse {
+  background-color: color-mix(in srgb, var(--color-mouse) 20%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-mouse) 30%, transparent);
+  color: var(--color-mouse);
+}
+
+[data-whatinput='keyboard'] .input-indicator.-keyboard,
+[data-whatintent='keyboard'] .input-intent.-keyboard {
+  background-color: color-mix(in srgb, var(--color-keyboard) 10%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-keyboard) 30%, transparent);
+  color: var(--color-keyboard);
+}
+
+[data-whatinput='touch'] .input-indicator.-touch,
+[data-whatintent='touch'] .input-intent.-touch {
+  background-color: color-mix(in srgb, var(--color-touch) 10%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-touch) 30%, transparent);
+  color: var(--color-touch);
+}
+
+/* suppress focus outline for mouse and touch */
+[data-whatintent='mouse'],
+[data-whatintent='touch'] {
+  *:focus {
+    outline: none;
+  }
+}
+
+/* divs or sections with `tabindex` */
+html:not([data-whatinput='keyboard']) div:focus {
+  outline: none;
+}
