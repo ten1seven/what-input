@@ -1,6 +1,6 @@
 /**
  * what-input - A global utility for tracking the current input method (mouse, keyboard or touch).
- * @version v6.0.0
+ * @version v6.0.1
  * @link https://github.com/ten1seven/what-input
  * @license MIT
  */
@@ -54,8 +54,9 @@
   var hasDom = () => typeof window !== "undefined" && typeof document !== "undefined";
   var isInputMethod = (value) => typeof value === "string" && INPUT_METHODS.has(value);
   var deepActiveElement = () => {
+    var _a;
     let element = document.activeElement;
-    while (element?.shadowRoot?.activeElement) {
+    while ((_a = element == null ? void 0 : element.shadowRoot) == null ? void 0 : _a.activeElement) {
       element = element.shadowRoot.activeElement;
     }
     return element;
@@ -79,43 +80,112 @@
     return "unknown";
   };
   var eventTarget = (event) => {
-    const target = event.composedPath()[0] ?? event.target;
+    var _a;
+    const target = (_a = event.composedPath()[0]) != null ? _a : event.target;
     return target instanceof Element ? target : null;
   };
   var WhatInput = class extends EventTarget {
-    #state = {
-      input: "initial",
-      intent: "initial",
-      hint: "unknown"
-    };
-    #element = null;
-    #persist = false;
-    #ignoredKeys = DEFAULT_IGNORED_KEYS;
-    #specificKeys = [];
-    #callbacks = {
-      input: /* @__PURE__ */ new Set(),
-      intent: /* @__PURE__ */ new Set(),
-      hint: /* @__PURE__ */ new Set()
-    };
-    #controller = null;
-    #lastPointerPosition = { x: NaN, y: NaN };
     constructor() {
       super();
-      if (hasDom()) this.#start();
+      this._state = {
+        input: "initial",
+        intent: "initial",
+        hint: "unknown"
+      };
+      this._focusedElement = null;
+      this._persist = false;
+      this._ignoredKeys = DEFAULT_IGNORED_KEYS;
+      this._requiredKeys = [];
+      this._callbacks = {
+        input: /* @__PURE__ */ new Set(),
+        intent: /* @__PURE__ */ new Set(),
+        hint: /* @__PURE__ */ new Set()
+      };
+      this._controller = null;
+      this._lastPointerPosition = { x: NaN, y: NaN };
+      /** Restores persisted state (if allowed) and publishes the initial state. */
+      this._init = () => {
+        const { documentElement, body } = document;
+        this._persist = documentElement.dataset.whatpersist !== "false" && (body == null ? void 0 : body.dataset.whatpersist) !== "false";
+        if (this._persist) {
+          for (const strategy of ["input", "intent"]) {
+            const stored = this._restore(strategy);
+            if (stored && this._state[strategy] === "initial") {
+              this._state[strategy] = stored;
+            }
+          }
+        }
+        this._state.hint = readHint();
+        this._publish("input");
+        this._publish("intent");
+        this._publish("hint");
+      };
+      /*
+       * events
+       */
+      this._onPointerDown = (event) => {
+        const value = POINTER_TYPES[event.pointerType];
+        if (!value) return;
+        this._set("input", value);
+        this._set("intent", value);
+      };
+      this._onPointerMove = (event) => {
+        const value = POINTER_TYPES[event.pointerType];
+        if (!value) return;
+        const { x, y } = this._lastPointerPosition;
+        this._lastPointerPosition = { x: event.screenX, y: event.screenY };
+        if (event.screenX === x && event.screenY === y) return;
+        this._set("intent", value);
+      };
+      this._onWheel = () => {
+        this._set("intent", "mouse");
+      };
+      this._onHintChange = () => {
+        this._set("hint", readHint());
+      };
+      this._onKey = (event) => {
+        if (!this._isCountedKey(event)) return;
+        this._set("input", "keyboard");
+        if (!isTextEntry(deepActiveElement())) {
+          this._set("intent", "keyboard");
+        }
+      };
+      this._onFocusIn = (event) => {
+        const target = eventTarget(event);
+        if (!target) {
+          this._onFocusOut();
+          return;
+        }
+        const html = document.documentElement;
+        this._focusedElement = target.localName;
+        html.setAttribute(ATTRIBUTE_PREFIX + "element", this._focusedElement);
+        if (target.classList.length) {
+          html.setAttribute(ATTRIBUTE_PREFIX + "classes", Array.from(target.classList).join(","));
+        } else {
+          html.removeAttribute(ATTRIBUTE_PREFIX + "classes");
+        }
+      };
+      this._onFocusOut = () => {
+        const html = document.documentElement;
+        this._focusedElement = null;
+        html.removeAttribute(ATTRIBUTE_PREFIX + "element");
+        html.removeAttribute(ATTRIBUTE_PREFIX + "classes");
+      };
+      if (hasDom()) this._start();
     }
     ask(strategy = "input") {
-      return this.#state[strategy];
+      return this._state[strategy];
     }
     /** The tag name of the currently focused element, or `null`. */
     element() {
-      return this.#element;
+      return this._focusedElement;
     }
     /**
      * Replaces the list of keys that are ignored (do not switch to `keyboard`)
      * when pressed. Defaults to the modifier keys.
      */
     ignoreKeys(keys) {
-      this.#ignoredKeys = [...keys];
+      this._ignoredKeys = [...keys];
     }
     /**
      * Replaces the list of keys that are the *only* keys that switch to
@@ -123,14 +193,14 @@
      * to restore the `ignoreKeys()` behavior.
      */
     specificKeys(keys) {
-      this.#specificKeys = [...keys];
+      this._requiredKeys = [...keys];
     }
     registerOnChange(callback, strategy = "input") {
-      this.#callbacks[strategy].add(callback);
+      this._callbacks[strategy].add(callback);
     }
     /** Removes a callback added with `registerOnChange()`. */
     unRegisterOnChange(callback) {
-      for (const callbacks of Object.values(this.#callbacks)) {
+      for (const callbacks of Object.values(this._callbacks)) {
         callbacks.delete(callback);
       }
     }
@@ -148,9 +218,10 @@
      * drops every registered callback. Useful for tests and app teardown.
      */
     destroy() {
-      this.#controller?.abort();
-      this.#controller = null;
-      for (const callbacks of Object.values(this.#callbacks)) {
+      var _a;
+      (_a = this._controller) == null ? void 0 : _a.abort();
+      this._controller = null;
+      for (const callbacks of Object.values(this._callbacks)) {
         callbacks.clear();
       }
       if (!hasDom()) return;
@@ -162,126 +233,58 @@
     /*
      * set up
      */
-    #start() {
+    _start() {
       const controller = new AbortController();
       const { signal } = controller;
-      this.#controller = controller;
+      this._controller = controller;
       const options = { capture: true, passive: true, signal };
-      window.addEventListener("pointerdown", this.#onPointerDown, options);
-      window.addEventListener("keydown", this.#onKey, options);
-      window.addEventListener("keyup", this.#onKey, options);
-      window.addEventListener("pointermove", this.#onPointerMove, options);
-      window.addEventListener("wheel", this.#onWheel, options);
-      window.addEventListener("focusin", this.#onFocusIn, options);
-      window.addEventListener("focusout", this.#onFocusOut, options);
+      window.addEventListener("pointerdown", this._onPointerDown, options);
+      window.addEventListener("keydown", this._onKey, options);
+      window.addEventListener("keyup", this._onKey, options);
+      window.addEventListener("pointermove", this._onPointerMove, options);
+      window.addEventListener("wheel", this._onWheel, options);
+      window.addEventListener("focusin", this._onFocusIn, options);
+      window.addEventListener("focusout", this._onFocusOut, options);
       for (const query of hintQueries()) {
-        query.addEventListener("change", this.#onHintChange, { signal });
+        query.addEventListener("change", this._onHintChange, { signal });
       }
       if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", this.#init, { once: true, signal });
+        document.addEventListener("DOMContentLoaded", this._init, { once: true, signal });
       } else {
-        this.#init();
+        this._init();
       }
     }
-    /** Restores persisted state (if allowed) and publishes the initial state. */
-    #init = () => {
-      const { documentElement, body } = document;
-      this.#persist = documentElement.dataset.whatpersist !== "false" && body?.dataset.whatpersist !== "false";
-      if (this.#persist) {
-        for (const strategy of ["input", "intent"]) {
-          const stored = this.#restore(strategy);
-          if (stored && this.#state[strategy] === "initial") {
-            this.#state[strategy] = stored;
-          }
-        }
-      }
-      this.#state.hint = readHint();
-      this.#publish("input");
-      this.#publish("intent");
-      this.#publish("hint");
-    };
-    /*
-     * events
-     */
-    #onPointerDown = (event) => {
-      const value = POINTER_TYPES[event.pointerType];
-      if (!value) return;
-      this.#set("input", value);
-      this.#set("intent", value);
-    };
-    #onPointerMove = (event) => {
-      const value = POINTER_TYPES[event.pointerType];
-      if (!value) return;
-      const { x, y } = this.#lastPointerPosition;
-      this.#lastPointerPosition = { x: event.screenX, y: event.screenY };
-      if (event.screenX === x && event.screenY === y) return;
-      this.#set("intent", value);
-    };
-    #onWheel = () => {
-      this.#set("intent", "mouse");
-    };
-    #onHintChange = () => {
-      this.#set("hint", readHint());
-    };
-    #onKey = (event) => {
-      if (!this.#isCountedKey(event)) return;
-      this.#set("input", "keyboard");
-      if (!isTextEntry(deepActiveElement())) {
-        this.#set("intent", "keyboard");
-      }
-    };
-    #onFocusIn = (event) => {
-      const target = eventTarget(event);
-      if (!target) {
-        this.#onFocusOut();
-        return;
-      }
-      const html = document.documentElement;
-      this.#element = target.localName;
-      html.setAttribute(ATTRIBUTE_PREFIX + "element", this.#element);
-      if (target.classList.length) {
-        html.setAttribute(ATTRIBUTE_PREFIX + "classes", Array.from(target.classList).join(","));
-      } else {
-        html.removeAttribute(ATTRIBUTE_PREFIX + "classes");
-      }
-    };
-    #onFocusOut = () => {
-      const html = document.documentElement;
-      this.#element = null;
-      html.removeAttribute(ATTRIBUTE_PREFIX + "element");
-      html.removeAttribute(ATTRIBUTE_PREFIX + "classes");
-    };
     /*
      * state
      */
-    #isCountedKey(event) {
+    _isCountedKey(event) {
       const matches = (key) => typeof key === "number" ? key === event.keyCode : key === event.key || key === event.code;
-      return this.#specificKeys.length ? this.#specificKeys.some(matches) : !this.#ignoredKeys.some(matches);
+      return this._requiredKeys.length ? this._requiredKeys.some(matches) : !this._ignoredKeys.some(matches);
     }
-    #set(channel, value) {
-      if (this.#state[channel] === value) return;
-      this.#state[channel] = value;
-      this.#store(channel, value);
-      this.#publish(channel);
+    _set(channel, value) {
+      if (this._state[channel] === value) return;
+      this._state[channel] = value;
+      this._store(channel, value);
+      this._publish(channel);
     }
     /** Writes the attribute, runs the callbacks and dispatches the event. */
-    #publish(channel) {
-      const value = this.#state[channel];
+    _publish(channel) {
+      const value = this._state[channel];
       document.documentElement.setAttribute(ATTRIBUTE_PREFIX + channel, value);
-      for (const callback of this.#callbacks[channel]) {
+      for (const callback of this._callbacks[channel]) {
         ;
         callback(value);
       }
       this.dispatchEvent(new CustomEvent(channel, { detail: value }));
     }
-    #store(channel, value) {
-      if (channel === "hint" || !this.#persist) return;
+    _store(channel, value) {
+      if (channel === "hint" || !this._persist) return;
       try {
         window.sessionStorage.setItem(STORAGE_KEYS[channel], value);
       } catch {
       }
     }
-    #restore(strategy) {
+    _restore(strategy) {
       try {
         const value = window.sessionStorage.getItem(STORAGE_KEYS[strategy]);
         return isInputMethod(value) ? value : null;

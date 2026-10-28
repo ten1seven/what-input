@@ -367,6 +367,8 @@ vi.mock('what-input', () => ({ default: { ask: () => 'touch' } }))
 
 _What Input_ v6 works in all evergreen browsers: Chrome and Edge 90+, Firefox 90+ and Safari 15+ (2021 and newer). It relies on Pointer Events, `AbortSignal` support in `addEventListener()`, `EventTarget` subclassing and class private fields, none of which are polyfilled.
 
+The UMD builds (`dist/what-input.js` and `dist/what-input.min.js`) are emitted as ES2019 syntax so that older bundlers such as webpack 4 can still parse them. The ES module build (`dist/what-input.mjs`) targets ES2022. The browser requirements are the same for both.
+
 If you need to support older browsers, stay on [v5](https://github.com/ten1seven/what-input/tree/v5.2.12).
 
 ## Contributing
@@ -380,6 +382,10 @@ npm run build # build the library and the demo site
 ```
 
 ## Changelog
+
+### v6.0.1
+
+- **Fixed:** The UMD builds are emitted as ES2019 syntax (no class fields, private fields, optional chaining or nullish coalescing) so that older bundlers such as webpack 4 can parse them. Foundation's open-ended `what-input` peer range means v6 reaches a lot of older build pipelines on fresh installs. The ES module build still targets ES2022 and browser support is unchanged.
 
 ### v6.0.0
 

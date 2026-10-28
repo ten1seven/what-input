@@ -1,6 +1,6 @@
 {
   "name": "what-input",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "description": "A global utility for tracking the current input method (mouse, keyboard or touch).",
   "main": "dist/what-input.js",
   "module": "dist/what-input.mjs",
@@ -63,6 +63,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
+    "acorn": "^8.19.0",
     "esbuild": "^0.28.2",
     "gh-pages": "^6.3.0",
     "jsdom": "^29.1.1",

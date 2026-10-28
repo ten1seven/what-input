@@ -152,29 +152,29 @@ const eventTarget = (event: Event): Element | null => {
 }
 
 class WhatInput extends EventTarget {
-  #state: { input: InputMethod; intent: InputMethod; hint: Hint } = {
+  private _state: { input: InputMethod; intent: InputMethod; hint: Hint } = {
     input: 'initial',
     intent: 'initial',
     hint: 'unknown',
   }
-  #element: string | null = null
-  #persist = false
-  #ignoredKeys: readonly KeyMatcher[] = DEFAULT_IGNORED_KEYS
-  #specificKeys: readonly KeyMatcher[] = []
-  #callbacks: Record<Channel, Set<Callback>> = {
+  private _focusedElement: string | null = null
+  private _persist = false
+  private _ignoredKeys: readonly KeyMatcher[] = DEFAULT_IGNORED_KEYS
+  private _requiredKeys: readonly KeyMatcher[] = []
+  private _callbacks: Record<Channel, Set<Callback>> = {
     input: new Set(),
     intent: new Set(),
     hint: new Set(),
   }
-  #controller: AbortController | null = null
-  #lastPointerPosition = { x: NaN, y: NaN }
+  private _controller: AbortController | null = null
+  private _lastPointerPosition = { x: NaN, y: NaN }
 
   constructor() {
     super()
 
     // bail out in non-DOM environments (SSR, workers, tests); the API still
     // answers, it just never observes an interaction
-    if (hasDom()) this.#start()
+    if (hasDom()) this._start()
   }
 
   /*
@@ -191,12 +191,12 @@ class WhatInput extends EventTarget {
   ask(strategy?: Strategy): InputMethod
   ask(strategy: 'hint'): Hint
   ask(strategy: Channel = 'input'): InputMethod | Hint {
-    return this.#state[strategy]
+    return this._state[strategy]
   }
 
   /** The tag name of the currently focused element, or `null`. */
   element(): string | null {
-    return this.#element
+    return this._focusedElement
   }
 
   /**
@@ -204,7 +204,7 @@ class WhatInput extends EventTarget {
    * when pressed. Defaults to the modifier keys.
    */
   ignoreKeys(keys: readonly KeyMatcher[]): void {
-    this.#ignoredKeys = [...keys]
+    this._ignoredKeys = [...keys]
   }
 
   /**
@@ -213,19 +213,19 @@ class WhatInput extends EventTarget {
    * to restore the `ignoreKeys()` behavior.
    */
   specificKeys(keys: readonly KeyMatcher[]): void {
-    this.#specificKeys = [...keys]
+    this._requiredKeys = [...keys]
   }
 
   /** Fires `callback` whenever the input (default), intent or hint changes. */
   registerOnChange(callback: ChangeCallback, strategy?: Strategy): void
   registerOnChange(callback: HintCallback, strategy: 'hint'): void
   registerOnChange(callback: Callback, strategy: Channel = 'input'): void {
-    this.#callbacks[strategy].add(callback)
+    this._callbacks[strategy].add(callback)
   }
 
   /** Removes a callback added with `registerOnChange()`. */
   unRegisterOnChange(callback: Callback): void {
-    for (const callbacks of Object.values(this.#callbacks)) {
+    for (const callbacks of Object.values(this._callbacks)) {
       callbacks.delete(callback)
     }
   }
@@ -246,10 +246,10 @@ class WhatInput extends EventTarget {
    * drops every registered callback. Useful for tests and app teardown.
    */
   destroy(): void {
-    this.#controller?.abort()
-    this.#controller = null
+    this._controller?.abort()
+    this._controller = null
 
-    for (const callbacks of Object.values(this.#callbacks)) {
+    for (const callbacks of Object.values(this._callbacks)) {
       callbacks.clear()
     }
 
@@ -266,129 +266,129 @@ class WhatInput extends EventTarget {
    * set up
    */
 
-  #start(): void {
+  private _start(): void {
     const controller = new AbortController()
     const { signal } = controller
 
-    this.#controller = controller
+    this._controller = controller
 
     // capture so the events are seen even when a local listener stops
     // propagation, passive because nothing here ever calls `preventDefault()`
     const options: AddEventListenerOptions = { capture: true, passive: true, signal }
 
     // direct interactions
-    window.addEventListener('pointerdown', this.#onPointerDown, options)
-    window.addEventListener('keydown', this.#onKey, options)
-    window.addEventListener('keyup', this.#onKey, options)
+    window.addEventListener('pointerdown', this._onPointerDown, options)
+    window.addEventListener('keydown', this._onKey, options)
+    window.addEventListener('keyup', this._onKey, options)
 
     // indirect interactions (potential, not actual, input)
-    window.addEventListener('pointermove', this.#onPointerMove, options)
-    window.addEventListener('wheel', this.#onWheel, options)
+    window.addEventListener('pointermove', this._onPointerMove, options)
+    window.addEventListener('wheel', this._onWheel, options)
 
     // focus tracking
-    window.addEventListener('focusin', this.#onFocusIn, options)
-    window.addEventListener('focusout', this.#onFocusOut, options)
+    window.addEventListener('focusin', this._onFocusIn, options)
+    window.addEventListener('focusout', this._onFocusOut, options)
 
     // device hint (a keyboard detached from a tablet, a mouse paired with one)
     for (const query of hintQueries()) {
-      query.addEventListener('change', this.#onHintChange, { signal })
+      query.addEventListener('change', this._onHintChange, { signal })
     }
 
     // `<body data-whatpersist>` can only be read once the body exists
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', this.#init, { once: true, signal })
+      document.addEventListener('DOMContentLoaded', this._init, { once: true, signal })
     } else {
-      this.#init()
+      this._init()
     }
   }
 
   /** Restores persisted state (if allowed) and publishes the initial state. */
-  #init = (): void => {
+  private _init = (): void => {
     const { documentElement, body } = document
 
-    this.#persist =
+    this._persist =
       documentElement.dataset.whatpersist !== 'false' && body?.dataset.whatpersist !== 'false'
 
-    if (this.#persist) {
+    if (this._persist) {
       for (const strategy of ['input', 'intent'] as const) {
-        const stored = this.#restore(strategy)
+        const stored = this._restore(strategy)
 
         // an interaction that happened before `DOMContentLoaded` wins
-        if (stored && this.#state[strategy] === 'initial') {
-          this.#state[strategy] = stored
+        if (stored && this._state[strategy] === 'initial') {
+          this._state[strategy] = stored
         }
       }
     }
 
-    this.#state.hint = readHint()
+    this._state.hint = readHint()
 
     // always publish so at least the `initial` state is set
-    this.#publish('input')
-    this.#publish('intent')
-    this.#publish('hint')
+    this._publish('input')
+    this._publish('intent')
+    this._publish('hint')
   }
 
   /*
    * events
    */
 
-  #onPointerDown = (event: PointerEvent): void => {
+  private _onPointerDown = (event: PointerEvent): void => {
     const value = POINTER_TYPES[event.pointerType]
 
     if (!value) return
 
-    this.#set('input', value)
-    this.#set('intent', value)
+    this._set('input', value)
+    this._set('intent', value)
   }
 
-  #onPointerMove = (event: PointerEvent): void => {
+  private _onPointerMove = (event: PointerEvent): void => {
     const value = POINTER_TYPES[event.pointerType]
 
     if (!value) return
 
     // browsers dispatch synthetic `pointermove` events while the page scrolls
     // under a stationary pointer; those are not evidence of intent
-    const { x, y } = this.#lastPointerPosition
+    const { x, y } = this._lastPointerPosition
 
-    this.#lastPointerPosition = { x: event.screenX, y: event.screenY }
+    this._lastPointerPosition = { x: event.screenX, y: event.screenY }
 
     if (event.screenX === x && event.screenY === y) return
 
-    this.#set('intent', value)
+    this._set('intent', value)
   }
 
-  #onWheel = (): void => {
-    this.#set('intent', 'mouse')
+  private _onWheel = (): void => {
+    this._set('intent', 'mouse')
   }
 
-  #onHintChange = (): void => {
-    this.#set('hint', readHint())
+  private _onHintChange = (): void => {
+    this._set('hint', readHint())
   }
 
-  #onKey = (event: KeyboardEvent): void => {
-    if (!this.#isCountedKey(event)) return
+  private _onKey = (event: KeyboardEvent): void => {
+    if (!this._isCountedKey(event)) return
 
-    this.#set('input', 'keyboard')
+    this._set('input', 'keyboard')
 
     // typing into a form field is not a change of intent: a mouse user that
     // fills in a form is still a mouse user
     if (!isTextEntry(deepActiveElement())) {
-      this.#set('intent', 'keyboard')
+      this._set('intent', 'keyboard')
     }
   }
 
-  #onFocusIn = (event: FocusEvent): void => {
+  private _onFocusIn = (event: FocusEvent): void => {
     const target = eventTarget(event)
 
     if (!target) {
-      this.#onFocusOut()
+      this._onFocusOut()
       return
     }
 
     const html = document.documentElement
 
-    this.#element = target.localName
-    html.setAttribute(ATTRIBUTE_PREFIX + 'element', this.#element)
+    this._focusedElement = target.localName
+    html.setAttribute(ATTRIBUTE_PREFIX + 'element', this._focusedElement)
 
     if (target.classList.length) {
       html.setAttribute(ATTRIBUTE_PREFIX + 'classes', Array.from(target.classList).join(','))
@@ -397,10 +397,10 @@ class WhatInput extends EventTarget {
     }
   }
 
-  #onFocusOut = (): void => {
+  private _onFocusOut = (): void => {
     const html = document.documentElement
 
-    this.#element = null
+    this._focusedElement = null
     html.removeAttribute(ATTRIBUTE_PREFIX + 'element')
     html.removeAttribute(ATTRIBUTE_PREFIX + 'classes')
   }
@@ -409,42 +409,42 @@ class WhatInput extends EventTarget {
    * state
    */
 
-  #isCountedKey(event: KeyboardEvent): boolean {
+  private _isCountedKey(event: KeyboardEvent): boolean {
     const matches = (key: KeyMatcher): boolean =>
       typeof key === 'number' ? key === event.keyCode : key === event.key || key === event.code
 
-    return this.#specificKeys.length
-      ? this.#specificKeys.some(matches)
-      : !this.#ignoredKeys.some(matches)
+    return this._requiredKeys.length
+      ? this._requiredKeys.some(matches)
+      : !this._ignoredKeys.some(matches)
   }
 
   /** Updates, persists and publishes a value when it actually changed. */
-  #set(channel: Strategy, value: InputMethod): void
-  #set(channel: 'hint', value: Hint): void
-  #set(channel: Channel, value: InputMethod | Hint): void {
-    if (this.#state[channel] === value) return
+  private _set(channel: Strategy, value: InputMethod): void
+  private _set(channel: 'hint', value: Hint): void
+  private _set(channel: Channel, value: InputMethod | Hint): void {
+    if (this._state[channel] === value) return
 
-    this.#state[channel] = value as never
-    this.#store(channel, value)
-    this.#publish(channel)
+    this._state[channel] = value as never
+    this._store(channel, value)
+    this._publish(channel)
   }
 
   /** Writes the attribute, runs the callbacks and dispatches the event. */
-  #publish(channel: Channel): void {
-    const value = this.#state[channel]
+  private _publish(channel: Channel): void {
+    const value = this._state[channel]
 
     document.documentElement.setAttribute(ATTRIBUTE_PREFIX + channel, value)
 
-    for (const callback of this.#callbacks[channel]) {
+    for (const callback of this._callbacks[channel]) {
       ;(callback as (value: string) => void)(value)
     }
 
     this.dispatchEvent(new CustomEvent(channel, { detail: value }))
   }
 
-  #store(channel: Channel, value: InputMethod | Hint): void {
+  private _store(channel: Channel, value: InputMethod | Hint): void {
     // the hint is live from the device and never persisted
-    if (channel === 'hint' || !this.#persist) return
+    if (channel === 'hint' || !this._persist) return
 
     try {
       window.sessionStorage.setItem(STORAGE_KEYS[channel], value)
@@ -453,7 +453,7 @@ class WhatInput extends EventTarget {
     }
   }
 
-  #restore(strategy: Strategy): InputMethod | null {
+  private _restore(strategy: Strategy): InputMethod | null {
     try {
       const value = window.sessionStorage.getItem(STORAGE_KEYS[strategy])
 

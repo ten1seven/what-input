@@ -8,6 +8,7 @@ import { readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { parse } from 'acorn'
 import { afterEach, describe, expect, it } from 'vitest'
 
 const dist = resolve(dirname(fileURLToPath(import.meta.url)), '../dist')
@@ -29,6 +30,11 @@ describe('dist/what-input.js (UMD)', () => {
     expect(umd.startsWith('/**\n * what-input - ')).toBe(true)
     expect(umd).toContain('@version v')
     expect(minified.startsWith('/**\n * what-input - ')).toBe(true)
+  })
+
+  it('parses as ES2019 so older bundlers such as webpack 4 can consume it', () => {
+    expect(() => parse(umd, { ecmaVersion: 2019 })).not.toThrow()
+    expect(() => parse(minified, { ecmaVersion: 2019 })).not.toThrow()
   })
 
   it('exposes a global `whatInput` when loaded as a plain script', () => {

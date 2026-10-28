@@ -57,11 +57,17 @@ const shared = {
   logLevel: 'info',
 }
 
+/**
+ * The UMD build targets ES2019 so that older bundlers (webpack 4 and friends,
+ * still common in Foundation-era projects) can parse it. The browser
+ * requirements are unchanged; only the syntax is transpiled.
+ */
 /** @type {import('esbuild').BuildOptions} */
 const umd = {
   ...shared,
   entryPoints: ['scripts/umd-entry.ts'],
   format: 'iife',
+  target: 'es2019',
   banner: { js: umdHeader },
   footer: { js: umdFooter },
 }
@@ -70,7 +76,14 @@ await rm('dist', { recursive: true, force: true })
 
 await Promise.all([
   build({ ...umd, outfile: 'dist/what-input.js' }),
-  build({ ...umd, outfile: 'dist/what-input.min.js', minify: true, sourcemap: true }),
+  build({
+    ...umd,
+    outfile: 'dist/what-input.min.js',
+    minify: true,
+    sourcemap: true,
+    // private members are prefixed with `_` so they can be shortened safely
+    mangleProps: /^_/,
+  }),
   build({ ...shared, format: 'esm', banner: { js: banner }, outfile: 'dist/what-input.mjs' }),
   promisify(execFile)('npx', ['tsc', '-p', 'tsconfig.build.json']),
 ])

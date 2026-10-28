@@ -38,7 +38,14 @@ export interface WhatInputEventMap {
     hint: CustomEvent<Hint>;
 }
 declare class WhatInput extends EventTarget {
-    #private;
+    private _state;
+    private _focusedElement;
+    private _persist;
+    private _ignoredKeys;
+    private _requiredKeys;
+    private _callbacks;
+    private _controller;
+    private _lastPointerPosition;
     constructor();
     /**
      * The current input method.
@@ -74,6 +81,23 @@ declare class WhatInput extends EventTarget {
      * drops every registered callback. Useful for tests and app teardown.
      */
     destroy(): void;
+    private _start;
+    /** Restores persisted state (if allowed) and publishes the initial state. */
+    private _init;
+    private _onPointerDown;
+    private _onPointerMove;
+    private _onWheel;
+    private _onHintChange;
+    private _onKey;
+    private _onFocusIn;
+    private _onFocusOut;
+    private _isCountedKey;
+    /** Updates, persists and publishes a value when it actually changed. */
+    private _set;
+    /** Writes the attribute, runs the callbacks and dispatches the event. */
+    private _publish;
+    private _store;
+    private _restore;
 }
 /** Typed listeners for the `input`, `intent` and `hint` events (types only). */
 interface WhatInput {
