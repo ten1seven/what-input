@@ -37,6 +37,24 @@ describe('dist/what-input.js (UMD)', () => {
     expect(() => parse(minified, { ecmaVersion: 2019 })).not.toThrow()
   })
 
+  it('can be concatenated with other scripts (#134)', () => {
+    const before = 'var before = 1\n'
+    // a following script that starts with `(` would otherwise call the UMD wrapper's result
+    const after = '\n(function () {})()\n'
+
+    for (const source of [umd, minified]) {
+      expect(
+        source
+          .replace(/\/\/# sourceMappingURL=.*\s*$/, '')
+          .trimEnd()
+          .endsWith(';'),
+      ).toBe(true)
+
+      new Function(before + source + after).call(globalThis)
+      instances.push((globalThis as { whatInput?: Api }).whatInput!)
+    }
+  })
+
   it('exposes a global `whatInput` when loaded as a plain script', () => {
     new Function(umd).call(globalThis)
 

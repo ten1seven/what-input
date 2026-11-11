@@ -383,6 +383,10 @@ npm run build # build the library and the demo site
 
 ## Changelog
 
+### v6.0.2
+
+- **Fixed:** The UMD builds end with a semicolon again, so they can be safely concatenated with other scripts ([#134](https://github.com/ten1seven/what-input/issues/134)).
+
 ### v6.0.1
 
 - **Fixed:** The UMD builds are emitted as ES2019 syntax (no class fields, private fields, optional chaining or nullish coalescing) so that older bundlers such as webpack 4 can parse them. Foundation's open-ended `what-input` peer range means v6 reaches a lot of older build pipelines on fresh installs. The ES module build still targets ES2022 and browser support is unchanged.

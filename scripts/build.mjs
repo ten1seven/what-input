@@ -44,9 +44,10 @@ const umdHeader = `${banner}
   function () {
     var __whatInput`
 
+// the trailing semicolon keeps the file safe to concatenate with other scripts
 const umdFooter = `return __whatInput
   },
-)`
+);`
 
 /** @type {import('esbuild').BuildOptions} */
 const shared = {
